@@ -313,7 +313,7 @@ tbody tr.detail-row.open { display:table-row; }
   <div>
     <div class="h-eyebrow">Espartina SA · Campaña 25/26</div>
     <div class="h-title" id="h-title">Informe de Cosecha & Producción</div>
-    <div class="h-sub" id="h-sub">Estado al 28/03/2026 · Todas las zonas · Actualizado 11:07</div>
+    <div class="h-sub" id="h-sub">Estado al 28/03/2026 · Todas las zonas · Actualizado 11:51</div>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
     <div class="h-badge" id="h-badge">⚡ Avance general 29.9%</div>
@@ -504,7 +504,7 @@ tbody tr.detail-row.open { display:table-row; }
           <th>Zona · Localidad</th>
           <th class="r">TN Teóricas</th>
           <th class="r">TN Retiradas</th>
-          <th class="r">TN en Bolsa</th>
+          <th class="r">TN en Depósito</th>
           <th class="r">TN Pendiente</th>
           <th>% Retirado</th>
           <th>Estado / Dónde buscar</th>
@@ -1395,11 +1395,11 @@ function cascadeRetiros(changed){
   const curAct   = (actSel||{}).value||'';
   const curZona  = (zonaSel||{}).value||'';
 
-  // Get full dataset for selected socio
+  // Build full base dataset
   let base = [];
   if(!CURRENT_SOCIO){
     if(curSocio){
-      base = RETIRO_DATA[curSocio]||[];
+      base = (RETIRO_DATA[curSocio]||[]).map(d=>({...d,_pwd:curSocio}));
     } else {
       Object.keys(RETIRO_DATA).forEach(p=>{
         const nm = SOCIOS_DATA[p]?SOCIOS_DATA[p].name:p;
@@ -1411,53 +1411,68 @@ function cascadeRetiros(changed){
     base = (pwd && RETIRO_DATA[pwd]) || [];
   }
 
-  // Cascade acts
+  // Act: show acts compatible with selected zona
   if(actSel && changed!=='act'){
     const scope = curZona ? base.filter(d=>d.zona===curZona) : base;
     const acts  = [...new Set(scope.map(d=>d.act))].sort();
     actSel.innerHTML = '<option value="">Todas</option>' + acts.map(a=>`<option value="${a}"${a===curAct?' selected':''}>${a}</option>`).join('');
+    if(curAct && !acts.includes(curAct)) actSel.value='';
   }
-  // Cascade zonas
+
+  // Zona: show zonas compatible with selected act
   if(zonaSel && changed!=='zona'){
     const scope = curAct ? base.filter(d=>d.act===curAct) : base;
     const zonas = [...new Set(scope.map(d=>d.zona))].sort();
     zonaSel.innerHTML = '<option value="">Todas</option>' + zonas.map(z=>`<option value="${z}"${z===curZona?' selected':''}>${z}</option>`).join('');
+    if(curZona && !zonas.includes(curZona)) zonaSel.value='';
   }
 }
 
 function cascadeFilters(changed){
-  const data = getScopedData();
+  const data    = getScopedData();
   const actVal  = document.getElementById('f-actividad').value;
   const zonaVal = document.getElementById('f-zona').value;
-  const locVal  = document.getElementById('f-loc').value;
+  const locVal  = (document.getElementById('f-loc')||{}).value||'';
 
-  // Base scope for each filter depends on other selected filters
-  const scopeForZona = actVal  ? data.filter(d=>d.act===actVal)  : data;
-  const scopeForLoc  = zonaVal ? scopeForZona.filter(d=>d.zona===zonaVal) : scopeForZona;
-  const scopeForAct  = data;
-
-  // Repopulate actividad
+  // Each filter shows options compatible with the OTHER active filters
+  // Act filter: show all acts that exist in selected zona/loc
   const actSel = document.getElementById('f-actividad');
   if(actSel && changed !== 'act'){
-    const cur = actSel.value;
-    const acts = [...new Set(scopeForAct.map(d=>d.act))].sort();
-    actSel.innerHTML = '<option value="">Todas</option>' + acts.map(a=>`<option value="${a}"${a===cur?' selected':''}>${a}</option>`).join('');
+    const cur   = actSel.value;
+    const scope = data.filter(d=>
+      (!zonaVal || d.zona===zonaVal) && (!locVal || d.loc===locVal)
+    );
+    const acts = [...new Set(scope.map(d=>d.act))].sort();
+    actSel.innerHTML = '<option value="">Todas</option>' +
+      acts.map(a=>`<option value="${a}"${a===cur?' selected':''}>${a}</option>`).join('');
+    // If previous selection no longer valid, clear it
+    if(cur && !acts.includes(cur)) actSel.value = '';
   }
 
-  // Repopulate zona
+  // Zona filter: show all zonas that exist in selected act/loc
   const zonaSel = document.getElementById('f-zona');
   if(zonaSel && changed !== 'zona'){
-    const cur = zonaSel.value;
-    const zonas = [...new Set(scopeForZona.map(d=>d.zona))].sort();
-    zonaSel.innerHTML = '<option value="">Todas</option>' + zonas.map(z=>`<option value="${z}"${z===cur?' selected':''}>${z}</option>`).join('');
+    const cur   = zonaSel.value;
+    const scope = data.filter(d=>
+      (!actVal || d.act===actVal) && (!locVal || d.loc===locVal)
+    );
+    const zonas = [...new Set(scope.map(d=>d.zona))].sort();
+    zonaSel.innerHTML = '<option value="">Todas</option>' +
+      zonas.map(z=>`<option value="${z}"${z===cur?' selected':''}>${z}</option>`).join('');
+    if(cur && !zonas.includes(cur)) zonaSel.value = '';
   }
 
-  // Repopulate localidad
+  // Loc filter: show all locs compatible with selected act+zona
   const locSel = document.getElementById('f-loc');
   if(locSel && changed !== 'loc'){
-    const cur = locSel.value;
-    const locs = [...new Set(scopeForLoc.map(d=>d.loc).filter(Boolean))].sort();
-    locSel.innerHTML = '<option value="">Todas</option>' + locs.map(l=>`<option value="${l}"${l===cur?' selected':''}>${l}</option>`).join('');
+    const cur   = locSel.value;
+    const scope = data.filter(d=>
+      (!actVal || d.act===actVal) && (!zonaVal || d.zona===zonaVal)
+    );
+    const locs = [...new Set(scope.map(d=>d.loc).filter(Boolean))].sort();
+    locSel.innerHTML = '<option value="">Todas</option>' +
+      locs.map(l=>`<option value="${l}"${l===cur?' selected':''}>${l}</option>`).join('');
+    if(cur && !locs.includes(cur)) locSel.value = '';
   }
 }
 
@@ -1871,11 +1886,11 @@ function renderRetiros(){
   const S = (arr,k) => arr.reduce((a,d)=>a+(d[k]||0),0);
 
   // KPIs
-  const totTeorico  = S(filtered,'tn_teoricas');
-  const totRetirado = S(filtered,'tn_retiradas');
-  const totBolsa    = S(filtered,'tn_bolsa');
-  const totPendiente= S(filtered,'tn_a_retirar');
-  const pctRetirado = totTeorico>0 ? totRetirado/totTeorico*100 : 0;
+  const totTeorico   = S(filtered,'tn_teoricas');
+  const totRetirado  = S(filtered,'tn_retiradas');
+  const totDeposito  = S(filtered,'tn_bolsa');
+  const totPendiente = totTeorico - totRetirado;  // TN teóricas − TN retiradas
+  const pctRetirado  = totTeorico>0 ? totRetirado/totTeorico*100 : 0;
 
   if(kpiGrid) kpiGrid.innerHTML = `
     <div class="kpi">
@@ -1889,15 +1904,15 @@ function renderRetiros(){
       <div class="kpi-sub">${fmtD(pctRetirado)}% del total teórico</div>
       <span class="badge pos">${fmtD(pctRetirado)}% retirado</span>
     </div>
-    <div class="kpi ${totBolsa>0?'b':''}">
-      <div class="kpi-lbl">TN en Bolsa</div>
-      <div class="kpi-val">${Math.round(totBolsa).toLocaleString('es-AR')}<span class="kpi-unit">tn</span></div>
-      <div class="kpi-sub">Embolsado en campo, pendiente de retiro</div>
+    <div class="kpi ${totDeposito>0?'b':''}">
+      <div class="kpi-lbl">TN en Depósito</div>
+      <div class="kpi-val">${Math.round(totDeposito).toLocaleString('es-AR')}<span class="kpi-unit">tn</span></div>
+      <div class="kpi-sub">En bolsa registrada en depósito</div>
     </div>
     <div class="kpi ${totPendiente>100?'r':''}">
-      <div class="kpi-lbl">TN Pendientes</div>
+      <div class="kpi-lbl">TN Pendientes de Retiro</div>
       <div class="kpi-val">${Math.round(totPendiente).toLocaleString('es-AR')}<span class="kpi-unit">tn</span></div>
-      <div class="kpi-sub">Sin retirar ni embolsar</div>
+      <div class="kpi-sub">TN teóricas − TN retiradas</div>
     </div>`;
 
   // Table rows
@@ -1914,13 +1929,14 @@ function renderRetiros(){
     const barCls= pctRet>=100?'g':pctRet>=50?'':'';
 
     // Status & where-to-look logic
+    const pendiente = d.tn_teoricas - d.tn_retiradas;
     let estado = '';
     let estadoCls = '';
     if(pctRet>=99){
       estado='✅ Retirado completo'; estadoCls='pos';
     } else if(d.tn_bolsa>0 && avance>=99){
-      estado=`📦 En bolsa — ${Math.round(d.tn_bolsa).toLocaleString('es-AR')} tn embolsadas en campo`; estadoCls='info';
-    } else if(avance>=99 && d.tn_a_retirar>0){
+      estado=`📦 En depósito — ${Math.round(d.tn_bolsa).toLocaleString('es-AR')} tn embolsadas`; estadoCls='info';
+    } else if(avance>=99 && pendiente>0){
       // Field 100% harvested, grain pending → compensation logic
       // Find other campos in same localidad with bolsa
       const sameLoc = data.filter(x=>
@@ -1983,10 +1999,10 @@ function renderRetiros(){
   filtered.forEach(d=>{
     const cos = cosechaMap[`${d.campo}||${d.act}`];
     const avance = cos ? cos.avance : 0;
-    if(avance>=99 && d.tn_a_retirar>10){
+    if(avance>=99 && (d.tn_teoricas-d.tn_retiradas)>10){
       const key = `${d.loc}||${d.act}`;
       if(!locGroups[key]) locGroups[key]={loc:d.loc,act:d.act,zona:d.zona,pendiente:0,bolsa_loc:0,campos:[]};
-      locGroups[key].pendiente += d.tn_a_retirar;
+      locGroups[key].pendiente += (d.tn_teoricas - d.tn_retiradas);
       locGroups[key].campos.push(d.campo);
     }
   });
@@ -2028,7 +2044,7 @@ function renderRetiros(){
     if(!zonaStats[d.zona]) zonaStats[d.zona]={zona:d.zona,ret:0,bolsa:0,pend:0};
     zonaStats[d.zona].ret   += d.tn_retiradas;
     zonaStats[d.zona].bolsa += d.tn_bolsa;
-    zonaStats[d.zona].pend  += d.tn_a_retirar;
+    zonaStats[d.zona].pend  += (d.tn_teoricas - d.tn_retiradas);
   });
 
   const zonas = Object.values(zonaStats).filter(z=>z.ret+z.bolsa+z.pend>0).sort((a,b)=>(b.ret+b.bolsa+b.pend)-(a.ret+a.bolsa+a.pend));
@@ -2666,6 +2682,16 @@ function refreshResumenZonas(acts){
 // Init
 document.addEventListener('DOMContentLoaded', () => {
   buildActChips([...new Set(DATA.map(d=>d.act))].sort());
+  // Initialize all filter dropdowns with full data
+  const allActs  = [...new Set(DATA.map(d=>d.act))].sort();
+  const allZonas = [...new Set(DATA.map(d=>d.zona))].sort();
+  const allLocs  = [...new Set(DATA.map(d=>d.loc).filter(Boolean))].sort();
+  const actSel  = document.getElementById('f-actividad');
+  const zonaSel = document.getElementById('f-zona');
+  const locSel  = document.getElementById('f-loc');
+  if(actSel)  actSel.innerHTML  = '<option value="">Todas</option>' + allActs.map(a=>`<option value="${a}">${a}</option>`).join('');
+  if(zonaSel) zonaSel.innerHTML = '<option value="">Todas</option>' + allZonas.map(z=>`<option value="${z}">${z}</option>`).join('');
+  if(locSel)  locSel.innerHTML  = '<option value="">Todas</option>' + allLocs.map(l=>`<option value="${l}">${l}</option>`).join('');
   renderResumen();
   filterTable();
 });
