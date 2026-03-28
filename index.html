@@ -308,7 +308,7 @@ tbody tr.detail-row.open { display:table-row; }
   <div>
     <div class="h-eyebrow">Espartina SA · Campaña 25/26</div>
     <div class="h-title" id="h-title">Informe de Cosecha & Producción</div>
-    <div class="h-sub" id="h-sub">Estado al 28/03/2026 · Todas las zonas · Actualizado 10:04</div>
+    <div class="h-sub" id="h-sub">Estado al 28/03/2026 · Todas las zonas · Actualizado 10:41</div>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
     <div class="h-badge" id="h-badge">⚡ Avance general 29.5%</div>
@@ -326,8 +326,6 @@ tbody tr.detail-row.open { display:table-row; }
 
 
 
-<div class="tabs">
-  <div class="tab active" onclick="switchTab('resumen')">Resumen Ejecutivo</div>
   <div class="tab" onclick="switchTab('detalle')">Detalle por Campo</div>
   <div class="tab" id="tab-retiros" onclick="switchTab('retiros')" style="display:none">Retiros & Bolsa</div>
   <div class="tab" id="tab-granos" onclick="switchTab('granos')" style="display:none">Posición de Granos</div>
@@ -448,6 +446,12 @@ tbody tr.detail-row.open { display:table-row; }
 <!-- ===================== TAB 4: RETIROS & BOLSA ===================== -->
 <div class="pane" id="pane-retiros">
   <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:20px">
+    <div class="filter-group" id="ret-socio-group" style="display:none">
+      <div class="filter-lbl">Socio</div>
+      <select id="ret-socio" onchange="renderRetiros()">
+        <option value="">Todos los socios</option>
+      </select>
+    </div>
     <div class="filter-group">
       <div class="filter-lbl">Actividad</div>
       <select id="ret-act" onchange="renderRetiros()">
@@ -480,6 +484,7 @@ tbody tr.detail-row.open { display:table-row; }
     <table id="ret-table">
       <thead>
         <tr>
+          <th id="ret-th-socio" style="display:none">Socio</th>
           <th>Campo</th>
           <th>Actividad</th>
           <th>Zona · Localidad</th>
@@ -1641,8 +1646,23 @@ function switchTab(tab){
 }
 
 // ===== RENDER RETIROS & BOLSA =====
-function getRetiroData(){
-  if(!CURRENT_SOCIO) return null; // admin no tiene retiro específico
+function getRetiroData(filtroSocio){
+  // Admin: si hay filtro de socio, devuelve ese; sino, todos consolidados
+  if(!CURRENT_SOCIO){
+    const pwds = Object.keys(RETIRO_DATA);
+    const target = filtroSocio || (document.getElementById('ret-socio')||{}).value || '';
+    if(target){
+      return RETIRO_DATA[target] || [];
+    }
+    // Consolidate all socios - add socio name to each record
+    const all = [];
+    pwds.forEach(pwd => {
+      const name = SOCIOS_DATA[pwd] ? SOCIOS_DATA[pwd].name : pwd;
+      (RETIRO_DATA[pwd]||[]).forEach(d => all.push({...d, _socio: name, _pwd: pwd}));
+    });
+    return all;
+  }
+  // Socio: only their data
   const pwd = Object.keys(SOCIOS_DATA).find(k=>SOCIOS_DATA[k].name===CURRENT_SOCIO.name);
   if(!pwd || !RETIRO_DATA[pwd]) return null;
   return RETIRO_DATA[pwd];
@@ -1660,6 +1680,16 @@ function renderRetiros(){
     tbody.innerHTML = `<tr><td colspan="9" class="no-results">Iniciá sesión como socio para ver el estado de retiros.</td></tr>`;
     if(kpiGrid) kpiGrid.innerHTML='';
     return;
+  }
+
+  // Show socio filter for admin
+  const socioGroup = document.getElementById('ret-socio-group');
+  const socioSel   = document.getElementById('ret-socio');
+  if(socioGroup) socioGroup.style.display = CURRENT_SOCIO ? 'none' : 'flex';
+  if(!CURRENT_SOCIO && socioSel && socioSel.options.length<=1){
+    Object.keys(SOCIOS_DATA).sort((a,b)=>SOCIOS_DATA[a].name.localeCompare(SOCIOS_DATA[b].name)).forEach(pwd=>{
+      const o=document.createElement('option'); o.value=pwd; o.textContent=SOCIOS_DATA[pwd].name; socioSel.appendChild(o);
+    });
   }
 
   // Populate filters
@@ -1732,7 +1762,12 @@ function renderRetiros(){
     </div>`;
 
   // Table rows
+  // Show/hide socio column
+  const socioTh = document.getElementById('ret-th-socio');
+  if(socioTh) socioTh.style.display = (!CURRENT_SOCIO && !((document.getElementById('ret-socio')||{}).value)) ? 'table-cell' : 'none';
+
   const rows = filtered.map(d=>{
+    const showSocioCol = !CURRENT_SOCIO && !((document.getElementById('ret-socio')||{}).value);
     const cos   = cosechaMap[`${d.campo}||${d.act}`];
     const avance= cos ? cos.avance : 0;
     const pctRet= d.tn_teoricas>0 ? Math.min(d.tn_retiradas/d.tn_teoricas*100,100) : 0;
@@ -1777,6 +1812,7 @@ function renderRetiros(){
     }
 
     return `<tr>
+      ${showSocioCol ? `<td class="sm">${d._socio||''}</td>` : ''}
       <td class="name">${d.campo}</td>
       <td><span class="pill gld" style="font-size:8px">${d.act}</span></td>
       <td class="sm">${d.zona} · ${d.loc}</td>
@@ -1846,7 +1882,7 @@ function renderRetiros(){
 // Show/hide retiros tab based on login
 function updateRetirosTab(){
   const tab = document.getElementById('tab-retiros');
-  if(tab) tab.style.display = CURRENT_SOCIO ? 'block' : 'none';
+  if(tab) tab.style.display = 'block'; // visible for all users
 }
 
 // ===== RENDER POSICIÓN DE GRANOS =====
