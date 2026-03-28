@@ -312,7 +312,7 @@ tbody tr.detail-row.open { display:table-row; }
   <div>
     <div class="h-eyebrow">Espartina SA · Campaña 25/26</div>
     <div class="h-title" id="h-title">Informe de Cosecha & Producción</div>
-    <div class="h-sub" id="h-sub">Estado al 28/03/2026 · Todas las zonas · Actualizado 12:38</div>
+    <div class="h-sub" id="h-sub">Estado al 28/03/2026 · Todas las zonas · Actualizado 12:48</div>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
 
@@ -323,7 +323,6 @@ tbody tr.detail-row.open { display:table-row; }
   <div class="tab active" onclick="switchTab('resumen')">Resumen Ejecutivo</div>
   <div class="tab" onclick="switchTab('detalle')">Detalle por Campo</div>
   <div class="tab" id="tab-retiros" onclick="switchTab('retiros')" style="display:none">Retiros & Bolsa</div>
-  <div class="tab" id="tab-granos" onclick="switchTab('granos')" style="display:none">Posición de Granos</div>
 </div>
 
 
@@ -331,7 +330,6 @@ tbody tr.detail-row.open { display:table-row; }
 
   <div class="tab" onclick="switchTab('detalle')">Detalle por Campo</div>
   <div class="tab" id="tab-retiros" onclick="switchTab('retiros')" style="display:none">Retiros & Bolsa</div>
-  <div class="tab" id="tab-granos" onclick="switchTab('granos')" style="display:none">Posición de Granos</div>
 </div>
 
 <!-- ===================== TAB 1: RESUMEN ===================== -->
@@ -445,9 +443,6 @@ tbody tr.detail-row.open { display:table-row; }
   </div>
 </div>
 
-<!-- ===================== TAB 3: POSICIÓN DE GRANOS ===================== -->
-<div class="pane" id="pane-granos" style="display:none">
-  <div id="granos-content"></div>
 </div>
 
 <!-- ===================== TAB 4: RETIROS & BOLSA ===================== -->
@@ -1159,15 +1154,12 @@ function loginAs(socio){
   document.getElementById('pwd-screen').style.display='none';
 
   const titleEl    = document.getElementById('h-title');
-  const granosTab  = document.getElementById('tab-granos');
 
   if(socio){
     if(titleEl)   titleEl.textContent = socio.name;
-      if(granosTab) granosTab.style.display = 'block';
-  } else {
+    } else {
     if(titleEl)   titleEl.textContent = 'Informe de Cosecha & Producción';
-      if(granosTab) granosTab.style.display = 'none';
-  }
+    }
 
   updateRetirosTab();
   renderResumen();
@@ -1787,7 +1779,6 @@ function switchTab(tab){
   if(pane){ pane.classList.add('active'); pane.style.display='block'; }
   if(tab==='detalle') filterTable();
   if(tab==='resumen') renderResumen();
-  if(tab==='granos')  renderGranos();
   if(tab==='retiros') renderRetiros();
 }
 
@@ -2088,147 +2079,6 @@ function updateRetirosTab(){
   if(tab) tab.style.display = 'block'; // visible for all users
 }
 
-// ===== RENDER POSICIÓN DE GRANOS =====
-function renderGranos(){
-  const el = document.getElementById('granos-content');
-  if(!el) return;
-
-  const rows = calcGrainPosition();
-  const fmt  = n => n.toLocaleString('es-AR', {minimumFractionDigits:1, maximumFractionDigits:1});
-  const fmtPct = n => (n*100).toFixed(1) + '%';
-
-  if(!rows.length){
-    el.innerHTML = `<div style="padding:40px;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted)">Sin posición de granos disponible aún — los campos se muestran una vez cosechados.</div>`;
-    return;
-  }
-
-  const totCos  = rows.reduce((a,r)=>a+r.tn_cos, 0);
-  const totRet  = rows.reduce((a,r)=>a+r.tn_ret, 0);
-  const totEmb  = rows.reduce((a,r)=>a+r.tn_emb, 0);
-  const totComp = rows.reduce((a,r)=>a+r.compensacion, 0);
-  const totPend = rows.reduce((a,r)=>a+r.pendiente_neto, 0);
-  const pctRet  = totCos>0?totRet/totCos:0;
-  const pctEmb  = totCos>0?totEmb/totCos:0;
-  const pctPend = totCos>0?totPend/totCos:0;
-
-  let html = `
-  <div class="sec-title">Resumen de posición</div>
-  <div class="grain-summary">
-    <div class="grain-kpi highlight">
-      <div class="grain-kpi-lbl">TN producidas</div>
-      <div class="grain-kpi-val">${fmt(totCos)}<span class="grain-kpi-unit">tn</span></div>
-      <div class="grain-kpi-sub">${rows.length} campos cosechados</div>
-    </div>
-    <div class="grain-kpi" style="border-left:3px solid var(--brand)">
-      <div class="grain-kpi-lbl">TN retiradas</div>
-      <div class="grain-kpi-val" style="color:var(--brand)">${fmt(totRet)}<span class="grain-kpi-unit">tn</span></div>
-      <div class="grain-kpi-sub">${fmtPct(pctRet)} del total producido</div>
-    </div>
-    <div class="grain-kpi" style="border-left:3px solid var(--gold)">
-      <div class="grain-kpi-lbl">TN embolsadas</div>
-      <div class="grain-kpi-val" style="color:var(--gold)">${fmt(totEmb)}<span class="grain-kpi-unit">tn</span></div>
-      <div class="grain-kpi-sub">${fmtPct(pctEmb)} — asegurado en campo${totComp>0?` + ${fmt(totComp)} tn comp.`:''}</div>
-    </div>
-    <div class="grain-kpi ${totPend>0?'alert-kpi':''}">
-      <div class="grain-kpi-lbl">Pendiente de retiro</div>
-      <div class="grain-kpi-val" style="color:${totPend>0?'var(--red)':'var(--green)'}">${fmt(totPend)}<span class="grain-kpi-unit">tn</span></div>
-      <div class="grain-kpi-sub">${totPend>0?fmtPct(pctPend)+' sin cobertura confirmada':'Todo cubierto ✓'}</div>
-    </div>
-  </div>
-
-  <div style="background:var(--card);border:1px solid var(--border);border-radius:4px;padding:18px 20px;margin-bottom:28px;">
-    <div class="grain-bar-lbl"><span>Distribución del total producido</span><span>${fmt(totCos)} tn</span></div>
-    <div class="grain-bar-track" style="height:12px;border-radius:6px;">
-      <div class="grain-bar-ret" style="width:${Math.min(pctRet*100,100).toFixed(1)}%"></div>
-      <div class="grain-bar-emb" style="width:${Math.min(pctEmb*100,100).toFixed(1)}%"></div>
-      <div class="grain-bar-pend" style="width:${Math.min(pctPend*100,100).toFixed(1)}%"></div>
-    </div>
-    <div style="display:flex;gap:20px;margin-top:10px;flex-wrap:wrap;">
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);display:flex;align-items:center;gap:5px">
-        <span style="width:10px;height:10px;background:var(--brand);border-radius:2px;display:inline-block"></span>Retirado ${fmt(totRet)} tn (${fmtPct(pctRet)})</span>
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);display:flex;align-items:center;gap:5px">
-        <span style="width:10px;height:10px;background:var(--gold);border-radius:2px;display:inline-block"></span>Embolsado ${fmt(totEmb)} tn (${fmtPct(pctEmb)})</span>
-      ${totPend>0?`<span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);display:flex;align-items:center;gap:5px">
-        <span style="width:10px;height:10px;background:var(--red-lt);border:1px solid var(--red);border-radius:2px;display:inline-block"></span>Pendiente ${fmt(totPend)} tn (${fmtPct(pctPend)})</span>`:''}
-    </div>
-  </div>`;
-
-  // By cultivo
-  const byCult = {};
-  rows.forEach(r=>{
-    if(!byCult[r.act]) byCult[r.act]={cos:0,ret:0,emb:0,pend:0,comp:0,n:0};
-    const a=byCult[r.act];
-    a.cos+=r.tn_cos; a.ret+=r.tn_ret; a.emb+=r.tn_emb;
-    a.pend+=r.pendiente_neto; a.comp+=r.compensacion; a.n++;
-  });
-
-  html += `<div class="sec-title">Por cultivo</div>
-  <div class="grain-table-wrap"><table class="grain-tbl">
-    <thead><tr>
-      <th>Cultivo</th><th class="r">Campos</th>
-      <th class="r">TN producidas</th><th class="r">TN retiradas</th>
-      <th class="r">TN embolsadas</th><th class="r">Compensación</th><th class="r">Pendiente neto</th>
-    </tr></thead><tbody>`;
-
-  Object.entries(byCult).sort((a,b)=>b[1].cos-a[1].cos).forEach(([act,v])=>{
-    html += `<tr>
-      <td class="name">${act}</td><td class="r">${v.n}</td>
-      <td class="r">${fmt(v.cos)}</td>
-      <td class="r" style="color:var(--brand)">${v.ret>0?fmt(v.ret):'—'}</td>
-      <td class="r" style="color:var(--gold)">${v.emb>0?fmt(v.emb):'—'}</td>
-      <td class="r" style="color:var(--blue)">${v.comp>0?fmt(v.comp):'—'}</td>
-      <td class="r" style="color:${v.pend>0?'var(--red)':'var(--green)'};font-weight:600">${fmt(v.pend)}</td>
-    </tr>`;
-  });
-  html += `</tbody><tfoot><tr>
-    <td class="name">TOTAL</td><td class="r">${rows.length}</td>
-    <td class="r">${fmt(totCos)}</td>
-    <td class="r" style="color:var(--brand)">${fmt(totRet)}</td>
-    <td class="r" style="color:var(--gold)">${fmt(totEmb)}</td>
-    <td class="r" style="color:var(--blue)">${totComp>0?fmt(totComp):'—'}</td>
-    <td class="r" style="color:${totPend>0?'var(--red)':'var(--green)'};font-weight:700">${fmt(totPend)}</td>
-  </tr></tfoot></table></div>`;
-
-  // Detail by campo
-  html += `<div class="sec-title">Detalle por campo</div>
-  <div class="grain-table-wrap"><table class="grain-tbl">
-    <thead><tr>
-      <th>Campo</th><th>Cultivo</th><th>Zona / Localidad</th>
-      <th class="r">Part.</th>
-      <th class="r">TN producidas</th><th class="r">TN retiradas</th>
-      <th class="r">TN embolsadas</th><th class="r">Compensación</th><th class="r">Pendiente neto</th>
-    </tr></thead><tbody>`;
-
-  rows.forEach(r=>{
-    let compTxt = '—';
-    if(r.compensacion>0){
-      compTxt = `<span class="comp-badge loc">${fmt(r.compensacion)} tn<br><span style="font-size:8px">${r.loc||r.zona}</span></span>`;
-    }
-    const pendTxt = r.pendiente_neto>0
-      ? `<span style="color:var(--red);font-weight:600">${fmt(r.pendiente_neto)}</span>`
-      : `<span style="color:var(--green)">✓</span>`;
-    html += `<tr>
-      <td class="name">${r.campo}</td>
-      <td><span class="pill ${actPillCls(r.act)}">${actShort(r.act)}</span></td>
-      <td style="font-size:10px;color:var(--muted)">${r.zona}${r.loc?' · '+r.loc:''}</td>
-      <td class="r" style="font-size:10px;color:var(--muted)">${(r.pct*100).toFixed(1)}%</td>
-      <td class="r">${fmt(r.tn_cos)}</td>
-      <td class="r" style="color:var(--brand)">${r.tn_ret>0?fmt(r.tn_ret):'—'}</td>
-      <td class="r" style="color:var(--gold)">${r.tn_emb>0?fmt(r.tn_emb):'—'}</td>
-      <td class="r">${compTxt}</td>
-      <td class="r">${pendTxt}</td>
-    </tr>`;
-  });
-  html += '</tbody></table></div>';
-
-  html += `<div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);padding:4px 0 28px;line-height:1.8">
-    <strong style="color:var(--text-2)">Criterio de compensación:</strong>
-    el grano pendiente en un campo se compensa con embolsado disponible en la misma localidad; si no alcanza, con embolsado en la misma zona.
-    El embolsado es grano cosechado y asegurado en bolsa/silo, pendiente de transporte.
-  </div>`;
-
-  el.innerHTML = html;
-}
 
 function actShort(act){ return act.split(' ').map(w=>w[0]).join('').substring(0,4); }
 function actPillCls(act){
