@@ -312,7 +312,7 @@ tbody tr.detail-row.open { display:table-row; }
   <div>
     <div class="h-eyebrow">Espartina SA · Campaña 25/26</div>
     <div class="h-title" id="h-title">Informe de Cosecha & Producción</div>
-    <div class="h-sub" id="h-sub">Estado al 28/03/2026 · Todas las zonas · Actualizado 12:14</div>
+    <div class="h-sub" id="h-sub">Estado al 28/03/2026 · Todas las zonas · Actualizado 12:38</div>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
 
@@ -386,7 +386,7 @@ tbody tr.detail-row.open { display:table-row; }
     </div>
     <div class="filter-group">
       <div class="filter-lbl">Localidad</div>
-      <select id="f-loc" onchange="filterTable()">
+      <select id="f-loc" onchange="cascadeFilters('loc');filterTable()">
         <option value="">Todas</option>
       </select>
     </div>
@@ -1182,7 +1182,7 @@ function getScopedData(){
     const key = d.campo + '||' + d.act;
     const info = CURRENT_SOCIO.campos[key];
     if(!info) return;
-    const pct = info.pct;
+    const pct = typeof info === 'number' ? info : info.pct;
     result.push({
       ...d,
       sembradas:  Math.round(d.sembradas  * pct),
@@ -1208,7 +1208,7 @@ function calcGrainPosition(){
     const cosechaRow = DATA.find(d => d.campo === campo && d.act === act);
     if(!cosechaRow) return;
 
-    const pct       = info.pct;
+    const pct       = typeof info === 'number' ? info : info.pct;
     const tn_cos    = fmt1(info.tn_cos  || 0);  // already socio's TN
     const tn_ret    = fmt1(info.tn_ret  || 0);  // already socio's TN
     // Embolsado = total deposito × socio %
