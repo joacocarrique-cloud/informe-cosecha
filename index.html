@@ -220,6 +220,27 @@ tbody tr.detail-row.open { display:table-row; }
 .chip-all { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.1em; padding:5px 10px; border-radius:3px; cursor:pointer; user-select:none; border:1px solid var(--border-dk); color:var(--muted); background:transparent; transition:all .15s; }
 .chip-all:hover { color:var(--brand); border-color:var(--brand); }
 
+/* MULTI-SELECT DROPDOWN */
+.ms-dropdown { position:relative; min-width:160px; }
+.ms-trigger { background:var(--surface); border:1px solid var(--border); border-radius:3px; padding:7px 28px 7px 10px; cursor:pointer; display:flex; align-items:center; gap:4px; flex-wrap:wrap; min-height:33px; transition:border-color .15s; position:relative; }
+.ms-trigger:hover { border-color:var(--brand); }
+.ms-trigger.open { border-color:var(--brand); border-radius:3px 3px 0 0; }
+.ms-placeholder { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted); white-space:nowrap; }
+.ms-arrow { position:absolute; right:8px; top:50%; transform:translateY(-50%); font-size:10px; color:var(--muted); pointer-events:none; transition:transform .2s; }
+.ms-trigger.open .ms-arrow { transform:translateY(-50%) rotate(180deg); }
+.ms-tag { display:inline-flex; align-items:center; gap:3px; background:var(--brand); color:#fff; font-family:'IBM Plex Mono',monospace; font-size:9px; padding:2px 6px; border-radius:2px; white-space:nowrap; line-height:1.3; }
+.ms-tag-x { cursor:pointer; opacity:.7; font-size:11px; line-height:1; }
+.ms-tag-x:hover { opacity:1; }
+.ms-panel { display:none; position:absolute; top:100%; left:0; right:0; background:var(--surface); border:1px solid var(--brand); border-top:none; border-radius:0 0 3px 3px; max-height:240px; overflow-y:auto; z-index:100; box-shadow:0 4px 12px rgba(0,0,0,.1); }
+.ms-panel.open { display:block; }
+.ms-panel-search { width:100%; border:none; border-bottom:1px solid var(--border); padding:7px 10px; font-family:'IBM Plex Mono',monospace; font-size:10px; outline:none; background:var(--card-alt); }
+.ms-opt { display:flex; align-items:center; gap:8px; padding:6px 10px; cursor:pointer; transition:background .1s; font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--text-2); }
+.ms-opt:hover { background:var(--brand-lt); }
+.ms-opt input[type=checkbox] { width:13px; height:13px; accent-color:var(--brand); cursor:pointer; flex-shrink:0; margin:0; }
+.ms-opt label { cursor:pointer; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ms-clear { font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--brand); cursor:pointer; padding:5px 10px; border-top:1px solid var(--border); text-align:center; }
+.ms-clear:hover { background:var(--brand-lt); }
+
 /* UPLOAD */
 
 /* MODAL */
@@ -324,7 +345,7 @@ tbody tr.detail-row.open { display:table-row; }
   <div>
     <div class="h-eyebrow">Espartina SA · Campaña 25/26</div>
     <div class="h-title" id="h-title">Informe de Cosecha & Producción</div>
-    <div class="h-sub" id="h-sub">Estado al 30/03/2026 · Todas las zonas · Actualizado 11:21</div>
+    <div class="h-sub" id="h-sub">Estado al 30/03/2026 · Todas las zonas · Actualizado 11:49</div>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
 
@@ -380,15 +401,33 @@ tbody tr.detail-row.open { display:table-row; }
   <div class="filters" style="flex-wrap:wrap;gap:8px;align-items:flex-end">
     <div class="filter-group">
       <div class="filter-lbl">Actividad</div>
-      <div class="chip-wrap" id="f-act-chips" style="max-width:500px"></div>
+      <div class="ms-dropdown" id="ms-act">
+        <div class="ms-trigger" onclick="toggleMsDrop('ms-act')">
+          <span class="ms-placeholder">Todas</span>
+          <span class="ms-arrow">▾</span>
+        </div>
+        <div class="ms-panel" id="ms-act-panel"></div>
+      </div>
     </div>
     <div class="filter-group">
       <div class="filter-lbl">Zona</div>
-      <div class="chip-wrap" id="f-zona-chips" style="max-width:600px"></div>
+      <div class="ms-dropdown" id="ms-zona">
+        <div class="ms-trigger" onclick="toggleMsDrop('ms-zona')">
+          <span class="ms-placeholder">Todas</span>
+          <span class="ms-arrow">▾</span>
+        </div>
+        <div class="ms-panel" id="ms-zona-panel"></div>
+      </div>
     </div>
     <div class="filter-group">
       <div class="filter-lbl">Localidad</div>
-      <div class="chip-wrap" id="f-loc-chips" style="max-width:600px"></div>
+      <div class="ms-dropdown" id="ms-loc">
+        <div class="ms-trigger" onclick="toggleMsDrop('ms-loc')">
+          <span class="ms-placeholder">Todas</span>
+          <span class="ms-arrow">▾</span>
+        </div>
+        <div class="ms-panel" id="ms-loc-panel"></div>
+      </div>
     </div>
     <div class="filter-group">
       <div class="filter-lbl">Buscar campo</div>
@@ -1504,74 +1543,147 @@ function cascadeRetiros(changed){
   }
 }
 
-// ── CHIP-BASED MULTI-SELECT FILTERS FOR DETALLE ──────────────
+// ── MULTI-SELECT DROPDOWN FILTERS FOR DETALLE ──────────────
 
-function getChipSelection(wrapperId){
-  const chips = document.querySelectorAll(`#${wrapperId} .chip.active`);
-  return chips.length ? [...chips].map(c=>c.dataset.val) : [];
+const msState = { 'ms-act':[], 'ms-zona':[], 'ms-loc':[] };
+
+function toggleMsDrop(id){
+  const panel = document.getElementById(id+'-panel');
+  const trigger = document.querySelector(`#${id} .ms-trigger`);
+  const isOpen = panel.classList.contains('open');
+  // Close all others
+  document.querySelectorAll('.ms-panel.open').forEach(p=>p.classList.remove('open'));
+  document.querySelectorAll('.ms-trigger.open').forEach(t=>t.classList.remove('open'));
+  if(!isOpen){
+    panel.classList.add('open');
+    trigger.classList.add('open');
+    const search = panel.querySelector('.ms-panel-search');
+    if(search){ search.value=''; filterMsOptions(id,''); search.focus(); }
+  }
 }
 
-function toggleFilterChip(wrapperId, val){
-  const chips = document.querySelectorAll(`#${wrapperId} .chip`);
-  chips.forEach(c=>{ if(c.dataset.val===val) c.classList.toggle('active'); });
-  cascadeFilters(wrapperId);
+// Close dropdowns when clicking outside
+document.addEventListener('click', e=>{
+  if(!e.target.closest('.ms-dropdown')){
+    document.querySelectorAll('.ms-panel.open').forEach(p=>p.classList.remove('open'));
+    document.querySelectorAll('.ms-trigger.open').forEach(t=>t.classList.remove('open'));
+  }
+});
+
+function getMsSelection(id){ return msState[id]||[]; }
+
+function filterMsOptions(id, search){
+  const panel = document.getElementById(id+'-panel');
+  const s = search.toLowerCase();
+  panel.querySelectorAll('.ms-opt').forEach(opt=>{
+    const lbl = opt.querySelector('label').textContent.toLowerCase();
+    opt.style.display = (!s || lbl.includes(s)) ? '' : 'none';
+  });
+}
+
+function toggleMsOption(id, val){
+  const sel = msState[id];
+  const idx = sel.indexOf(val);
+  if(idx>=0) sel.splice(idx,1); else sel.push(val);
+  updateMsTrigger(id);
+  cascadeFilters(id);
   filterTable();
 }
 
-function buildFilterChips(wrapperId, values, prevSelected){
-  const wrap = document.getElementById(wrapperId);
-  if(!wrap) return;
-  const selSet = new Set(prevSelected||[]);
-  wrap.innerHTML = values.map((v,i)=>
-    `<span class="chip${selSet.has(v)?' active':''}" data-val="${v.replace(/"/g,'&quot;')}" data-wrap="${wrapperId}">${v}</span>`
-  ).join('');
-  // Attach click handlers
-  wrap.querySelectorAll('.chip').forEach(chip=>{
-    chip.onclick = function(){ toggleFilterChip(this.dataset.wrap, this.dataset.val); };
+function removeMsTag(id, val, e){
+  e.stopPropagation();
+  const sel = msState[id];
+  const idx = sel.indexOf(val);
+  if(idx>=0) sel.splice(idx,1);
+  updateMsTrigger(id);
+  // Also uncheck in panel
+  const panel = document.getElementById(id+'-panel');
+  panel.querySelectorAll('.ms-opt input').forEach(cb=>{
+    if(cb.dataset.val===val) cb.checked=false;
   });
+  cascadeFilters(id);
+  filterTable();
+}
+
+function clearMsSelection(id){
+  msState[id] = [];
+  updateMsTrigger(id);
+  const panel = document.getElementById(id+'-panel');
+  panel.querySelectorAll('.ms-opt input').forEach(cb=>cb.checked=false);
+  cascadeFilters(id);
+  filterTable();
+}
+
+function updateMsTrigger(id){
+  const trigger = document.querySelector(`#${id} .ms-trigger`);
+  const sel = msState[id];
+  if(!sel.length){
+    trigger.innerHTML = `<span class="ms-placeholder">Todas</span><span class="ms-arrow">▾</span>`;
+  } else {
+    const tags = sel.map(v=>`<span class="ms-tag">${v}<span class="ms-tag-x" onclick="removeMsTag('${id}','${v.replace(/'/g,"\\'")}',event)">×</span></span>`).join('');
+    trigger.innerHTML = tags + `<span class="ms-arrow">▾</span>`;
+  }
+}
+
+function buildMsOptions(id, values, selected){
+  const panel = document.getElementById(id+'-panel');
+  const selSet = new Set(selected||[]);
+  // Update msState to only keep valid selections
+  msState[id] = (msState[id]||[]).filter(v=>values.includes(v));
+
+  const showSearch = values.length > 8;
+  panel.innerHTML =
+    (showSearch ? `<input class="ms-panel-search" type="text" placeholder="Buscar…" oninput="filterMsOptions('${id}',this.value)">` : '') +
+    values.map(v=>{
+      const checked = selSet.has(v) ? 'checked' : '';
+      return `<div class="ms-opt" onclick="event.preventDefault();this.querySelector('input').checked=!this.querySelector('input').checked;toggleMsOption('${id}','${v.replace(/'/g,"\\'")}')">
+        <input type="checkbox" data-val="${v.replace(/"/g,'&quot;')}" ${checked}>
+        <label>${v}</label>
+      </div>`;
+    }).join('') +
+    (values.length > 3 ? `<div class="ms-clear" onclick="event.stopPropagation();clearMsSelection('${id}')">Limpiar selección</div>` : '');
+
+  updateMsTrigger(id);
 }
 
 function cascadeFilters(changed){
   const data     = getScopedData();
-  const selActs  = getChipSelection('f-act-chips');
-  const selZonas = getChipSelection('f-zona-chips');
-  const selLocs  = getChipSelection('f-loc-chips');
+  const selActs  = getMsSelection('ms-act');
+  const selZonas = getMsSelection('ms-zona');
+  const selLocs  = getMsSelection('ms-loc');
 
-  // Act chips: show acts compatible with selected zona+loc
-  if(changed !== 'f-act-chips'){
+  if(changed !== 'ms-act'){
     const scope = data.filter(d=>
       (selZonas.length===0 || selZonas.includes(d.zona)) &&
       (selLocs.length===0  || selLocs.includes(d.loc))
     );
     const acts = [...new Set(scope.map(d=>d.act))].sort();
-    buildFilterChips('f-act-chips', acts, selActs.filter(a=>acts.includes(a)));
+    buildMsOptions('ms-act', acts, selActs.filter(a=>acts.includes(a)));
   }
 
-  // Zona chips: show zonas compatible with selected act+loc
-  if(changed !== 'f-zona-chips'){
+  if(changed !== 'ms-zona'){
     const scope = data.filter(d=>
       (selActs.length===0 || selActs.includes(d.act)) &&
       (selLocs.length===0 || selLocs.includes(d.loc))
     );
     const zonas = [...new Set(scope.map(d=>d.zona))].sort();
-    buildFilterChips('f-zona-chips', zonas, selZonas.filter(z=>zonas.includes(z)));
+    buildMsOptions('ms-zona', zonas, selZonas.filter(z=>zonas.includes(z)));
   }
 
-  // Loc chips: show locs compatible with selected act+zona
-  if(changed !== 'f-loc-chips'){
+  if(changed !== 'ms-loc'){
     const scope = data.filter(d=>
       (selActs.length===0  || selActs.includes(d.act)) &&
       (selZonas.length===0 || selZonas.includes(d.zona))
     );
     const locs = [...new Set(scope.map(d=>d.loc).filter(Boolean))].sort();
-    buildFilterChips('f-loc-chips', locs, selLocs.filter(l=>locs.includes(l)));
+    buildMsOptions('ms-loc', locs, selLocs.filter(l=>locs.includes(l)));
   }
 }
 
 function filterTable(){
-  const selActs  = getChipSelection('f-act-chips');
-  const selZonas = getChipSelection('f-zona-chips');
-  const selLocs  = getChipSelection('f-loc-chips');
+  const selActs  = getMsSelection('ms-act');
+  const selZonas = getMsSelection('ms-zona');
+  const selLocs  = getMsSelection('ms-loc');
   const search  = document.getElementById('f-search').value.toLowerCase();
   const soloC   = document.getElementById('f-cosecha').checked;
   const sortVal = document.getElementById('f-sort').value;
@@ -1741,8 +1853,8 @@ function togglePanel(){
 function buildAnalysis(filtered){
   if(!panelOpen) return;
 
-  const selActs  = getChipSelection('f-act-chips');
-  const selZonas = getChipSelection('f-zona-chips');
+  const selActs  = getMsSelection('ms-act');
+  const selZonas = getMsSelection('ms-zona');
   const contextLabel = selZonas.length ? selZonas.join(', ') : (selActs.length ? selActs.join(', ') : 'Todos los campos');
   document.getElementById('ap-context').textContent = contextLabel;
 
@@ -2951,13 +3063,13 @@ function refreshResumenZonas(acts){
 // Init
 document.addEventListener('DOMContentLoaded', () => {
   buildActChips([...new Set(DATA.map(d=>d.act))].sort());
-  // Initialize chip-based filter dropdowns with full data
+  // Initialize multi-select dropdown filters
   const allActs  = [...new Set(DATA.map(d=>d.act))].sort();
   const allZonas = [...new Set(DATA.map(d=>d.zona))].sort();
   const allLocs  = [...new Set(DATA.map(d=>d.loc).filter(Boolean))].sort();
-  buildFilterChips('f-act-chips', allActs, []);
-  buildFilterChips('f-zona-chips', allZonas, []);
-  buildFilterChips('f-loc-chips', allLocs, []);
+  buildMsOptions('ms-act', allActs, []);
+  buildMsOptions('ms-zona', allZonas, []);
+  buildMsOptions('ms-loc', allLocs, []);
   renderResumen();
   filterTable();
 });
