@@ -313,15 +313,15 @@ tbody tr.detail-row.open { display:table-row; }
 .esc-body { padding:20px; }
 .esc-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:18px; }
 .esc-col { text-align:center; padding:16px 12px; border-radius:4px; border:1px solid var(--border); position:relative; }
-.esc-col.base { background:var(--card-alt); border-color:var(--border-dk); }
 .esc-col.pesi { background:var(--red-lt); border-color:var(--red); }
 .esc-col.opti { background:var(--green-lt); border-color:var(--green); }
 .esc-col.ppto { background:var(--gold-lt); border-color:var(--gold); }
+.esc-col.real { background:#eef3fb; border-color:var(--blue); border-width:2px; }
 .esc-tag { font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.14em; text-transform:uppercase; margin-bottom:8px; }
 .esc-col.ppto .esc-tag { color:var(--gold); }
 .esc-col.pesi .esc-tag { color:var(--red); }
-.esc-col.base .esc-tag { color:var(--text-2); }
 .esc-col.opti .esc-tag { color:var(--green); }
+.esc-col.real .esc-tag { color:var(--blue); font-weight:600; }
 .esc-val { font-family:'Playfair Display',serif; font-size:26px; font-weight:700; line-height:1.1; margin-bottom:4px; }
 .esc-unit { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); }
 .esc-detail { font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted); margin-top:8px; line-height:1.6; }
@@ -377,7 +377,7 @@ tbody tr.detail-row.open { display:table-row; }
   <div>
     <div class="h-eyebrow">Espartina SA · Campaña 25/26</div>
     <div class="h-title" id="h-title">Informe de Cosecha & Producción</div>
-    <div class="h-sub" id="h-sub">Estado al 30/03/2026 · Todas las zonas · Actualizado 12:09</div>
+    <div class="h-sub" id="h-sub">Estado al 30/03/2026 · Todas las zonas · Actualizado 14:08</div>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
 
@@ -2894,9 +2894,8 @@ function buildEscenarios(scope, acts){
   const totSembr = S(scope,'sembradas');
   const totCos   = S(scope,'cosechadas');
   const totPerd  = S(scope,'perdidas');
-  const totPend  = totSembr - totCos - totPerd; // has pendientes de cosecha
+  const totPend  = totSembr - totCos - totPerd;
 
-  // Necesitamos campos con cosecha para tener rinde actual
   const conCos = scope.filter(d=>d.cosechadas>0 && d.actual>0);
   if(!conCos.length || totPend<=0){
     section.style.display='none';
@@ -2906,30 +2905,13 @@ function buildEscenarios(scope, acts){
 
   const avPct = totSembr>0 ? totCos/totSembr*100 : 0;
 
-  // ── Producción ya definida (cosechado + perdido) ──
-  // TN cosechadas = Σ(cosechadas × actual / 1000)
+  // ── Producción ya cosechada (fija en todos los escenarios) ──
   const tnCosechadas = scope.reduce((a,d)=> a + (d.cosechadas>0 ? d.cosechadas * d.actual / 1000 : 0), 0);
 
-  // ── Producción presupuestada total ──
-  // TN ppto = Σ((sembradas - perdidas) × ppto / 1000)
+  // ── Presupuesto: (has sembradas - perdidas) × rinde presupuestado ──
   const tnPpto = scope.reduce((a,d)=> a + ((d.sembradas - d.perdidas) * d.ppto / 1000), 0);
 
-  // ── Lo pendiente: has sin cosechar con sus distintos rindes ──
-  // Para cada campo pendiente, calculamos la producción bajo cada escenario
-
-  // Rinde actual ponderado global (de lo cosechado)
-  const wRindeActual = totCos>0 ? scope.reduce((a,d)=>a+d.actual*d.cosechadas,0)/totCos : 0;
-
-  // Caso base: usa el rinde final estimado para lo pendiente (ya incorpora estimaciones)
-  // TN base = tnCosechadas + Σ(has_pend_campo × final / 1000) para campos con pendiente
-  const tnBase = tnCosechadas + scope.reduce((a,d)=>{
-    const hasPend = d.sembradas - d.cosechadas - d.perdidas;
-    if(hasPend<=0) return a;
-    return a + hasPend * d.final / 1000;
-  }, 0);
-
-  // Caso pesimista: lo pendiente rinde como el actual de cada zona/act
-  // Si el campo ya tiene cosecha, usa su actual; si no, usa el promedio de su zona+act
+  // ── Rinde actual ponderado por zona||act (para campos sin cosecha propia) ──
   const zonaActRinde = {};
   conCos.forEach(d=>{
     const key = d.zona+'||'+d.act;
@@ -2937,49 +2919,60 @@ function buildEscenarios(scope, acts){
     zonaActRinde[key].sum += d.actual*d.cosechadas;
     zonaActRinde[key].has += d.cosechadas;
   });
+  const wRindeActual = totCos>0 ? scope.reduce((a,d)=>a+d.actual*d.cosechadas,0)/totCos : 0;
 
+  // Helper: rinde actual del campo, o de su zona/act, o global
+  function rindeActualCampo(d){
+    if(d.cosechadas>0 && d.actual>0) return d.actual;
+    const key = d.zona+'||'+d.act;
+    const za = zonaActRinde[key];
+    return (za && za.has>0) ? za.sum/za.has : wRindeActual;
+  }
+
+  // ── REAL PROYECTADO: extrapola el rinde actual tal cual viene ──
+  // Campos con cosecha → actual para lo pendiente
+  // Campos en cosecha pero sin datos → promedio zona/act
+  // Campos sin arrancar → estimado final (no hay dato real)
+  const tnReal = tnCosechadas + scope.reduce((a,d)=>{
+    const hasPend = d.sembradas - d.cosechadas - d.perdidas;
+    if(hasPend<=0) return a;
+    const rActual = rindeActualCampo(d);
+    // Si el campo tiene cosecha propia o hay datos de su zona/act → usa actual
+    // Si no hay datos de su zona/act → usa estimado final
+    const hasData = (d.cosechadas>0 && d.actual>0) || zonaActRinde[d.zona+'||'+d.act];
+    const rinde = hasData ? rActual : d.final;
+    return a + hasPend * rinde / 1000;
+  }, 0);
+
+  // ── PESIMISTA: min(actual, estimado) → donde va mal, extrapola; donde va bien, no asume que siga ──
   const tnPesi = tnCosechadas + scope.reduce((a,d)=>{
     const hasPend = d.sembradas - d.cosechadas - d.perdidas;
     if(hasPend<=0) return a;
-    // Rinde pesimista: actual del campo, o promedio zona/act, o promedio global
-    let rindePesi;
-    if(d.cosechadas>0 && d.actual>0){
-      rindePesi = d.actual;
-    } else {
-      const key = d.zona+'||'+d.act;
-      const za = zonaActRinde[key];
-      rindePesi = (za && za.has>0) ? za.sum/za.has : wRindeActual;
-    }
-    return a + hasPend * rindePesi / 1000;
+    const rActual = rindeActualCampo(d);
+    const hasData = (d.cosechadas>0 && d.actual>0) || zonaActRinde[d.zona+'||'+d.act];
+    const rinde = hasData ? Math.min(rActual, d.final) : d.final;
+    return a + hasPend * rinde / 1000;
   }, 0);
 
-  // Caso optimista: lo pendiente rinde como el actual SOLO donde actual > final
-  // (donde va mejor de lo esperado), y el final donde el actual es peor
+  // ── OPTIMISTA: max(actual, estimado) → donde va bien, extrapola; donde va mal, no asume que siga ──
   const tnOpti = tnCosechadas + scope.reduce((a,d)=>{
     const hasPend = d.sembradas - d.cosechadas - d.perdidas;
     if(hasPend<=0) return a;
-    let rindeOpti;
-    if(d.cosechadas>0 && d.actual>0){
-      rindeOpti = Math.max(d.actual, d.final); // toma el mejor
-    } else {
-      const key = d.zona+'||'+d.act;
-      const za = zonaActRinde[key];
-      const rindeZona = (za && za.has>0) ? za.sum/za.has : wRindeActual;
-      rindeOpti = Math.max(rindeZona, d.final);
-    }
-    return a + hasPend * rindeOpti / 1000;
+    const rActual = rindeActualCampo(d);
+    const hasData = (d.cosechadas>0 && d.actual>0) || zonaActRinde[d.zona+'||'+d.act];
+    const rinde = hasData ? Math.max(rActual, d.final) : d.final;
+    return a + hasPend * rinde / 1000;
   }, 0);
 
   // Diffs vs presupuesto
-  const diffBase = tnBase - tnPpto;
+  const diffReal = tnReal - tnPpto;
   const diffPesi = tnPesi - tnPpto;
   const diffOpti = tnOpti - tnPpto;
-  const pctBase = tnPpto>0 ? (diffBase/tnPpto*100) : 0;
+  const pctReal = tnPpto>0 ? (diffReal/tnPpto*100) : 0;
   const pctPesi = tnPpto>0 ? (diffPesi/tnPpto*100) : 0;
   const pctOpti = tnPpto>0 ? (diffOpti/tnPpto*100) : 0;
 
-  // Max for bar scaling
-  const maxTn = Math.max(tnPpto, tnBase, tnPesi, tnOpti);
+  const maxTn = Math.max(tnPpto, tnPesi, tnOpti, tnReal);
   const barPct = n => (maxTn>0 ? n/maxTn*100 : 0).toFixed(1);
 
   const fmtDiff = (diff, pct) => {
@@ -2990,6 +2983,14 @@ function buildEscenarios(scope, acts){
 
   const actLabel = acts.length===1 ? acts[0] : acts.length<=3 ? acts.join(' + ') : `${acts.length} cultivos`;
 
+  // Count campos sin datos de zona/act (usan estimado en Real)
+  const sinDatoReal = scope.filter(d=>{
+    const hasPend = d.sembradas-d.cosechadas-d.perdidas;
+    if(hasPend<=0) return false;
+    return !(d.cosechadas>0 && d.actual>0) && !zonaActRinde[d.zona+'||'+d.act];
+  });
+  const hasSinDato = sinDatoReal.reduce((a,d)=>a+d.sembradas,0);
+
   el.innerHTML = `
     <div class="esc-card">
       <div class="esc-header">
@@ -2997,104 +2998,128 @@ function buildEscenarios(scope, acts){
         <div class="esc-header-sub">${fmt(totCos)} ha cosechadas (${avPct.toFixed(0)}%) · ${fmt(totPend)} ha pendientes</div>
       </div>
       <div class="esc-body">
-        <div class="esc-grid">
-          <div class="esc-col ppto">
-            <div class="esc-tag">Presupuesto</div>
-            <div class="esc-val" style="color:var(--gold)">${fmt(tnPpto)}</div>
-            <div class="esc-unit">toneladas</div>
-            <div class="esc-detail">Has × Rinde ppto<br>${fmt(totSembr-totPerd)} ha productivas</div>
-          </div>
+        <div class="esc-grid" style="grid-template-columns:repeat(4,1fr)">
           <div class="esc-col pesi">
             <div class="esc-tag">Pesimista</div>
             <div class="esc-val" style="color:var(--red)">${fmt(tnPesi)}</div>
             <div class="esc-unit">toneladas</div>
-            <div class="esc-detail">Pendiente rinde<br>como lo cosechado</div>
+            <div class="esc-detail">Donde va mal, extrapola.<br>Donde va bien, no asume.</div>
             ${fmtDiff(diffPesi, pctPesi)}
           </div>
-          <div class="esc-col base">
-            <div class="esc-tag">Caso base</div>
-            <div class="esc-val" style="color:var(--text)">${fmt(tnBase)}</div>
+          <div class="esc-col ppto">
+            <div class="esc-tag">Presupuesto</div>
+            <div class="esc-val" style="color:var(--gold)">${fmt(tnPpto)}</div>
             <div class="esc-unit">toneladas</div>
-            <div class="esc-detail">Pendiente rinde<br>según estimado final</div>
-            ${fmtDiff(diffBase, pctBase)}
+            <div class="esc-detail">(Has sembradas − perdidas)<br>× rinde presupuestado</div>
+          </div>
+          <div class="esc-col real">
+            <div class="esc-tag">Real proyectado</div>
+            <div class="esc-val" style="color:var(--blue)">${fmt(tnReal)}</div>
+            <div class="esc-unit">toneladas</div>
+            <div class="esc-detail">Extrapola rinde actual<br>tal cual viene</div>
+            ${fmtDiff(diffReal, pctReal)}
           </div>
           <div class="esc-col opti">
             <div class="esc-tag">Optimista</div>
             <div class="esc-val" style="color:var(--green)">${fmt(tnOpti)}</div>
             <div class="esc-unit">toneladas</div>
-            <div class="esc-detail">Pendiente el mejor<br>entre actual y estimado</div>
+            <div class="esc-detail">Donde va bien, extrapola.<br>Donde va mal, no asume.</div>
             ${fmtDiff(diffOpti, pctOpti)}
           </div>
         </div>
 
         <div class="esc-bar-section">
           <div class="esc-bar-row">
-            <div class="esc-bar-lbl">Presupuesto</div>
-            <div class="esc-bar-track"><div class="esc-bar-fill" style="width:${barPct(tnPpto)}%;background:var(--gold)"></div></div>
-            <div class="esc-bar-val">${fmt(tnPpto)} tn</div>
-          </div>
-          <div class="esc-bar-row">
-            <div class="esc-bar-lbl">Pesimista</div>
+            <div class="esc-bar-lbl" style="color:var(--red)">Pesimista</div>
             <div class="esc-bar-track"><div class="esc-bar-fill" style="width:${barPct(tnPesi)}%;background:var(--red)"></div></div>
             <div class="esc-bar-val">${fmt(tnPesi)} tn</div>
           </div>
           <div class="esc-bar-row">
-            <div class="esc-bar-lbl">Caso base</div>
-            <div class="esc-bar-track"><div class="esc-bar-fill" style="width:${barPct(tnBase)}%;background:var(--brand)"></div></div>
-            <div class="esc-bar-val">${fmt(tnBase)} tn</div>
+            <div class="esc-bar-lbl" style="color:var(--gold)">Presupuesto</div>
+            <div class="esc-bar-track"><div class="esc-bar-fill" style="width:${barPct(tnPpto)}%;background:var(--gold)"></div></div>
+            <div class="esc-bar-val">${fmt(tnPpto)} tn</div>
           </div>
           <div class="esc-bar-row">
-            <div class="esc-bar-lbl">Optimista</div>
+            <div class="esc-bar-lbl" style="color:var(--blue);font-weight:600">Real proy.</div>
+            <div class="esc-bar-track"><div class="esc-bar-fill" style="width:${barPct(tnReal)}%;background:var(--blue)"></div></div>
+            <div class="esc-bar-val" style="font-weight:600">${fmt(tnReal)} tn</div>
+          </div>
+          <div class="esc-bar-row">
+            <div class="esc-bar-lbl" style="color:var(--green)">Optimista</div>
             <div class="esc-bar-track"><div class="esc-bar-fill" style="width:${barPct(tnOpti)}%;background:var(--green)"></div></div>
             <div class="esc-bar-val">${fmt(tnOpti)} tn</div>
           </div>
         </div>
 
         <div class="esc-note">
-          <strong>Metodología:</strong> La producción ya cosechada (${fmt(tnCosechadas)} tn en ${fmt(totCos)} ha) es fija en todos los escenarios.
+          <strong>Metodología:</strong> La producción ya cosechada (<strong>${fmt(tnCosechadas)} tn</strong> en ${fmt(totCos)} ha) es fija en todos los escenarios.
           La diferencia está en las <strong>${fmt(totPend)} ha pendientes</strong>:<br>
-          · <strong>Pesimista</strong> — asume que lo pendiente rinde igual que lo cosechado hasta ahora (rinde actual por zona/cultivo).<br>
-          · <strong>Caso base</strong> — usa los rindes finales estimados cargados en cada campo.<br>
-          · <strong>Optimista</strong> — toma el mayor entre el rinde actual y el estimado final (donde va bien, extrapola; donde no, mantiene estimado).
+          · <strong>Pesimista</strong> — para cada campo toma el <em>menor</em> entre rinde actual y estimado. Donde va mal, asume que sigue mal.<br>
+          · <strong>Presupuesto</strong> — (has sembradas − perdidas) × rinde presupuestado.<br>
+          · <strong>Real proyectado</strong> — extrapola el rinde actual de cada campo (o su zona/cultivo si no arrancó). Es lo que proyecta la campaña si los rindes se mantienen como vienen.${hasSinDato>0?` <em>${fmt(hasSinDato)} ha sin dato de zona, usan estimado.</em>`:''}<br>
+          · <strong>Optimista</strong> — para cada campo toma el <em>mayor</em> entre rinde actual y estimado. Donde va bien, asume que sigue bien.
         </div>
       </div>
     </div>`;
 
   // Per-act breakdown if multiple acts
   if(acts.length>1){
-    let actRows = '';
-    acts.forEach(act=>{
-      const sub = scope.filter(d=>d.act===act);
-      if(!sub.length) return;
+    const calcActEsc = (sub) => {
       const sSembr = S(sub,'sembradas');
       const sCos   = S(sub,'cosechadas');
       const sPerd  = S(sub,'perdidas');
       const sPend  = sSembr - sCos - sPerd;
-      if(sPend<=0) return;
+      if(sPend<=0) return null;
       const sConCos = sub.filter(d=>d.cosechadas>0 && d.actual>0);
-      if(!sConCos.length) return;
+      if(!sConCos.length) return null;
 
       const sTnCos = sub.reduce((a,d)=>a+(d.cosechadas>0?d.cosechadas*d.actual/1000:0),0);
       const sTnPpto = sub.reduce((a,d)=>a+((d.sembradas-d.perdidas)*d.ppto/1000),0);
-      const sTnBase = sTnCos + sub.reduce((a,d)=>{const hp=d.sembradas-d.cosechadas-d.perdidas; return hp>0?a+hp*d.final/1000:a;},0);
-      const wRA = sCos>0 ? sub.reduce((a,d)=>a+d.actual*d.cosechadas,0)/sCos : 0;
-      const sTnPesi = sTnCos + sub.reduce((a,d)=>{
+
+      const sTnReal = sTnCos + sub.reduce((a,d)=>{
         const hp=d.sembradas-d.cosechadas-d.perdidas; if(hp<=0)return a;
-        const r = (d.cosechadas>0&&d.actual>0)?d.actual:wRA;
-        return a+hp*r/1000;
+        const rA = rindeActualCampo(d);
+        const hasData = (d.cosechadas>0&&d.actual>0)||zonaActRinde[d.zona+'||'+d.act];
+        return a+hp*(hasData?rA:d.final)/1000;
       },0);
 
-      const dBase = sTnBase-sTnPpto; const dPesi = sTnPesi-sTnPpto;
-      const pBase = sTnPpto>0?(dBase/sTnPpto*100):0;
-      const pPesi = sTnPpto>0?(dPesi/sTnPpto*100):0;
+      const sTnPesi = sTnCos + sub.reduce((a,d)=>{
+        const hp=d.sembradas-d.cosechadas-d.perdidas; if(hp<=0)return a;
+        const rA = rindeActualCampo(d);
+        const hasData = (d.cosechadas>0&&d.actual>0)||zonaActRinde[d.zona+'||'+d.act];
+        return a+hp*(hasData?Math.min(rA,d.final):d.final)/1000;
+      },0);
+
+      const sTnOpti = sTnCos + sub.reduce((a,d)=>{
+        const hp=d.sembradas-d.cosechadas-d.perdidas; if(hp<=0)return a;
+        const rA = rindeActualCampo(d);
+        const hasData = (d.cosechadas>0&&d.actual>0)||zonaActRinde[d.zona+'||'+d.act];
+        return a+hp*(hasData?Math.max(rA,d.final):d.final)/1000;
+      },0);
+
+      return {sPend, sTnPpto, sTnReal, sTnPesi, sTnOpti};
+    };
+
+    let actRows = '';
+    acts.forEach(act=>{
+      const sub = scope.filter(d=>d.act===act);
+      if(!sub.length) return;
+      const r = calcActEsc(sub);
+      if(!r) return;
+
+      const dPesi = r.sTnPesi-r.sTnPpto; const pPesi = r.sTnPpto>0?(dPesi/r.sTnPpto*100):0;
+      const dReal = r.sTnReal-r.sTnPpto; const pReal = r.sTnPpto>0?(dReal/r.sTnPpto*100):0;
+      const dOpti = r.sTnOpti-r.sTnPpto; const pOpti = r.sTnPpto>0?(dOpti/r.sTnPpto*100):0;
       const actCls = act==='GI OLEICO'?'gld':act==='GIRASOL'?'blu':act.startsWith('MAIZ')?'pos':act==='TRIGO'||act==='CEBADA'?'neg':'neu';
+      const fmtD = (v,d,p)=>`${fmt(v)} <span style="font-size:9px;color:${d>=0?'var(--green)':'var(--red)'}">${d>=0?'+':''}${p.toFixed(1)}%</span>`;
 
       actRows += `<tr>
         <td class="name"><span class="pill ${actCls}" style="font-size:9px">${act}</span></td>
-        <td class="r">${fmt(sTnPpto)}</td>
-        <td class="r" style="color:var(--red)">${fmt(sTnPesi)} <span style="font-size:9px;color:${dPesi>=0?'var(--green)':'var(--red)'}">${dPesi>=0?'+':''}${pPesi.toFixed(1)}%</span></td>
-        <td class="r">${fmt(sTnBase)} <span style="font-size:9px;color:${dBase>=0?'var(--green)':'var(--red)'}">${dBase>=0?'+':''}${pBase.toFixed(1)}%</span></td>
-        <td class="r">${fmt(sPend)} ha</td>
+        <td class="r">${fmt(r.sTnPpto)}</td>
+        <td class="r">${fmtD(r.sTnPesi,dPesi,pPesi)}</td>
+        <td class="r" style="font-weight:600">${fmtD(r.sTnReal,dReal,pReal)}</td>
+        <td class="r">${fmtD(r.sTnOpti,dOpti,pOpti)}</td>
+        <td class="r">${fmt(r.sPend)} ha</td>
       </tr>`;
     });
 
@@ -3105,9 +3130,10 @@ function buildEscenarios(scope, acts){
             <thead><tr>
               <th>Cultivo</th>
               <th class="r">TN Ppto</th>
-              <th class="r">TN Pesimista</th>
-              <th class="r">TN Caso Base</th>
-              <th class="r">Has Pendientes</th>
+              <th class="r">Pesimista</th>
+              <th class="r">Real Proy.</th>
+              <th class="r">Optimista</th>
+              <th class="r">Has Pend.</th>
             </tr></thead>
             <tbody>${actRows}</tbody>
           </table>
