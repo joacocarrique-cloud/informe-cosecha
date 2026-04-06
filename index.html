@@ -378,7 +378,7 @@ tbody tr.detail-row.open { display:table-row; }
   <div>
     <div class="h-eyebrow">Espartina SA · Campaña 25/26</div>
     <div class="h-title" id="h-title">Informe de Cosecha & Producción</div>
-    <div class="h-sub" id="h-sub">Estado al 06/04/2026 · Todas las zonas · Actualizado 10:44</div>
+    <div class="h-sub" id="h-sub">Estado al 06/04/2026 · Todas las zonas · Actualizado 10:55</div>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
     <button id="export-btn" onclick="exportarExcel()" style="display:none;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;padding:7px 14px;border-radius:3px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">
@@ -448,10 +448,7 @@ tbody tr.detail-row.open { display:table-row; }
         <div id="chart-dist-cultivo"></div>
       </div>
     </div>
-    <div class="card" style="padding:18px;margin-top:16px">
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:12px">Ranking de Campos — Top 5 Mejor y Peor Desvío</div>
-      <div id="chart-ranking" style="display:grid;grid-template-columns:1fr 1fr;gap:16px"></div>
-    </div>
+
   </div>
 </div>
 
@@ -1977,6 +1974,7 @@ function renderResumen(){
 
   // --- COMENTARIOS DINÁMICOS ---
   buildComents(scope, acts);
+  renderCharts(scope, acts);
 }
 
 // ===== ESCENARIOS DE PRODUCCIÓN =====
@@ -2594,57 +2592,6 @@ function renderCharts(scope, acts){
     el2.appendChild(legend);
   }
 
-  // ── CHART 3: Ranking top/bottom 5 por desvío ─────────────────────────
-  const elR = document.getElementById('chart-ranking');
-  if(!elR) return;
-
-  const withDesvio = scope
-    .filter(d=>d.cosechadas>0 && d.ppto>0)
-    .map(d=>({
-      campo: d.campo,
-      act:   d.act,
-      zona:  d.zona,
-      ppto:  d.ppto,
-      final: d.final,
-      desvio: d.ppto>0 ? (d.final-d.ppto)/d.ppto*100 : 0
-    }))
-    .sort((a,b)=>b.desvio-a.desvio);
-
-  if(withDesvio.length===0){ elR.innerHTML='<div style="color:var(--muted);font-size:11px;grid-column:span 2">Sin datos de cosecha suficientes</div>'; return; }
-
-  const top5    = withDesvio.slice(0,5);
-  const bottom5 = [...withDesvio].reverse().slice(0,5);
-
-  const makeRankList = (items, isTop) => {
-    const maxAbs = Math.max(...items.map(d=>Math.abs(d.desvio)),1);
-    return items.map((d,i)=>{
-      const bw = Math.abs(d.desvio)/maxAbs*100;
-      const col = isTop ? 'var(--green)' : 'var(--red)';
-      const sign = d.desvio>=0?'+':'';
-      const name = d.campo.length>20 ? d.campo.substring(0,19)+'…' : d.campo;
-      return `<div style="margin-bottom:8px">
-        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px">
-          <span style="font-size:11px;color:var(--text)">${i+1}. ${name}</span>
-          <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:${col};font-weight:600">${sign}${d.desvio.toFixed(1)}%</span>
-        </div>
-        <div style="font-size:9px;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-bottom:4px">${d.act} · ${d.zona}</div>
-        <div style="height:6px;background:var(--border);border-radius:3px">
-          <div style="height:6px;width:${bw}%;background:${col};border-radius:3px;opacity:.8"></div>
-        </div>
-        <div style="font-size:9px;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-top:2px">Ppto: ${Math.round(d.ppto).toLocaleString('es-AR')} → Final: ${Math.round(d.final).toLocaleString('es-AR')} kg/ha</div>
-      </div>`;
-    }).join('');
-  };
-
-  elR.innerHTML = `
-    <div>
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px">✅ Top 5 Mejor Desvío</div>
-      ${makeRankList(top5, true)}
-    </div>
-    <div>
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--red);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px">⚠️ Top 5 Peor Desvío</div>
-      ${makeRankList(bottom5, false)}
-    </div>`;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
