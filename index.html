@@ -349,6 +349,7 @@ tbody tr.detail-row.open { display:table-row; }
 
 </style>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -377,10 +378,12 @@ tbody tr.detail-row.open { display:table-row; }
   <div>
     <div class="h-eyebrow">Espartina SA · Campaña 25/26</div>
     <div class="h-title" id="h-title">Informe de Cosecha & Producción</div>
-    <div class="h-sub" id="h-sub">Estado al 06/04/2026 · Todas las zonas · Actualizado 10:10</div>
+    <div class="h-sub" id="h-sub">Estado al 06/04/2026 · Todas las zonas · Actualizado 10:38</div>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
-
+    <button id="export-btn" onclick="exportarExcel()" style="display:none;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;padding:7px 14px;border-radius:3px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">
+      📥 Exportar a Excel
+    </button>
   </div>
 </div>
 
@@ -431,6 +434,25 @@ tbody tr.detail-row.open { display:table-row; }
   <!-- Comentarios — filled by renderResumen() -->
   <div class="sec-title">Análisis y comentarios</div>
   <div class="coments" id="r-coments"></div>
+
+  <!-- Gráficos — filled by renderCharts() -->
+  <div id="r-charts-section" style="margin-top:24px">
+    <div class="sec-title">Análisis Visual</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px" id="r-charts-grid">
+      <div class="card" style="padding:18px">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:12px">Desvío vs Presupuesto por Zona</div>
+        <div id="chart-desvio-zona"></div>
+      </div>
+      <div class="card" style="padding:18px">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:12px">Distribución por Cultivo (ha)</div>
+        <div id="chart-dist-cultivo"></div>
+      </div>
+    </div>
+    <div class="card" style="padding:18px;margin-top:16px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:12px">Ranking de Campos — Top 5 Mejor y Peor Desvío</div>
+      <div id="chart-ranking" style="display:grid;grid-template-columns:1fr 1fr;gap:16px"></div>
+    </div>
+  </div>
 </div>
 
 <!-- ===================== TAB 2: DETALLE ===================== -->
@@ -560,12 +582,12 @@ const DATA = [
   {act:"GI OLEICO",zona:"BA COS N",loc:"GENERAL MADARIAGA",campo:"San Luciano",ppto:2600.0,actual:0.0,final:2800.0,sembradas:172,cosechadas:0,perdidas:0,avance:0.0},
   {act:"GI OLEICO",zona:"BA COS N",loc:"LICENCIADO MATIENZO",campo:"San Jose",ppto:2400.0,actual:1814.0,final:1813.0,sembradas:428,cosechadas:426,perdidas:0,avance:99.53},
   {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"Aprea",ppto:2700.0,actual:0.0,final:2900.0,sembradas:172,cosechadas:0,perdidas:0,avance:0.0},
-  {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"El Moro Viejo",ppto:2660.0,actual:3136.8,final:3286.3,sembradas:667,cosechadas:56,perdidas:0,avance:8.4},
+  {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"El Moro Viejo",ppto:2660.0,actual:3849.3,final:3346.1,sembradas:667,cosechadas:56,perdidas:0,avance:8.4},
   {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"La Baguala",ppto:2500.0,actual:3025.9,final:2337.6,sembradas:102,cosechadas:17,perdidas:0,avance:16.67},
   {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"La Juanita",ppto:2300.0,actual:1842.2,final:1898.5,sembradas:143,cosechadas:92,perdidas:0,avance:64.34},
   {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"San Francisco II",ppto:2300.0,actual:2516.2,final:2500.4,sembradas:163,cosechadas:158,perdidas:0,avance:96.93},
   {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"San Narciso",ppto:2560.0,actual:0.0,final:2740.7,sembradas:519,cosechadas:11,perdidas:0,avance:2.12},
-  {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"Santa Maria del Moro",ppto:2700.0,actual:2490.3,final:2553.2,sembradas:191,cosechadas:107,perdidas:0,avance:56.02},
+  {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"Santa Maria del Moro",ppto:2700.0,actual:3190.2,final:2945.3,sembradas:191,cosechadas:107,perdidas:0,avance:56.02},
   {act:"GI OLEICO",zona:"BA COS N",loc:"MAIPU",campo:"Yerua",ppto:2040.0,actual:1419.0,final:1755.5,sembradas:660,cosechadas:77,perdidas:0,avance:11.67},
   {act:"GI OLEICO",zona:"BA COS N",loc:"Mar de Cobo",campo:"Santa Ana Cobo",ppto:2230.0,actual:1662.7,final:1781.7,sembradas:335,cosechadas:250,perdidas:6,avance:76.42},
   {act:"GI OLEICO",zona:"BA NORTE",loc:"25 DE MAYO",campo:"La Verdosa",ppto:2500.0,actual:1798.7,final:1801.8,sembradas:396,cosechadas:372,perdidas:0,avance:93.94},
@@ -598,7 +620,7 @@ const DATA = [
   {act:"GI OLEICO",zona:"BA SDE S",loc:"TANDIL",campo:"El Montiel",ppto:2500.0,actual:1410.6,final:1410.6,sembradas:252,cosechadas:252,perdidas:0,avance:100.0},
   {act:"GI OLEICO",zona:"BA SDE S",loc:"TANDIL",campo:"La Azucena",ppto:2700.0,actual:3009.8,final:2905.9,sembradas:370,cosechadas:283,perdidas:2,avance:77.03},
   {act:"GI OLEICO",zona:"BA SDE S",loc:"TANDIL",campo:"La Paulina",ppto:2600.0,actual:2344.5,final:2344.5,sembradas:477,cosechadas:477,perdidas:0,avance:100.0},
-  {act:"GI OLEICO",zona:"BA SDE S",loc:"TANDIL",campo:"Los Charitos",ppto:2500.0,actual:2575.2,final:2566.6,sembradas:348,cosechadas:340,perdidas:0,avance:97.7},
+  {act:"GI OLEICO",zona:"BA SDE S",loc:"TANDIL",campo:"Los Charitos",ppto:2500.0,actual:2516.0,final:2516.0,sembradas:348,cosechadas:348,perdidas:0,avance:100.0},
   {act:"GI OLEICO",zona:"CHACO",loc:"PAMPA DEL INFIERNO",campo:"La Providencia II",ppto:2400.0,actual:3053.3,final:3053.3,sembradas:217,cosechadas:217,perdidas:0,avance:100.0},
   {act:"GI OLEICO",zona:"LA PAMPA",loc:"MACACHIN",campo:"Atreuco",ppto:1901.2,actual:1882.2,final:1837.4,sembradas:84,cosechadas:82,perdidas:2,avance:100.0},
   {act:"GI OLEICO",zona:"LA PAMPA",loc:"TOMAS M. DE ANCHORENA",campo:"La Merced",ppto:2360.0,actual:2908.7,final:2908.7,sembradas:490,cosechadas:490,perdidas:0,avance:100.0},
@@ -611,7 +633,7 @@ const DATA = [
   {act:"GIRASOL",zona:"BA COS N",loc:"GENERAL MADARIAGA",campo:"La Florida",ppto:2700.0,actual:0.0,final:2900.0,sembradas:205,cosechadas:0,perdidas:0,avance:0.0},
   {act:"GIRASOL",zona:"BA COS N",loc:"GENERAL MADARIAGA",campo:"Los Robles",ppto:2616.2,actual:0.0,final:2600.0,sembradas:204,cosechadas:0,perdidas:0,avance:0.0},
   {act:"GIRASOL",zona:"BA COS N",loc:"LOBERIA",campo:"Manucam del Moro",ppto:1840.0,actual:0.0,final:1900.0,sembradas:258,cosechadas:0,perdidas:0,avance:0.0},
-  {act:"GIRASOL",zona:"BA COS N",loc:"MACEDO",campo:"Macedo",ppto:2700.0,actual:2806.2,final:2803.3,sembradas:225,cosechadas:119,perdidas:0,avance:52.89},
+  {act:"GIRASOL",zona:"BA COS N",loc:"MACEDO",campo:"Macedo",ppto:2700.0,actual:2989.4,final:2934.7,sembradas:225,cosechadas:160,perdidas:0,avance:71.11},
   {act:"GIRASOL",zona:"BA COS N",loc:"MAR DEL PLATA",campo:"El Casalito",ppto:2500.0,actual:0.0,final:2400.0,sembradas:103,cosechadas:0,perdidas:0,avance:0.0},
   {act:"GIRASOL",zona:"BA COS N",loc:"MAR DEL PLATA",campo:"Las Bagualas",ppto:2660.0,actual:0.0,final:2359.6,sembradas:178,cosechadas:0,perdidas:3,avance:1.69},
   {act:"GIRASOL",zona:"BA COS N",loc:"NAHUEL RUCA",campo:"Teha",ppto:2120.0,actual:0.0,final:2415.6,sembradas:623,cosechadas:0,perdidas:10,avance:1.61},
@@ -636,7 +658,7 @@ const DATA = [
   {act:"GIRASOL",zona:"BA SDE S",loc:"AYACUCHO",campo:"Cupalen II",ppto:2500.0,actual:3475.9,final:3475.9,sembradas:122,cosechadas:122,perdidas:0,avance:100.0},
   {act:"GIRASOL",zona:"BA SDE S",loc:"AYACUCHO",campo:"El Ceibo",ppto:2160.0,actual:0.0,final:1600.0,sembradas:288,cosechadas:0,perdidas:0,avance:0.0},
   {act:"GIRASOL",zona:"BA SDE S",loc:"AYACUCHO",campo:"El Rosario",ppto:1980.0,actual:2096.7,final:1750.4,sembradas:236,cosechadas:30,perdidas:0,avance:12.71},
-  {act:"GIRASOL",zona:"BA SDE S",loc:"AYACUCHO",campo:"La Barrancosa",ppto:2250.0,actual:1717.5,final:1771.5,sembradas:213,cosechadas:150,perdidas:0,avance:70.42},
+  {act:"GIRASOL",zona:"BA SDE S",loc:"AYACUCHO",campo:"La Barrancosa",ppto:2250.0,actual:1431.2,final:1503.8,sembradas:213,cosechadas:180,perdidas:0,avance:84.51},
   {act:"GIRASOL",zona:"BA SDE S",loc:"AYACUCHO",campo:"La Reconquista",ppto:2500.0,actual:2046.8,final:1980.0,sembradas:85,cosechadas:62,perdidas:0,avance:72.94},
   {act:"GIRASOL",zona:"BA SDE S",loc:"AZUL",campo:"La Susana II",ppto:2090.0,actual:1905.5,final:1905.5,sembradas:20,cosechadas:20,perdidas:0,avance:100.0},
   {act:"GIRASOL",zona:"BA SDE S",loc:"AZUL",campo:"La Trinidad",ppto:2700.0,actual:2308.8,final:2308.8,sembradas:372,cosechadas:372,perdidas:0,avance:100.0},
@@ -646,7 +668,7 @@ const DATA = [
   {act:"GIRASOL",zona:"BA SDE S",loc:"NECOCHEA",campo:"Dona Hilda",ppto:2500.0,actual:1894.6,final:1894.6,sembradas:48,cosechadas:48,perdidas:0,avance:100.0},
   {act:"GIRASOL",zona:"BA SDE S",loc:"NECOCHEA",campo:"El Basural",ppto:2700.0,actual:1883.2,final:1883.2,sembradas:207,cosechadas:207,perdidas:0,avance:100.0},
   {act:"GIRASOL",zona:"BA SDE S",loc:"NECOCHEA",campo:"La Cachila",ppto:2700.0,actual:2539.6,final:2539.6,sembradas:170,cosechadas:170,perdidas:0,avance:100.0},
-  {act:"GIRASOL",zona:"BA SDE S",loc:"TANDIL",campo:"Dos Hermanas",ppto:2520.0,actual:2219.5,final:2210.0,sembradas:348,cosechadas:333,perdidas:0,avance:95.69},
+  {act:"GIRASOL",zona:"BA SDE S",loc:"TANDIL",campo:"Dos Hermanas",ppto:2520.0,actual:2404.8,final:2404.8,sembradas:348,cosechadas:348,perdidas:0,avance:100.0},
   {act:"GIRASOL",zona:"CBA SUR",loc:"GENERAL LEVALLE",campo:"La Elvira",ppto:2500.0,actual:2657.8,final:2657.8,sembradas:247,cosechadas:247,perdidas:0,avance:100.0},
   {act:"GIRASOL",zona:"CHACO",loc:"-",campo:"San Benito II",ppto:2400.0,actual:2485.4,final:2485.4,sembradas:262,cosechadas:262,perdidas:0,avance:100.0},
   {act:"GIRASOL",zona:"CHACO",loc:"PAMPA DEL INFIERNO",campo:"4 Marias",ppto:2400.0,actual:2328.4,final:2328.4,sembradas:75,cosechadas:75,perdidas:0,avance:100.0},
@@ -2409,6 +2431,222 @@ function refreshResumenZonas(acts){
 }
 
 // Init
+
+// ===== EXPORTAR A EXCEL =====
+function exportarExcel(){
+  if(!CURRENT_SOCIO) return;
+  const socioName = CURRENT_SOCIO.name;
+  const fecha = new Date().toLocaleDateString('es-AR');
+
+  // Hoja 1: Detalle por campo
+  const campoData = getScopedData();
+  const h1 = [['Campo','Actividad','Zona','Localidad','Has Sembradas','Has Cosechadas','Has Perdidas','% Avance','Rinde Ppto (kg/ha)','Rinde Actual (kg/ha)','Rinde Final (kg/ha)']];
+  campoData.forEach(d=>{
+    h1.push([d.campo, d.act, d.zona, d.loc, d.sembradas, d.cosechadas, d.perdidas,
+      +(d.avance/100).toFixed(4), d.ppto, d.actual, d.final]);
+  });
+
+  // Hoja 2: Retiros & Bolsa
+  const pwd = Object.keys(SOCIOS_DATA).find(k=>SOCIOS_DATA[k].name===socioName);
+  const retData = (pwd && RETIRO_DATA[pwd]) || [];
+  const h2 = [['Campo','Actividad','Zona','Localidad','% Participacion','TN Teoricas','TN Retiradas','TN en Deposito','TN Pendientes de Retiro']];
+  retData.forEach(d=>{
+    h2.push([d.campo, d.act, d.zona, d.loc,
+      +(d.pct*100).toFixed(2),
+      d.tn_teoricas, d.tn_retiradas, d.tn_bolsa,
+      +(d.tn_teoricas - d.tn_retiradas).toFixed(2)]);
+  });
+
+  // Hoja 3: Resumen por actividad
+  const actMap = {};
+  campoData.forEach(d=>{
+    if(!actMap[d.act]) actMap[d.act]={act:d.act,sembradas:0,cosechadas:0,perdidas:0};
+    actMap[d.act].sembradas  += d.sembradas;
+    actMap[d.act].cosechadas += d.cosechadas;
+    actMap[d.act].perdidas   += d.perdidas;
+  });
+  const h3 = [['Actividad','Has Sembradas','Has Cosechadas','Has Perdidas','% Avance']];
+  Object.values(actMap).sort((a,b)=>a.act.localeCompare(b.act)).forEach(a=>{
+    const av = a.sembradas>0 ? +(a.cosechadas/a.sembradas*100).toFixed(1) : 0;
+    h3.push([a.act, a.sembradas, a.cosechadas, a.perdidas, av]);
+  });
+
+  if(typeof XLSX !== 'undefined'){
+    const wb = XLSX.utils.book_new();
+    const ws1 = XLSX.utils.aoa_to_sheet(h1);
+    const ws2 = XLSX.utils.aoa_to_sheet(h2);
+    const ws3 = XLSX.utils.aoa_to_sheet(h3);
+    ws1['!cols'] = [{wch:22},{wch:20},{wch:14},{wch:18},{wch:13},{wch:13},{wch:11},{wch:10},{wch:16},{wch:16},{wch:14}];
+    ws2['!cols'] = [{wch:22},{wch:20},{wch:14},{wch:18},{wch:14},{wch:13},{wch:13},{wch:14},{wch:20}];
+    ws3['!cols'] = [{wch:22},{wch:14},{wch:14},{wch:12},{wch:10}];
+    XLSX.utils.book_append_sheet(wb, ws1, 'Detalle por Campo');
+    XLSX.utils.book_append_sheet(wb, ws2, 'Retiros y Bolsa');
+    XLSX.utils.book_append_sheet(wb, ws3, 'Resumen por Actividad');
+    const fname = socioName.replace(/[^a-zA-Z0-9]/g,'_')+'_Cosecha_'+fecha.replace(/\//g,'-')+'.xlsx';
+    XLSX.writeFile(wb, fname);
+  } else {
+    // Fallback CSV
+    const toCSV = rows => rows.map(r=>r.map(c=>String(c).includes(',')?'"'+c+'"':c).join(',')).join('\n');
+    const blob = new Blob([toCSV(h1)+'\n\n'+toCSV(h2)+'\n\n'+toCSV(h3)], {type:'text/csv;charset=utf-8;'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = socioName.replace(/[^a-zA-Z0-9]/g,'_')+'_Cosecha.csv'; a.click();
+  }
+}
+
+
+// ===== RENDER CHARTS =====
+function renderCharts(scope, acts){
+  const fmt   = n => Math.round(n).toLocaleString('es-AR');
+  const fmtR  = n => n.toFixed(0);
+  const S     = (arr,k) => arr.reduce((a,d)=>a+(d[k]||0),0);
+
+  // ── CHART 1: Desvío por zona ──────────────────────────────────────────
+  const zonaMap = {};
+  scope.forEach(d=>{
+    if(!zonaMap[d.zona]) zonaMap[d.zona]={zona:d.zona,sembr:0,ppto_sum:0,final_sum:0,hasProd:0};
+    const hp = d.sembradas - d.perdidas;
+    zonaMap[d.zona].sembr     += d.sembradas;
+    zonaMap[d.zona].hasProd   += hp;
+    zonaMap[d.zona].ppto_sum  += d.ppto * hp;
+    zonaMap[d.zona].final_sum += d.final * hp;
+  });
+  const zonas = Object.values(zonaMap)
+    .filter(z=>z.hasProd>0)
+    .map(z=>({
+      zona: z.zona,
+      sembr: z.sembr,
+      ppto:  z.hasProd>0 ? z.ppto_sum/z.hasProd : 0,
+      final: z.hasProd>0 ? z.final_sum/z.hasProd : 0,
+      desvio: z.hasProd>0 ? (z.final_sum/z.hasProd - z.ppto_sum/z.hasProd) / (z.ppto_sum/z.hasProd) * 100 : 0
+    }))
+    .sort((a,b)=>b.desvio-a.desvio);
+
+  const el1 = document.getElementById('chart-desvio-zona');
+  if(el1 && zonas.length>0){
+    const barH=24, gap=6, labelW=110, barMaxW=180, chartH=zonas.length*(barH+gap)+10;
+    const maxAbs = Math.max(...zonas.map(z=>Math.abs(z.desvio)), 1);
+    const midX = labelW + barMaxW/2;
+
+    const bars = zonas.map((z,i)=>{
+      const y = i*(barH+gap);
+      const bw = Math.abs(z.desvio)/maxAbs * (barMaxW/2);
+      const isPos = z.desvio >= 0;
+      const rx = isPos ? midX : midX - bw;
+      const fill = isPos ? 'var(--green)' : 'var(--red)';
+      const sign = isPos ? '+' : '';
+      return `
+        <text x="${labelW-6}" y="${y+barH/2+4}" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="9" fill="var(--text-2)">${z.zona.length>14?z.zona.substring(0,13)+'…':z.zona}</text>
+        <rect x="${rx}" y="${y}" width="${bw||1}" height="${barH}" fill="${fill}" rx="2" opacity=".85"/>
+        <line x1="${midX}" y1="${y}" x2="${midX}" y2="${y+barH}" stroke="var(--border-dk)" stroke-width="1"/>
+        <text x="${isPos?midX+bw+4:midX-bw-4}" y="${y+barH/2+4}" text-anchor="${isPos?'start':'end'}" font-family="IBM Plex Mono,monospace" font-size="9" fill="${isPos?'var(--green)':'var(--red)'}" font-weight="600">${sign}${z.desvio.toFixed(1)}%</text>`;
+    }).join('');
+
+    // Center line label
+    const centerLine = `<line x1="${midX}" y1="0" x2="${midX}" y2="${chartH}" stroke="var(--border)" stroke-width="1" stroke-dasharray="3,3"/>`;
+
+    el1.innerHTML = `<svg viewBox="0 0 ${labelW+barMaxW+50} ${chartH}" style="width:100%;display:block">${centerLine}${bars}</svg>`;
+  }
+
+  // ── CHART 2: Distribución por cultivo ─────────────────────────────────
+  const el2 = document.getElementById('chart-dist-cultivo');
+  if(el2 && acts.length>0){
+    const actData = acts.map(act=>{
+      const sub = scope.filter(d=>d.act===act);
+      const sembr = S(sub,'sembradas');
+      const cos   = S(sub,'cosechadas');
+      return {act, sembr, cos, avance: sembr>0?cos/sembr*100:0};
+    }).filter(a=>a.sembr>0).sort((a,b)=>b.sembr-a.sembr);
+
+    const total = actData.reduce((a,d)=>a+d.sembr,0);
+    const maxSembr = Math.max(...actData.map(d=>d.sembr),1);
+    const barH=22, gap=5, labelW=130, barMaxW=160;
+    const chartH = actData.length*(barH+gap)+10;
+
+    const getActColor = act => act==='GI OLEICO'?'var(--gold)':act==='GIRASOL'?'#4a90c4':act.startsWith('MAIZ')?'var(--green)':act.startsWith('SOJA')?'#7b68b5':act==='TRIGO'||act==='CEBADA'?'var(--red-lt)':'var(--muted)';
+    const getActStroke = act => act==='GI OLEICO'?'var(--gold)':act==='GIRASOL'?'#4a90c4':act.startsWith('MAIZ')?'var(--green)':act.startsWith('SOJA')?'#7b68b5':'var(--muted)';
+
+    const bars2 = actData.map((a,i)=>{
+      const y    = i*(barH+gap);
+      const bwS  = a.sembr/maxSembr * barMaxW;
+      const bwC  = a.sembr>0 ? a.cos/a.sembr*bwS : 0;
+      const pct  = total>0 ? (a.sembr/total*100).toFixed(0) : 0;
+      const col  = getActColor(a.act);
+      const name = a.act.length>17 ? a.act.substring(0,16)+'…' : a.act;
+      return `
+        <text x="${labelW-6}" y="${y+barH/2+4}" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="9" fill="var(--text-2)">${name}</text>
+        <rect x="${labelW}" y="${y}" width="${bwS}" height="${barH}" fill="var(--brand-lt)" rx="2"/>
+        <rect x="${labelW}" y="${y}" width="${bwC}" height="${barH}" fill="${col}" rx="2" opacity=".8"/>
+        <text x="${labelW+bwS+5}" y="${y+barH/2+4}" font-family="IBM Plex Mono,monospace" font-size="9" fill="var(--muted)">${fmt(a.sembr)} ha (${pct}%)</text>`;
+    }).join('');
+
+    el2.innerHTML = `<svg viewBox="0 0 ${labelW+barMaxW+100} ${chartH}" style="width:100%;display:block">${bars2}</svg>`;
+
+    // Legend
+    const legend = document.createElement('div');
+    legend.style.cssText = 'display:flex;gap:12px;flex-wrap:wrap;margin-top:8px';
+    legend.innerHTML = `
+      <div style="display:flex;align-items:center;gap:4px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted)">
+        <div style="width:16px;height:8px;background:var(--brand-lt);border-radius:1px"></div> Sembradas
+      </div>
+      <div style="display:flex;align-items:center;gap:4px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted)">
+        <div style="width:16px;height:8px;background:var(--green);border-radius:1px;opacity:.8"></div> Cosechadas
+      </div>`;
+    el2.appendChild(legend);
+  }
+
+  // ── CHART 3: Ranking top/bottom 5 por desvío ─────────────────────────
+  const elR = document.getElementById('chart-ranking');
+  if(!elR) return;
+
+  const withDesvio = scope
+    .filter(d=>d.cosechadas>0 && d.ppto>0)
+    .map(d=>({
+      campo: d.campo,
+      act:   d.act,
+      zona:  d.zona,
+      ppto:  d.ppto,
+      final: d.final,
+      desvio: d.ppto>0 ? (d.final-d.ppto)/d.ppto*100 : 0
+    }))
+    .sort((a,b)=>b.desvio-a.desvio);
+
+  if(withDesvio.length===0){ elR.innerHTML='<div style="color:var(--muted);font-size:11px;grid-column:span 2">Sin datos de cosecha suficientes</div>'; return; }
+
+  const top5    = withDesvio.slice(0,5);
+  const bottom5 = [...withDesvio].reverse().slice(0,5);
+
+  const makeRankList = (items, isTop) => {
+    const maxAbs = Math.max(...items.map(d=>Math.abs(d.desvio)),1);
+    return items.map((d,i)=>{
+      const bw = Math.abs(d.desvio)/maxAbs*100;
+      const col = isTop ? 'var(--green)' : 'var(--red)';
+      const sign = d.desvio>=0?'+':'';
+      const name = d.campo.length>20 ? d.campo.substring(0,19)+'…' : d.campo;
+      return `<div style="margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px">
+          <span style="font-size:11px;color:var(--text)">${i+1}. ${name}</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:${col};font-weight:600">${sign}${d.desvio.toFixed(1)}%</span>
+        </div>
+        <div style="font-size:9px;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-bottom:4px">${d.act} · ${d.zona}</div>
+        <div style="height:6px;background:var(--border);border-radius:3px">
+          <div style="height:6px;width:${bw}%;background:${col};border-radius:3px;opacity:.8"></div>
+        </div>
+        <div style="font-size:9px;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-top:2px">Ppto: ${Math.round(d.ppto).toLocaleString('es-AR')} → Final: ${Math.round(d.final).toLocaleString('es-AR')} kg/ha</div>
+      </div>`;
+    }).join('');
+  };
+
+  elR.innerHTML = `
+    <div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px">✅ Top 5 Mejor Desvío</div>
+      ${makeRankList(top5, true)}
+    </div>
+    <div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--red);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px">⚠️ Top 5 Peor Desvío</div>
+      ${makeRankList(bottom5, false)}
+    </div>`;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   buildActChips([...new Set(getScopedData().map(d=>d.act))].sort());
   // Initialize multi-select dropdown filters
