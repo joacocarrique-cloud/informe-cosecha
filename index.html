@@ -377,7 +377,7 @@ tbody tr.detail-row.open { display:table-row; }
   <div>
     <div class="h-eyebrow">Espartina SA · Campaña 25/26</div>
     <div class="h-title" id="h-title">Informe de Cosecha & Producción</div>
-    <div class="h-sub" id="h-sub">Estado al 06/04/2026 · Todas las zonas · Actualizado 09:47</div>
+    <div class="h-sub" id="h-sub">Estado al 06/04/2026 · Todas las zonas · Actualizado 10:10</div>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
 
@@ -1164,13 +1164,22 @@ function loginAs(socio){
   CURRENT_SOCIO = socio;
   document.getElementById('pwd-screen').style.display='none';
 
-  const titleEl    = document.getElementById('h-title');
+  const titleEl   = document.getElementById('h-title');
+  const exportBtn = document.getElementById('export-btn');
 
   if(socio){
     if(titleEl)   titleEl.textContent = socio.name;
-    } else {
+    if(exportBtn) exportBtn.style.display = 'block';
+  } else {
     if(titleEl)   titleEl.textContent = 'Informe de Cosecha & Producción';
-    }
+    if(exportBtn) exportBtn.style.display = 'none';
+  }
+
+  // Rebuild chips with only this socio's activities — clear previous selection first
+  const chipsWrap = document.getElementById('r-actividad-chips');
+  if(chipsWrap) chipsWrap.innerHTML = ''; // clear so prevSelected doesn't carry over
+  const socioActs = [...new Set(getScopedData().map(d=>d.act))].sort();
+  buildActChips(socioActs);
 
   renderResumen();
   filterTable();
@@ -1763,7 +1772,10 @@ function buildActChips(actsInData){
   const wrap = document.getElementById('r-actividad-chips');
   if(!wrap) return;
   // Preserve current selection
-  const prevSelected = new Set(getSelectedActs()||actsInData);
+  // On login, select all by default (clear previous selection if new socio)
+  // If no chips exist yet (cleared on login), select all by default
+  const existingChips = document.querySelectorAll('#r-actividad-chips .chip');
+  const prevSelected = existingChips.length > 0 ? new Set(getSelectedActs()||actsInData) : new Set(actsInData);
   wrap.innerHTML = actsInData.map(a=>
     `<span class="chip${prevSelected.has(a)?' active':''}" data-act="${a}" onclick="toggleAct('${a}')">${a}</span>`
   ).join('');
