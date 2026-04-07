@@ -378,7 +378,7 @@ tbody tr.detail-row.open { display:table-row; }
   <div>
     <div class="h-eyebrow">Espartina SA · Campaña 25/26</div>
     <div class="h-title" id="h-title">Informe de Cosecha & Producción</div>
-    <div class="h-sub" id="h-sub">Estado al 06/04/2026 · Todas las zonas · Actualizado 13:03</div>
+    <div class="h-sub" id="h-sub">Estado al 07/04/2026 · Todas las zonas · Actualizado 11:18</div>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
     <button id="export-btn" onclick="exportarExcel()" style="display:none;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;padding:7px 14px;border-radius:3px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">
@@ -435,21 +435,6 @@ tbody tr.detail-row.open { display:table-row; }
   <div class="sec-title">Análisis y comentarios</div>
   <div class="coments" id="r-coments"></div>
 
-  <!-- Gráficos — filled by renderCharts() -->
-  <div id="r-charts-section" style="margin-top:24px">
-    <div class="sec-title">Análisis Visual</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px" id="r-charts-grid">
-      <div class="card" style="padding:18px">
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:12px">Desvío vs Presupuesto por Zona</div>
-        <div id="chart-desvio-zona"></div>
-      </div>
-      <div class="card" style="padding:18px">
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:12px">Distribución por Cultivo (ha)</div>
-        <div id="chart-dist-cultivo"></div>
-      </div>
-    </div>
-
-  </div>
 </div>
 
 <!-- ===================== TAB 2: DETALLE ===================== -->
@@ -577,20 +562,20 @@ const DATA = [
   // GI OLEICO
   {act:"GI OLEICO",zona:"BA COS N",loc:"BALCARCE",campo:"Santa Barbara",ppto:2700.0,actual:2533.1,final:2533.1,sembradas:140,cosechadas:140,perdidas:0,avance:100.0},
   {act:"GI OLEICO",zona:"BA COS N",loc:"GENERAL MADARIAGA",campo:"San Luciano",ppto:2600.0,actual:0.0,final:2800.0,sembradas:172,cosechadas:0,perdidas:0,avance:0.0},
-  {act:"GI OLEICO",zona:"BA COS N",loc:"LICENCIADO MATIENZO",campo:"San Jose",ppto:2400.0,actual:1814.0,final:1813.0,sembradas:428,cosechadas:426,perdidas:0,avance:99.53},
+  {act:"GI OLEICO",zona:"BA COS N",loc:"LICENCIADO MATIENZO",campo:"San Jose",ppto:2400.0,actual:1815.7,final:1815.7,sembradas:428,cosechadas:428,perdidas:0,avance:100.0},
   {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"Aprea",ppto:2700.0,actual:0.0,final:2900.0,sembradas:172,cosechadas:0,perdidas:0,avance:0.0},
-  {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"El Moro Viejo",ppto:2660.0,actual:3849.3,final:3346.1,sembradas:667,cosechadas:56,perdidas:0,avance:8.4},
-  {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"La Baguala",ppto:2500.0,actual:3025.9,final:2337.6,sembradas:102,cosechadas:17,perdidas:0,avance:16.67},
-  {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"La Juanita",ppto:2300.0,actual:1842.2,final:1898.5,sembradas:143,cosechadas:92,perdidas:0,avance:64.34},
+  {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"El Moro Viejo",ppto:2660.0,actual:3873.4,final:3349.9,sembradas:667,cosechadas:58,perdidas:0,avance:8.7},
+  {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"La Baguala",ppto:2500.0,actual:3011.8,final:2335.3,sembradas:102,cosechadas:17,perdidas:0,avance:16.67},
+  {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"La Juanita",ppto:2300.0,actual:1924.2,final:1882.5,sembradas:143,cosechadas:95,perdidas:0,avance:66.43},
   {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"San Francisco II",ppto:2300.0,actual:2516.2,final:2500.4,sembradas:163,cosechadas:158,perdidas:0,avance:96.93},
-  {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"San Narciso",ppto:2560.0,actual:3595.5,final:2816.9,sembradas:519,cosechadas:11,perdidas:0,avance:2.12},
-  {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"Santa Maria del Moro",ppto:2700.0,actual:3190.2,final:2945.3,sembradas:191,cosechadas:107,perdidas:0,avance:56.02},
+  {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"San Narciso",ppto:2560.0,actual:3335.1,final:2838.2,sembradas:519,cosechadas:37,perdidas:0,avance:7.13},
+  {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"Santa Maria del Moro",ppto:2700.0,actual:3132.6,final:2999.4,sembradas:191,cosechadas:125,perdidas:0,avance:65.45},
   {act:"GI OLEICO",zona:"BA COS N",loc:"MAIPU",campo:"Yerua",ppto:2040.0,actual:1419.0,final:1755.5,sembradas:660,cosechadas:77,perdidas:0,avance:11.67},
   {act:"GI OLEICO",zona:"BA COS N",loc:"Mar de Cobo",campo:"Santa Ana Cobo",ppto:2230.0,actual:1662.7,final:1781.7,sembradas:335,cosechadas:250,perdidas:6,avance:76.42},
   {act:"GI OLEICO",zona:"BA NORTE",loc:"25 DE MAYO",campo:"La Verdosa",ppto:2500.0,actual:1798.7,final:1801.8,sembradas:396,cosechadas:372,perdidas:0,avance:93.94},
   {act:"GI OLEICO",zona:"BA NORTE",loc:"PASTEUR",campo:"El Cuajarote",ppto:2500.0,actual:3078.3,final:3078.3,sembradas:311,cosechadas:311,perdidas:0,avance:100.0},
   {act:"GI OLEICO",zona:"BA OESTE",loc:"CASBAS",campo:"La Encarnacion",ppto:2600.0,actual:2736.8,final:2736.8,sembradas:184,cosechadas:184,perdidas:0,avance:100.0},
-  {act:"GI OLEICO",zona:"BA OESTE",loc:"PELLEGRINI",campo:"La Chana",ppto:2630.0,actual:2366.9,final:2313.6,sembradas:390,cosechadas:379,perdidas:9,avance:99.49},
+  {act:"GI OLEICO",zona:"BA OESTE",loc:"PELLEGRINI",campo:"La Chana",ppto:2630.0,actual:2354.4,final:2300.1,sembradas:390,cosechadas:381,perdidas:9,avance:100.0},
   {act:"GI OLEICO",zona:"BA OESTE DX",loc:"BONIFACIO",campo:"El Silencio",ppto:2800.0,actual:2683.1,final:2683.1,sembradas:382,cosechadas:382,perdidas:0,avance:100.0},
   {act:"GI OLEICO",zona:"BA OESTE DX",loc:"BONIFACIO",campo:"Los Albores",ppto:2150.0,actual:1536.8,final:1536.8,sembradas:650,cosechadas:650,perdidas:0,avance:100.0},
   {act:"GI OLEICO",zona:"BA SDE N",loc:"CHASCOMUS",campo:"El Destierro",ppto:2300.0,actual:1419.6,final:938.4,sembradas:159,cosechadas:51,perdidas:60,avance:69.81},
@@ -602,7 +587,7 @@ const DATA = [
   {act:"GI OLEICO",zona:"BA SDE N",loc:"MONTE",campo:"Cardal del Monte",ppto:2428.5,actual:2430.5,final:2316.1,sembradas:405,cosechadas:204,perdidas:0,avance:50.37},
   {act:"GI OLEICO",zona:"BA SDE N",loc:"MONTE",campo:"El Coraje",ppto:2280.0,actual:2165.2,final:2165.2,sembradas:198,cosechadas:198,perdidas:0,avance:100.0},
   {act:"GI OLEICO",zona:"BA SDE N",loc:"PILA",campo:"Carrizales",ppto:2100.0,actual:0.0,final:1600.0,sembradas:168,cosechadas:0,perdidas:0,avance:0.0},
-  {act:"GI OLEICO",zona:"BA SDE N",loc:"PILA",campo:"Loma Negra",ppto:2180.0,actual:1956.0,final:1919.1,sembradas:310,cosechadas:297,perdidas:6,avance:97.74},
+  {act:"GI OLEICO",zona:"BA SDE N",loc:"PILA",campo:"Loma Negra",ppto:2180.0,actual:1917.2,final:1873.9,sembradas:310,cosechadas:303,perdidas:7,avance:100.0},
   {act:"GI OLEICO",zona:"BA SDE N",loc:"SAN VICENTE",campo:"El Ombu II",ppto:2300.0,actual:0.0,final:2000.0,sembradas:162,cosechadas:0,perdidas:0,avance:0.0},
   {act:"GI OLEICO",zona:"BA SDE S",loc:"ADOLFO GONZALES CHAVES",campo:"Santa Teresa",ppto:1980.0,actual:0.0,final:1255.3,sembradas:253,cosechadas:0,perdidas:0,avance:0.0},
   {act:"GI OLEICO",zona:"BA SDE S",loc:"ENERGIA",campo:"El Alivio",ppto:2400.0,actual:3029.7,final:3029.7,sembradas:165,cosechadas:165,perdidas:0,avance:100.0},
@@ -612,10 +597,10 @@ const DATA = [
   {act:"GI OLEICO",zona:"BA SDE S",loc:"LOBERIA",campo:"San Lorenzo",ppto:2700.0,actual:2058.5,final:2055.8,sembradas:120,cosechadas:118,perdidas:0,avance:98.33},
   {act:"GI OLEICO",zona:"BA SDE S",loc:"NECOCHEA",campo:"El Ceibo II",ppto:2700.0,actual:3017.3,final:3017.3,sembradas:125,cosechadas:125,perdidas:0,avance:100.0},
   {act:"GI OLEICO",zona:"BA SDE S",loc:"NECOCHEA",campo:"Mallinco",ppto:2080.0,actual:2831.8,final:2053.9,sembradas:214,cosechadas:17,perdidas:0,avance:7.94},
-  {act:"GI OLEICO",zona:"BA SDE S",loc:"QUEQUEN",campo:"Follaneras",ppto:2500.0,actual:3304.3,final:2927.8,sembradas:97,cosechadas:69,perdidas:0,avance:71.13},
+  {act:"GI OLEICO",zona:"BA SDE S",loc:"QUEQUEN",campo:"Follaneras",ppto:2500.0,actual:2928.9,final:2928.9,sembradas:97,cosechadas:97,perdidas:0,avance:100.0},
   {act:"GI OLEICO",zona:"BA SDE S",loc:"SAN CAYETANO",campo:"Millantuel",ppto:1980.0,actual:0.0,final:1400.0,sembradas:190,cosechadas:0,perdidas:0,avance:0.0},
   {act:"GI OLEICO",zona:"BA SDE S",loc:"TANDIL",campo:"El Montiel",ppto:2500.0,actual:1410.6,final:1410.6,sembradas:252,cosechadas:252,perdidas:0,avance:100.0},
-  {act:"GI OLEICO",zona:"BA SDE S",loc:"TANDIL",campo:"La Azucena",ppto:2700.0,actual:3628.1,final:3378.8,sembradas:370,cosechadas:283,perdidas:2,avance:77.03},
+  {act:"GI OLEICO",zona:"BA SDE S",loc:"TANDIL",campo:"La Azucena",ppto:2700.0,actual:3046.4,final:3029.9,sembradas:370,cosechadas:368,perdidas:2,avance:100.0},
   {act:"GI OLEICO",zona:"BA SDE S",loc:"TANDIL",campo:"La Paulina",ppto:2600.0,actual:2344.5,final:2344.5,sembradas:477,cosechadas:477,perdidas:0,avance:100.0},
   {act:"GI OLEICO",zona:"BA SDE S",loc:"TANDIL",campo:"Los Charitos",ppto:2500.0,actual:2516.0,final:2516.0,sembradas:348,cosechadas:348,perdidas:0,avance:100.0},
   {act:"GI OLEICO",zona:"CHACO",loc:"PAMPA DEL INFIERNO",campo:"La Providencia II",ppto:2400.0,actual:3053.3,final:3053.3,sembradas:217,cosechadas:217,perdidas:0,avance:100.0},
@@ -624,25 +609,25 @@ const DATA = [
   {act:"GI OLEICO",zona:"LA PAMPA",loc:"URIBURU",campo:"Los Robles Lonquimay",ppto:2500.0,actual:1953.5,final:1953.5,sembradas:23,cosechadas:23,perdidas:0,avance:100.0},
   // GIRASOL
   {act:"GIRASOL",zona:"BA COS N",loc:"BALCARCE",campo:"La Iaia",ppto:2400.0,actual:0.0,final:1900.0,sembradas:146,cosechadas:0,perdidas:0,avance:0.0},
-  {act:"GIRASOL",zona:"BA COS N",loc:"BALNEARIO MAR CHIQUITA",campo:"Los Tulipanes",ppto:2700.0,actual:2807.5,final:2658.8,sembradas:113,cosechadas:32,perdidas:0,avance:28.32},
+  {act:"GIRASOL",zona:"BA COS N",loc:"BALNEARIO MAR CHIQUITA",campo:"Los Tulipanes",ppto:2700.0,actual:2639.5,final:2628.0,sembradas:113,cosechadas:80,perdidas:0,avance:70.8},
   {act:"GIRASOL",zona:"BA COS N",loc:"BALNEARIO MAR CHIQUITA",campo:"San Marcos",ppto:2340.0,actual:1930.6,final:1911.9,sembradas:121,cosechadas:96,perdidas:5,avance:83.47},
   {act:"GIRASOL",zona:"BA COS N",loc:"GENERAL MADARIAGA",campo:"Don Gustavo",ppto:2800.0,actual:3257.8,final:3211.2,sembradas:105,cosechadas:104,perdidas:2,avance:100.0},
   {act:"GIRASOL",zona:"BA COS N",loc:"GENERAL MADARIAGA",campo:"La Florida",ppto:2700.0,actual:0.0,final:2900.0,sembradas:205,cosechadas:0,perdidas:0,avance:0.0},
   {act:"GIRASOL",zona:"BA COS N",loc:"GENERAL MADARIAGA",campo:"Los Robles",ppto:2616.2,actual:0.0,final:2600.0,sembradas:204,cosechadas:0,perdidas:0,avance:0.0},
   {act:"GIRASOL",zona:"BA COS N",loc:"LOBERIA",campo:"Manucam del Moro",ppto:1840.0,actual:0.0,final:1900.0,sembradas:258,cosechadas:0,perdidas:0,avance:0.0},
-  {act:"GIRASOL",zona:"BA COS N",loc:"MACEDO",campo:"Macedo",ppto:2700.0,actual:2989.4,final:2934.7,sembradas:225,cosechadas:160,perdidas:0,avance:71.11},
+  {act:"GIRASOL",zona:"BA COS N",loc:"MACEDO",campo:"Macedo",ppto:2700.0,actual:3077.7,final:3051.8,sembradas:225,cosechadas:204,perdidas:0,avance:90.67},
   {act:"GIRASOL",zona:"BA COS N",loc:"MAR DEL PLATA",campo:"El Casalito",ppto:2500.0,actual:0.0,final:2400.0,sembradas:103,cosechadas:0,perdidas:0,avance:0.0},
   {act:"GIRASOL",zona:"BA COS N",loc:"MAR DEL PLATA",campo:"Las Bagualas",ppto:2660.0,actual:0.0,final:2359.6,sembradas:178,cosechadas:0,perdidas:3,avance:1.69},
-  {act:"GIRASOL",zona:"BA COS N",loc:"NAHUEL RUCA",campo:"Teha",ppto:2120.0,actual:0.0,final:2415.6,sembradas:623,cosechadas:0,perdidas:10,avance:1.61},
+  {act:"GIRASOL",zona:"BA COS N",loc:"NAHUEL RUCA",campo:"Teha",ppto:2120.0,actual:2563.3,final:2416.8,sembradas:623,cosechadas:12,perdidas:10,avance:3.53},
   {act:"GIRASOL",zona:"BA COS N",loc:"VIVORATA",campo:"Aitona",ppto:2600.0,actual:2827.8,final:2827.8,sembradas:380,cosechadas:380,perdidas:0,avance:100.0},
   {act:"GIRASOL",zona:"BA OESTE",loc:"CORONEL SUAREZ",campo:"Santa Ana OS",ppto:2200.0,actual:1305.0,final:1892.6,sembradas:297,cosechadas:102,perdidas:0,avance:34.34},
-  {act:"GIRASOL",zona:"BA OESTE",loc:"PELLEGRINI",campo:"La Chana",ppto:2630.0,actual:2823.3,final:2821.1,sembradas:640,cosechadas:625,perdidas:0,avance:97.66},
+  {act:"GIRASOL",zona:"BA OESTE",loc:"PELLEGRINI",campo:"La Chana",ppto:2630.0,actual:2761.4,final:2761.2,sembradas:640,cosechadas:639,perdidas:0,avance:99.84},
   {act:"GIRASOL",zona:"BA OESTE",loc:"SALLIQUELO",campo:"El Rosario OS",ppto:2300.0,actual:2380.0,final:2380.0,sembradas:251,cosechadas:251,perdidas:0,avance:100.0},
   {act:"GIRASOL",zona:"BA OESTE DX",loc:"BONIFACIO",campo:"Los Albores",ppto:2150.0,actual:1461.0,final:1461.0,sembradas:178,cosechadas:178,perdidas:0,avance:100.0},
   {act:"GIRASOL",zona:"BA OESTE DX",loc:"DAIREAUX",campo:"Chapaico",ppto:2600.0,actual:2407.7,final:2407.7,sembradas:198,cosechadas:198,perdidas:0,avance:100.0},
-  {act:"GIRASOL",zona:"BA SDE N",loc:"CASTELLI",campo:"La Corina",ppto:2210.0,actual:2563.6,final:2318.2,sembradas:238,cosechadas:112,perdidas:0,avance:47.06},
-  {act:"GIRASOL",zona:"BA SDE N",loc:"CASTELLI",campo:"Los Indios I",ppto:2340.0,actual:2734.9,final:2734.9,sembradas:75,cosechadas:75,perdidas:0,avance:100.0},
-  {act:"GIRASOL",zona:"BA SDE N",loc:"GENERAL PAZ",campo:"El Negrete",ppto:2500.0,actual:3273.7,final:2995.5,sembradas:231,cosechadas:165,perdidas:0,avance:71.43},
+  {act:"GIRASOL",zona:"BA SDE N",loc:"CASTELLI",campo:"La Corina",ppto:2210.0,actual:2707.3,final:2385.8,sembradas:238,cosechadas:112,perdidas:0,avance:47.06},
+  {act:"GIRASOL",zona:"BA SDE N",loc:"CASTELLI",campo:"Los Indios I",ppto:2340.0,actual:2913.6,final:2913.6,sembradas:75,cosechadas:75,perdidas:0,avance:100.0},
+  {act:"GIRASOL",zona:"BA SDE N",loc:"GENERAL PAZ",campo:"El Negrete",ppto:2500.0,actual:3274.2,final:3012.7,sembradas:231,cosechadas:169,perdidas:0,avance:73.16},
   {act:"GIRASOL",zona:"BA SDE N",loc:"MONTE",campo:"La Azotea",ppto:2450.0,actual:2231.1,final:2036.6,sembradas:82,cosechadas:45,perdidas:0,avance:54.88},
   {act:"GIRASOL",zona:"BA SDE N",loc:"PILA",campo:"Banderitas",ppto:1530.0,actual:0.0,final:1028.6,sembradas:49,cosechadas:0,perdidas:21,avance:42.86},
   {act:"GIRASOL",zona:"BA SDE N",loc:"PILA",campo:"Carrizales",ppto:1560.0,actual:0.0,final:1200.0,sembradas:282,cosechadas:0,perdidas:0,avance:0.0},
@@ -651,10 +636,10 @@ const DATA = [
   {act:"GIRASOL",zona:"BA SDE N",loc:"PILA",campo:"San Damian",ppto:1700.0,actual:1631.7,final:1803.7,sembradas:436,cosechadas:70,perdidas:4,avance:16.97},
   {act:"GIRASOL",zona:"BA SDE N",loc:"PILA",campo:"San Jorge de Fourcade",ppto:2200.0,actual:2813.4,final:2813.4,sembradas:184,cosechadas:184,perdidas:0,avance:100.0},
   {act:"GIRASOL",zona:"BA SDE N",loc:"RANCHOS",campo:"Don Eduardo",ppto:2500.0,actual:2911.1,final:2875.2,sembradas:162,cosechadas:160,perdidas:2,avance:100.0},
-  {act:"GIRASOL",zona:"BA SDE S",loc:"ADOLFO GONZALES CHAVES",campo:"Santa Teresa",ppto:2200.0,actual:1721.8,final:1327.6,sembradas:233,cosechadas:57,perdidas:0,avance:24.46},
+  {act:"GIRASOL",zona:"BA SDE S",loc:"ADOLFO GONZALES CHAVES",campo:"Santa Teresa",ppto:2200.0,actual:1653.7,final:1494.0,sembradas:233,cosechadas:151,perdidas:0,avance:64.81},
   {act:"GIRASOL",zona:"BA SDE S",loc:"AYACUCHO",campo:"Cupalen II",ppto:2500.0,actual:3475.9,final:3475.9,sembradas:122,cosechadas:122,perdidas:0,avance:100.0},
   {act:"GIRASOL",zona:"BA SDE S",loc:"AYACUCHO",campo:"El Ceibo",ppto:2160.0,actual:0.0,final:1600.0,sembradas:288,cosechadas:0,perdidas:0,avance:0.0},
-  {act:"GIRASOL",zona:"BA SDE S",loc:"AYACUCHO",campo:"El Rosario",ppto:1980.0,actual:2431.9,final:1966.7,sembradas:236,cosechadas:86,perdidas:0,avance:36.44},
+  {act:"GIRASOL",zona:"BA SDE S",loc:"AYACUCHO",campo:"El Rosario",ppto:1980.0,actual:1757.5,final:1729.0,sembradas:236,cosechadas:119,perdidas:0,avance:50.42},
   {act:"GIRASOL",zona:"BA SDE S",loc:"AYACUCHO",campo:"La Barrancosa",ppto:2250.0,actual:1652.5,final:1690.8,sembradas:213,cosechadas:180,perdidas:0,avance:84.51},
   {act:"GIRASOL",zona:"BA SDE S",loc:"AYACUCHO",campo:"La Reconquista",ppto:2500.0,actual:2711.3,final:2464.7,sembradas:85,cosechadas:62,perdidas:0,avance:72.94},
   {act:"GIRASOL",zona:"BA SDE S",loc:"AZUL",campo:"La Susana II",ppto:2090.0,actual:1905.5,final:1905.5,sembradas:20,cosechadas:20,perdidas:0,avance:100.0},
@@ -698,7 +683,7 @@ const DATA = [
   {act:"MAIZ",zona:"BA OESTE DX",loc:"LAVALLE",campo:"San Sebastian",ppto:9000.0,actual:0.0,final:9200.0,sembradas:163,cosechadas:0,perdidas:0,avance:0.0},
   {act:"MAIZ",zona:"BA SDE N",loc:"CHASCOMUS",campo:"La Reina",ppto:8000.0,actual:5215.9,final:5215.9,sembradas:102,cosechadas:102,perdidas:0,avance:100.0},
   {act:"MAIZ",zona:"BA SDE N",loc:"GENERAL BELGRANO",campo:"El Pantano",ppto:8500.0,actual:0.0,final:8500.0,sembradas:47,cosechadas:0,perdidas:0,avance:0.0},
-  {act:"MAIZ",zona:"BA SDE S",loc:"ENERGIA",campo:"Tres Marias",ppto:9000.0,actual:0.0,final:8105.4,sembradas:239,cosechadas:0,perdidas:0,avance:0.0},
+  {act:"MAIZ",zona:"BA SDE S",loc:"ENERGIA",campo:"Tres Marias",ppto:9000.0,actual:0.0,final:8362.8,sembradas:239,cosechadas:0,perdidas:0,avance:0.0},
   {act:"MAIZ",zona:"BA SDE S",loc:"LOBERIA",campo:"La Posta",ppto:9000.0,actual:0.0,final:8200.0,sembradas:176,cosechadas:0,perdidas:0,avance:0.0},
   {act:"MAIZ",zona:"BA SDE S",loc:"LOBERIA",campo:"San Lorenzo",ppto:9500.0,actual:0.0,final:5500.0,sembradas:117,cosechadas:0,perdidas:0,avance:0.0},
   {act:"MAIZ",zona:"BA SDE S",loc:"NECOCHEA",campo:"Dona Hilda",ppto:8500.0,actual:0.0,final:6500.0,sembradas:101,cosechadas:0,perdidas:0,avance:0.0},
@@ -855,7 +840,7 @@ const DATA = [
   {act:"SOJA 1",zona:"BA SDE N",loc:"PILA",campo:"Loma Negra",ppto:2800.0,actual:0.0,final:707.5,sembradas:106,cosechadas:0,perdidas:56,avance:52.83},
   {act:"SOJA 1",zona:"BA SDE N",loc:"RANCHOS",campo:"Don Eduardo",ppto:3800.0,actual:0.0,final:2389.3,sembradas:291,cosechadas:0,perdidas:0,avance:0.0},
   {act:"SOJA 1",zona:"BA SDE S",loc:"ADOLFO GONZALES CHAVES",campo:"Santa Teresa",ppto:2300.0,actual:0.0,final:1500.0,sembradas:10,cosechadas:0,perdidas:0,avance:0.0},
-  {act:"SOJA 1",zona:"BA SDE S",loc:"AYACUCHO",campo:"Cupalen",ppto:3000.0,actual:0.0,final:2200.0,sembradas:177,cosechadas:0,perdidas:0,avance:0.0},
+  {act:"SOJA 1",zona:"BA SDE S",loc:"AYACUCHO",campo:"Cupalen",ppto:3000.0,actual:0.0,final:2111.9,sembradas:177,cosechadas:0,perdidas:0,avance:0.0},
   {act:"SOJA 1",zona:"BA SDE S",loc:"AYACUCHO",campo:"El Rosario",ppto:3000.0,actual:0.0,final:2500.0,sembradas:118,cosechadas:0,perdidas:0,avance:0.0},
   {act:"SOJA 1",zona:"BA SDE S",loc:"AYACUCHO",campo:"La Batalla",ppto:2000.0,actual:0.0,final:0.0,sembradas:189,cosechadas:0,perdidas:189,avance:100.0},
   {act:"SOJA 1",zona:"BA SDE S",loc:"AYACUCHO",campo:"Pehuen",ppto:3000.0,actual:0.0,final:2200.0,sembradas:104,cosechadas:0,perdidas:0,avance:0.0},
@@ -881,7 +866,7 @@ const DATA = [
   {act:"SOJA 1",zona:"ENTRE RIOS",loc:"GENERAL GALARZA",campo:"El Trebol II",ppto:2600.0,actual:3159.6,final:2406.3,sembradas:671,cosechadas:118,perdidas:0,avance:17.59},
   {act:"SOJA 1",zona:"ENTRE RIOS",loc:"GUALEGUAYCHU",campo:"Las Flores",ppto:2600.0,actual:0.0,final:2066.5,sembradas:400,cosechadas:0,perdidas:0,avance:0.0},
   {act:"SOJA 1",zona:"ENTRE RIOS",loc:"LA PAZ",campo:"El Trochi",ppto:2600.0,actual:0.0,final:3093.4,sembradas:317,cosechadas:0,perdidas:0,avance:0.0},
-  {act:"SOJA 1",zona:"LA PAMPA",loc:"TOMAS M. DE ANCHORENA",campo:"La Merced",ppto:3000.0,actual:0.0,final:2962.7,sembradas:1415,cosechadas:0,perdidas:0,avance:0.0},
+  {act:"SOJA 1",zona:"LA PAMPA",loc:"TOMAS M. DE ANCHORENA",campo:"La Merced",ppto:3000.0,actual:0.0,final:3369.6,sembradas:1415,cosechadas:0,perdidas:0,avance:0.0},
   {act:"SOJA 1",zona:"LA PAMPA",loc:"URIBURU",campo:"Los Robles Lonquimay",ppto:2500.0,actual:0.0,final:2356.0,sembradas:541,cosechadas:0,perdidas:6,avance:1.11},
   {act:"SOJA 1",zona:"LA PAMPA NORTE",loc:"REALICO",campo:"Maria Silvia",ppto:2800.0,actual:0.0,final:2900.0,sembradas:365,cosechadas:0,perdidas:0,avance:0.0},
   {act:"SOJA 1",zona:"SALTA",loc:"SALTA",campo:"El Chara II",ppto:3000.0,actual:0.0,final:3268.2,sembradas:3332,cosechadas:0,perdidas:0,avance:0.0},
@@ -957,7 +942,7 @@ const DATA = [
   {act:"SOJA 2",zona:"BA SDE S",loc:"NECOCHEA",campo:"Mallinco",ppto:2000.0,actual:0.0,final:1417.0,sembradas:200,cosechadas:0,perdidas:0,avance:0.0},
   {act:"SOJA 2",zona:"BA SDE S",loc:"QUEQUEN",campo:"Campo Rivero",ppto:2000.0,actual:0.0,final:900.0,sembradas:102,cosechadas:0,perdidas:0,avance:0.0},
   {act:"SOJA 2",zona:"BA SDE S",loc:"SAN CAYETANO",campo:"Millantuel",ppto:2000.0,actual:0.0,final:1200.0,sembradas:105,cosechadas:0,perdidas:0,avance:0.0},
-  {act:"SOJA 2",zona:"BA SDE S",loc:"TANDIL",campo:"Dos Hermanas",ppto:2000.0,actual:0.0,final:747.4,sembradas:445,cosechadas:0,perdidas:1,avance:0.22},
+  {act:"SOJA 2",zona:"BA SDE S",loc:"TANDIL",campo:"Dos Hermanas",ppto:2000.0,actual:0.0,final:885.8,sembradas:445,cosechadas:0,perdidas:1,avance:0.22},
   {act:"SOJA 2",zona:"BA SDE S",loc:"TANDIL",campo:"El Montiel",ppto:2000.0,actual:0.0,final:600.0,sembradas:119,cosechadas:0,perdidas:0,avance:0.0},
   {act:"SOJA 2",zona:"BA SDE S",loc:"TANDIL",campo:"La Azucena",ppto:2000.0,actual:0.0,final:1473.2,sembradas:127,cosechadas:0,perdidas:0,avance:0.0},
   {act:"SOJA 2",zona:"BA SDE S",loc:"TANDIL",campo:"La Florida Fulton",ppto:2000.0,actual:0.0,final:1500.0,sembradas:255,cosechadas:0,perdidas:0,avance:0.0},
@@ -1305,6 +1290,14 @@ function toggleLoc(locId){
   const isOpen = rows.length > 0 && rows[0].style.display !== 'none';
   rows.forEach(r=>{ r.style.display = isOpen ? 'none' : ''; });
   if(icon) icon.textContent = isOpen ? '▸' : '▾';
+  // Also hide detail rows when closing
+  if(isOpen){
+    rows.forEach(r=>{
+      const detId = r.id.replace('row-','det-');
+      const det = document.getElementById(detId);
+      if(det) det.style.display='none';
+    });
+  }
 }
 
 // ── CASCADE FILTERS ─────────────────────────────────────────
@@ -1523,10 +1516,10 @@ function filterTable(){
       const detHas = d.perdidas>0?`<div class="di-item"><div class="di-lbl">Has Perdidas</div><div class="di-val" style="color:var(--red)">${d.perdidas}</div></div>`:'';
       const detAct = d.cosechadas>0?`<div class="di-item"><div class="di-lbl">Rinde Actual</div><div class="di-val ${dev>=0?'pos':'neg'}">${fmtR(d.actual)}</div><div class="di-note">kg/ha cosechado</div></div>`:`<div class="di-item"><div class="di-lbl">Rinde Actual</div><div class="di-val" style="color:var(--muted)">—</div><div class="di-note">Sin cosecha aún</div></div>`;
       const detNote = d.cosechadas>0&&d.avance<100?`<div class="di-item" style="grid-column:span 2"><div class="di-lbl">Nota</div><div class="di-note">Rinde final combina <strong style="color:var(--text)">${fmtR(d.cosechadas)} ha</strong> al rinde actual (${fmtR(d.actual)} kg/ha) y <strong>${fmtR(d.sembradas-d.cosechadas-d.perdidas)} ha</strong> al rinde estimado.</div></div>`:'';
-      return `<tr class="campo-row loc-child ${locId}" id="${rowId}" onclick="toggleDetail('${detId}','${rowId}')" style="display:none">
+      return `<tr class="campo-row loc-child ${locId}" id="${rowId}" onclick="toggleDetail('${detId}','${rowId}')">
         <td>${actpill}</td>
         <td class="sm">${d.zona}</td>
-        <td class="name" style="padding-left:24px">${d.campo}</td>
+        <td class="name" style="padding-left:24px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px" title="${d.campo}">${d.campo}</td>
       <td class="r">${fmt(d.sembradas)}</td>
       <td class="r">${d.cosechadas>0?fmt(d.cosechadas):'<span style="color:var(--muted)">—</span>'}</td>
       <td>${avBar}</td>
@@ -1569,7 +1562,7 @@ function filterTable(){
 
     const locHeader = `<tr class="loc-header" onclick="toggleLoc('${locId}')" style="cursor:pointer;background:var(--brand-lt)">
       <td colspan="3" style="padding:10px 12px">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);margin-right:8px" id="icon-${locId}">▸</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);margin-right:8px" id="icon-${locId}">▾</span>
         <strong style="color:var(--brand-dk);font-size:12px">${g.loc}</strong>
         <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);margin-left:8px">${g.zona} · ${g.campos.length} campo${g.campos.length>1?'s':''}</span>
       </td>
@@ -1974,7 +1967,6 @@ function renderResumen(){
 
   // --- COMENTARIOS DINÁMICOS ---
   buildComents(scope, acts);
-  renderCharts(scope, acts);
 }
 
 // ===== ESCENARIOS DE PRODUCCIÓN =====
@@ -2492,107 +2484,6 @@ function exportarExcel(){
 }
 
 
-// ===== RENDER CHARTS =====
-function renderCharts(scope, acts){
-  const fmt   = n => Math.round(n).toLocaleString('es-AR');
-  const fmtR  = n => n.toFixed(0);
-  const S     = (arr,k) => arr.reduce((a,d)=>a+(d[k]||0),0);
-
-  // ── CHART 1: Desvío por zona ──────────────────────────────────────────
-  const zonaMap = {};
-  scope.forEach(d=>{
-    if(!zonaMap[d.zona]) zonaMap[d.zona]={zona:d.zona,sembr:0,ppto_sum:0,final_sum:0,hasProd:0};
-    const hp = d.sembradas - d.perdidas;
-    zonaMap[d.zona].sembr     += d.sembradas;
-    zonaMap[d.zona].hasProd   += hp;
-    zonaMap[d.zona].ppto_sum  += d.ppto * hp;
-    zonaMap[d.zona].final_sum += d.final * hp;
-  });
-  const zonas = Object.values(zonaMap)
-    .filter(z=>z.hasProd>0)
-    .map(z=>({
-      zona: z.zona,
-      sembr: z.sembr,
-      ppto:  z.hasProd>0 ? z.ppto_sum/z.hasProd : 0,
-      final: z.hasProd>0 ? z.final_sum/z.hasProd : 0,
-      desvio: z.hasProd>0 ? (z.final_sum/z.hasProd - z.ppto_sum/z.hasProd) / (z.ppto_sum/z.hasProd) * 100 : 0
-    }))
-    .sort((a,b)=>b.desvio-a.desvio);
-
-  const el1 = document.getElementById('chart-desvio-zona');
-  if(el1 && zonas.length>0){
-    const barH=24, gap=6, labelW=110, barMaxW=180, chartH=zonas.length*(barH+gap)+10;
-    const maxAbs = Math.max(...zonas.map(z=>Math.abs(z.desvio)), 1);
-    const midX = labelW + barMaxW/2;
-
-    const bars = zonas.map((z,i)=>{
-      const y = i*(barH+gap);
-      const bw = Math.abs(z.desvio)/maxAbs * (barMaxW/2);
-      const isPos = z.desvio >= 0;
-      const rx = isPos ? midX : midX - bw;
-      const fill = isPos ? 'var(--green)' : 'var(--red)';
-      const sign = isPos ? '+' : '';
-      return `
-        <text x="${labelW-6}" y="${y+barH/2+4}" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="9" fill="var(--text-2)">${z.zona.length>14?z.zona.substring(0,13)+'…':z.zona}</text>
-        <rect x="${rx}" y="${y}" width="${bw||1}" height="${barH}" fill="${fill}" rx="2" opacity=".85"/>
-        <line x1="${midX}" y1="${y}" x2="${midX}" y2="${y+barH}" stroke="var(--border-dk)" stroke-width="1"/>
-        <text x="${isPos?midX+bw+4:midX-bw-4}" y="${y+barH/2+4}" text-anchor="${isPos?'start':'end'}" font-family="IBM Plex Mono,monospace" font-size="9" fill="${isPos?'var(--green)':'var(--red)'}" font-weight="600">${sign}${z.desvio.toFixed(1)}%</text>`;
-    }).join('');
-
-    // Center line label
-    const centerLine = `<line x1="${midX}" y1="0" x2="${midX}" y2="${chartH}" stroke="var(--border)" stroke-width="1" stroke-dasharray="3,3"/>`;
-
-    el1.innerHTML = `<svg viewBox="0 0 ${labelW+barMaxW+50} ${chartH}" style="width:100%;display:block">${centerLine}${bars}</svg>`;
-  }
-
-  // ── CHART 2: Distribución por cultivo ─────────────────────────────────
-  const el2 = document.getElementById('chart-dist-cultivo');
-  if(el2 && acts.length>0){
-    const actData = acts.map(act=>{
-      const sub = scope.filter(d=>d.act===act);
-      const sembr = S(sub,'sembradas');
-      const cos   = S(sub,'cosechadas');
-      return {act, sembr, cos, avance: sembr>0?cos/sembr*100:0};
-    }).filter(a=>a.sembr>0).sort((a,b)=>b.sembr-a.sembr);
-
-    const total = actData.reduce((a,d)=>a+d.sembr,0);
-    const maxSembr = Math.max(...actData.map(d=>d.sembr),1);
-    const barH=22, gap=5, labelW=130, barMaxW=160;
-    const chartH = actData.length*(barH+gap)+10;
-
-    const getActColor = act => act==='GI OLEICO'?'var(--gold)':act==='GIRASOL'?'#4a90c4':act.startsWith('MAIZ')?'var(--green)':act.startsWith('SOJA')?'#7b68b5':act==='TRIGO'||act==='CEBADA'?'var(--red-lt)':'var(--muted)';
-    const getActStroke = act => act==='GI OLEICO'?'var(--gold)':act==='GIRASOL'?'#4a90c4':act.startsWith('MAIZ')?'var(--green)':act.startsWith('SOJA')?'#7b68b5':'var(--muted)';
-
-    const bars2 = actData.map((a,i)=>{
-      const y    = i*(barH+gap);
-      const bwS  = a.sembr/maxSembr * barMaxW;
-      const bwC  = a.sembr>0 ? a.cos/a.sembr*bwS : 0;
-      const pct  = total>0 ? (a.sembr/total*100).toFixed(0) : 0;
-      const col  = getActColor(a.act);
-      const name = a.act.length>17 ? a.act.substring(0,16)+'…' : a.act;
-      return `
-        <text x="${labelW-6}" y="${y+barH/2+4}" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="9" fill="var(--text-2)">${name}</text>
-        <rect x="${labelW}" y="${y}" width="${bwS}" height="${barH}" fill="var(--brand-lt)" rx="2"/>
-        <rect x="${labelW}" y="${y}" width="${bwC}" height="${barH}" fill="${col}" rx="2" opacity=".8"/>
-        <text x="${labelW+bwS+5}" y="${y+barH/2+4}" font-family="IBM Plex Mono,monospace" font-size="9" fill="var(--muted)">${fmt(a.sembr)} ha (${pct}%)</text>`;
-    }).join('');
-
-    el2.innerHTML = `<svg viewBox="0 0 ${labelW+barMaxW+100} ${chartH}" style="width:100%;display:block">${bars2}</svg>`;
-
-    // Legend
-    const legend = document.createElement('div');
-    legend.style.cssText = 'display:flex;gap:12px;flex-wrap:wrap;margin-top:8px';
-    legend.innerHTML = `
-      <div style="display:flex;align-items:center;gap:4px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted)">
-        <div style="width:16px;height:8px;background:var(--brand-lt);border-radius:1px"></div> Sembradas
-      </div>
-      <div style="display:flex;align-items:center;gap:4px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted)">
-        <div style="width:16px;height:8px;background:var(--green);border-radius:1px;opacity:.8"></div> Cosechadas
-      </div>`;
-    el2.appendChild(legend);
-  }
-
-}
 
 document.addEventListener('DOMContentLoaded', () => {
   buildActChips([...new Set(getScopedData().map(d=>d.act))].sort());
