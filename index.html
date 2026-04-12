@@ -337,6 +337,68 @@ tbody tr.detail-row.open { display:table-row; }
 .esc-note { font-family:'IBM Plex Sans',sans-serif; font-size:11px; color:var(--muted); font-weight:300; line-height:1.6; margin-top:14px; padding:10px 14px; background:var(--card-alt); border-radius:3px; border-left:3px solid var(--border-dk); }
 @media(max-width:768px){ .esc-grid{grid-template-columns:repeat(2,1fr)} }
 
+/* ── INTELIGENCIA DE COSECHA ────────────────────────────────── */
+.intel-kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:28px; }
+.intel-kpi { background:var(--card); border:1px solid var(--border); border-radius:4px; padding:18px 16px; box-shadow:0 1px 4px rgba(0,0,0,.04); position:relative; overflow:hidden; }
+.intel-kpi::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--border-dk); }
+.intel-kpi.pos::before { background:var(--green); }
+.intel-kpi.neg::before { background:var(--red); }
+.intel-kpi.gold::before { background:var(--gold); }
+.intel-kpi.blue::before { background:var(--blue); }
+.intel-kpi-icon { font-size:22px; margin-bottom:10px; display:block; }
+.intel-kpi-lbl { font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.14em; color:var(--muted); text-transform:uppercase; margin-bottom:6px; }
+.intel-kpi-val { font-family:'Playfair Display',serif; font-size:28px; font-weight:700; line-height:1; color:var(--text); }
+.intel-kpi-unit { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); margin-left:2px; }
+.intel-kpi-sub { font-size:10px; color:var(--muted); margin-top:6px; font-weight:300; line-height:1.45; }
+
+.intel-section { margin-bottom:28px; }
+.intel-two-col { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:28px; }
+
+/* Conclusion cards */
+.concl-card { background:var(--card); border:1px solid var(--border); border-radius:4px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,.04); }
+.concl-hdr { padding:12px 16px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); }
+.concl-hdr.hdr-pos { background:var(--green-lt); }
+.concl-hdr.hdr-neg { background:var(--red-lt); }
+.concl-hdr.hdr-neu { background:var(--brand-lt); }
+.concl-hdr.hdr-gld { background:var(--gold-lt); }
+.concl-crop { font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:var(--brand-dk); }
+.concl-meta { font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted); text-align:right; line-height:1.5; }
+.concl-body { padding:14px 16px; }
+.concl-narrative { font-size:12.5px; color:var(--text-2); line-height:1.7; font-weight:300; margin-bottom:12px; }
+.concl-narrative strong { color:var(--text); font-weight:600; }
+.concl-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; border-top:1px solid var(--border); padding-top:12px; }
+.cs-lbl { font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.1em; color:var(--muted); text-transform:uppercase; margin-bottom:2px; }
+.cs-val { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; color:var(--text); }
+.cs-val.pos { color:var(--green); }
+.cs-val.neg { color:var(--red); }
+.cs-val.gld { color:var(--gold); }
+.cs-sub { font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted); margin-top:1px; }
+
+/* Pending table */
+.pending-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+.pend-card { background:var(--card); border:1px solid var(--border); border-radius:4px; padding:14px 16px; box-shadow:0 1px 4px rgba(0,0,0,.04); }
+.pend-crop { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+.pend-has { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--text); margin-bottom:2px; }
+.pend-tn { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--brand); font-weight:600; margin-bottom:6px; }
+.pend-bar-wrap { height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+.pend-bar-fill { height:100%; background:var(--gold); border-radius:2px; }
+
+/* Insight bullets */
+.insight-list { background:var(--card); border:1px solid var(--border); border-radius:4px; padding:0 16px; box-shadow:0 1px 4px rgba(0,0,0,.04); }
+.insight-item { display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); align-items:flex-start; }
+.insight-item:last-child { border-bottom:none; }
+.insight-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+.insight-dot.pos { background:var(--green); }
+.insight-dot.neg { background:var(--red); }
+.insight-dot.gld { background:var(--gold); }
+.insight-dot.neu { background:var(--blue); }
+.insight-text { font-size:12.5px; color:var(--text-2); line-height:1.65; font-weight:300; }
+.insight-text strong { color:var(--text); font-weight:600; }
+
+.intel-empty { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted); padding:24px; text-align:center; }
+@media(max-width:900px){ .intel-kpi-grid{grid-template-columns:repeat(2,1fr)} .intel-two-col{grid-template-columns:1fr} .concl-stats{grid-template-columns:repeat(2,1fr)} .pending-grid{grid-template-columns:repeat(2,1fr)} }
+@media(max-width:600px){ .intel-kpi-grid{grid-template-columns:1fr 1fr} .pending-grid{grid-template-columns:1fr 1fr} }
+
 /* ADMIN RETIROS */
 .comp-bar-wrap { display:flex; align-items:center; gap:4px; }
 .comp-bar-track { flex:1; height:8px; background:var(--border); border-radius:4px; overflow:hidden; display:flex; min-width:80px; }
@@ -378,7 +440,7 @@ tbody tr.detail-row.open { display:table-row; }
   <div>
     <div class="h-eyebrow">Espartina SA · Campaña 25/26</div>
     <div class="h-title" id="h-title">Informe de Cosecha & Producción</div>
-    <div class="h-sub" id="h-sub">Estado al 12/04/2026 · Todas las zonas · Actualizado 09:34</div>
+    <div class="h-sub" id="h-sub">Estado al 12/04/2026 · Todas las zonas · Actualizado 09:55</div>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
     <button id="export-btn" onclick="exportarExcel()" style="display:none;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;padding:7px 14px;border-radius:3px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">
@@ -389,6 +451,7 @@ tbody tr.detail-row.open { display:table-row; }
 
 <div class="tabs">
   <div class="tab active" onclick="switchTab('resumen')">Resumen Ejecutivo</div>
+  <div class="tab" onclick="switchTab('inteligencia')">Inteligencia de Cosecha</div>
   <div class="tab" onclick="switchTab('detalle')">Detalle por Campo</div>
 </div>
 
@@ -437,7 +500,28 @@ tbody tr.detail-row.open { display:table-row; }
 
 </div>
 
-<!-- ===================== TAB 2: DETALLE ===================== -->
+<!-- ===================== TAB 2: INTELIGENCIA ===================== -->
+<div class="pane" id="pane-inteligencia">
+
+  <!-- KPIs globales -->
+  <div class="sec-title">Impacto global vs. presupuesto</div>
+  <div class="intel-kpi-grid" id="intel-kpi-grid"></div>
+
+  <!-- Insights clave -->
+  <div class="sec-title">Puntos clave del avance</div>
+  <div class="insight-list" id="intel-insights"></div>
+
+  <!-- Conclusiones por cultivo -->
+  <div class="sec-title" style="margin-top:24px">Análisis por cultivo</div>
+  <div id="intel-concl-grid"></div>
+
+  <!-- Lo que falta cosechar -->
+  <div class="sec-title" style="margin-top:24px">Lo que falta cosechar</div>
+  <div class="pending-grid" id="intel-pending-grid"></div>
+
+</div>
+
+<!-- ===================== TAB 3: DETALLE ===================== -->
 <div class="pane" id="pane-detalle">
   <div class="filters" style="flex-wrap:wrap;gap:8px;align-items:flex-end">
     <div class="filter-group">
@@ -564,15 +648,15 @@ const DATA = [
   {act:"GI OLEICO",zona:"BA COS N",loc:"GENERAL MADARIAGA",campo:"San Luciano",ppto:2600.0,actual:0.0,final:2800.0,sembradas:172,cosechadas:0,perdidas:0,avance:0.0},
   {act:"GI OLEICO",zona:"BA COS N",loc:"LICENCIADO MATIENZO",campo:"San Jose",ppto:2400.0,actual:1815.7,final:1815.7,sembradas:428,cosechadas:428,perdidas:0,avance:100.0},
   {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"Aprea",ppto:2700.0,actual:0.0,final:2900.0,sembradas:172,cosechadas:0,perdidas:0,avance:0.0},
-  {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"El Moro Viejo",ppto:2660.0,actual:3734.5,final:3395.1,sembradas:667,cosechadas:146,perdidas:0,avance:21.89},
-  {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"La Baguala",ppto:2500.0,actual:3011.8,final:2335.3,sembradas:102,cosechadas:17,perdidas:0,avance:16.67},
-  {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"La Juanita",ppto:2300.0,actual:1924.2,final:1882.5,sembradas:143,cosechadas:95,perdidas:0,avance:66.43},
+  {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"El Moro Viejo",ppto:2660.0,actual:3672.9,final:3406.8,sembradas:667,cosechadas:191,perdidas:0,avance:28.64},
+  {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"La Baguala",ppto:2500.0,actual:764.2,final:1256.9,sembradas:102,cosechadas:67,perdidas:0,avance:65.69},
+  {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"La Juanita",ppto:2300.0,actual:1655.9,final:1655.9,sembradas:143,cosechadas:143,perdidas:0,avance:100.0},
   {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"San Francisco II",ppto:2300.0,actual:2516.2,final:2500.4,sembradas:163,cosechadas:158,perdidas:0,avance:96.93},
-  {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"San Narciso",ppto:2560.0,actual:3911.2,final:2958.4,sembradas:519,cosechadas:74,perdidas:0,avance:14.26},
-  {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"Santa Maria del Moro",ppto:2700.0,actual:3072.7,final:3001.4,sembradas:191,cosechadas:155,perdidas:0,avance:81.15},
-  {act:"GI OLEICO",zona:"BA COS N",loc:"MAIPU",campo:"Yerua",ppto:2040.0,actual:1419.0,final:1755.5,sembradas:660,cosechadas:77,perdidas:0,avance:11.67},
+  {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"San Narciso",ppto:2560.0,actual:3581.7,final:2956.6,sembradas:519,cosechadas:104,perdidas:0,avance:20.04},
+  {act:"GI OLEICO",zona:"BA COS N",loc:"LOBERIA",campo:"Santa Maria del Moro",ppto:2700.0,actual:3009.0,final:2999.9,sembradas:191,cosechadas:186,perdidas:0,avance:97.38},
+  {act:"GI OLEICO",zona:"BA COS N",loc:"MAIPU",campo:"Yerua",ppto:2040.0,actual:1627.2,final:1765.7,sembradas:660,cosechadas:131,perdidas:0,avance:19.85},
   {act:"GI OLEICO",zona:"BA COS N",loc:"Mar de Cobo",campo:"Santa Ana Cobo",ppto:2230.0,actual:1662.7,final:1781.7,sembradas:335,cosechadas:250,perdidas:6,avance:76.42},
-  {act:"GI OLEICO",zona:"BA NORTE",loc:"25 DE MAYO",campo:"La Verdosa",ppto:2500.0,actual:1798.7,final:1801.8,sembradas:396,cosechadas:372,perdidas:0,avance:93.94},
+  {act:"GI OLEICO",zona:"BA NORTE",loc:"25 DE MAYO",campo:"La Verdosa",ppto:2500.0,actual:1861.1,final:1861.1,sembradas:396,cosechadas:396,perdidas:0,avance:100.0},
   {act:"GI OLEICO",zona:"BA NORTE",loc:"PASTEUR",campo:"El Cuajarote",ppto:2500.0,actual:3078.3,final:3078.3,sembradas:311,cosechadas:311,perdidas:0,avance:100.0},
   {act:"GI OLEICO",zona:"BA OESTE",loc:"CASBAS",campo:"La Encarnacion",ppto:2600.0,actual:2736.8,final:2736.8,sembradas:184,cosechadas:184,perdidas:0,avance:100.0},
   {act:"GI OLEICO",zona:"BA OESTE",loc:"PELLEGRINI",campo:"La Chana",ppto:2630.0,actual:2354.4,final:2300.1,sembradas:390,cosechadas:381,perdidas:9,avance:100.0},
@@ -583,22 +667,22 @@ const DATA = [
   {act:"GI OLEICO",zona:"BA SDE N",loc:"CHASCOMUS",campo:"La Petronita",ppto:2500.0,actual:1404.6,final:999.4,sembradas:104,cosechadas:74,perdidas:30,avance:100.0},
   {act:"GI OLEICO",zona:"BA SDE N",loc:"CHASCOMUS",campo:"La Reina",ppto:2300.0,actual:0.0,final:1554.3,sembradas:175,cosechadas:0,perdidas:5,avance:2.86},
   {act:"GI OLEICO",zona:"BA SDE N",loc:"GENERAL BELGRANO",campo:"El Pantano",ppto:2400.0,actual:2503.0,final:2503.0,sembradas:105,cosechadas:105,perdidas:0,avance:100.0},
-  {act:"GI OLEICO",zona:"BA SDE N",loc:"GENERAL BELGRANO",campo:"San Antonio II",ppto:2400.0,actual:0.0,final:1800.0,sembradas:57,cosechadas:0,perdidas:0,avance:0.0},
-  {act:"GI OLEICO",zona:"BA SDE N",loc:"MONTE",campo:"Cardal del Monte",ppto:2428.5,actual:2530.8,final:2402.5,sembradas:405,cosechadas:248,perdidas:0,avance:61.23},
+  {act:"GI OLEICO",zona:"BA SDE N",loc:"GENERAL BELGRANO",campo:"San Antonio II",ppto:2400.0,actual:2285.7,final:2157.9,sembradas:57,cosechadas:42,perdidas:0,avance:73.68},
+  {act:"GI OLEICO",zona:"BA SDE N",loc:"MONTE",campo:"Cardal del Monte",ppto:2428.5,actual:2584.1,final:2531.9,sembradas:405,cosechadas:350,perdidas:0,avance:86.42},
   {act:"GI OLEICO",zona:"BA SDE N",loc:"MONTE",campo:"El Coraje",ppto:2280.0,actual:2165.2,final:2165.2,sembradas:198,cosechadas:198,perdidas:0,avance:100.0},
-  {act:"GI OLEICO",zona:"BA SDE N",loc:"PILA",campo:"Carrizales",ppto:2100.0,actual:0.0,final:1600.0,sembradas:168,cosechadas:0,perdidas:0,avance:0.0},
+  {act:"GI OLEICO",zona:"BA SDE N",loc:"PILA",campo:"Carrizales",ppto:2100.0,actual:1366.9,final:1523.7,sembradas:168,cosechadas:55,perdidas:0,avance:32.74},
   {act:"GI OLEICO",zona:"BA SDE N",loc:"PILA",campo:"Loma Negra",ppto:2180.0,actual:2009.3,final:1963.9,sembradas:310,cosechadas:303,perdidas:7,avance:100.0},
-  {act:"GI OLEICO",zona:"BA SDE N",loc:"SAN VICENTE",campo:"El Ombu II",ppto:2300.0,actual:0.0,final:2000.0,sembradas:162,cosechadas:0,perdidas:0,avance:0.0},
-  {act:"GI OLEICO",zona:"BA SDE S",loc:"ADOLFO GONZALES CHAVES",campo:"Santa Teresa",ppto:1980.0,actual:1371.0,final:1279.8,sembradas:253,cosechadas:87,perdidas:0,avance:34.39},
+  {act:"GI OLEICO",zona:"BA SDE N",loc:"SAN VICENTE",campo:"El Ombu II",ppto:2300.0,actual:1990.0,final:1999.4,sembradas:162,cosechadas:10,perdidas:0,avance:6.17},
+  {act:"GI OLEICO",zona:"BA SDE S",loc:"ADOLFO GONZALES CHAVES",campo:"Santa Teresa",ppto:1980.0,actual:1427.4,final:1316.8,sembradas:253,cosechadas:122,perdidas:0,avance:48.22},
   {act:"GI OLEICO",zona:"BA SDE S",loc:"ENERGIA",campo:"El Alivio",ppto:2400.0,actual:3029.7,final:3029.7,sembradas:165,cosechadas:165,perdidas:0,avance:100.0},
   {act:"GI OLEICO",zona:"BA SDE S",loc:"ENERGIA",campo:"Tres Marias",ppto:2700.0,actual:3482.9,final:3482.9,sembradas:224,cosechadas:224,perdidas:0,avance:100.0},
   {act:"GI OLEICO",zona:"BA SDE S",loc:"LA AZUCENA",campo:"Cerro Destino II",ppto:2700.0,actual:2314.1,final:2220.3,sembradas:74,cosechadas:71,perdidas:3,avance:100.0},
   {act:"GI OLEICO",zona:"BA SDE S",loc:"LOBERIA",campo:"Las Overas",ppto:2600.0,actual:1660.7,final:1660.7,sembradas:338,cosechadas:338,perdidas:0,avance:100.0},
   {act:"GI OLEICO",zona:"BA SDE S",loc:"LOBERIA",campo:"San Lorenzo",ppto:2700.0,actual:2058.5,final:2055.8,sembradas:120,cosechadas:118,perdidas:0,avance:98.33},
   {act:"GI OLEICO",zona:"BA SDE S",loc:"NECOCHEA",campo:"El Ceibo II",ppto:2700.0,actual:3017.3,final:3017.3,sembradas:125,cosechadas:125,perdidas:0,avance:100.0},
-  {act:"GI OLEICO",zona:"BA SDE S",loc:"NECOCHEA",campo:"Mallinco",ppto:2080.0,actual:3047.8,final:2166.2,sembradas:214,cosechadas:41,perdidas:0,avance:19.16},
+  {act:"GI OLEICO",zona:"BA SDE S",loc:"NECOCHEA",campo:"Mallinco",ppto:2080.0,actual:3130.2,final:2290.6,sembradas:214,cosechadas:66,perdidas:0,avance:30.84},
   {act:"GI OLEICO",zona:"BA SDE S",loc:"QUEQUEN",campo:"Follaneras",ppto:2500.0,actual:2052.2,final:2052.2,sembradas:97,cosechadas:97,perdidas:0,avance:100.0},
-  {act:"GI OLEICO",zona:"BA SDE S",loc:"SAN CAYETANO",campo:"Millantuel",ppto:1980.0,actual:0.0,final:1400.0,sembradas:190,cosechadas:0,perdidas:0,avance:0.0},
+  {act:"GI OLEICO",zona:"BA SDE S",loc:"SAN CAYETANO",campo:"Millantuel",ppto:1980.0,actual:1265.4,final:1363.2,sembradas:190,cosechadas:52,perdidas:0,avance:27.37},
   {act:"GI OLEICO",zona:"BA SDE S",loc:"TANDIL",campo:"El Montiel",ppto:2500.0,actual:1410.6,final:1410.6,sembradas:252,cosechadas:252,perdidas:0,avance:100.0},
   {act:"GI OLEICO",zona:"BA SDE S",loc:"TANDIL",campo:"La Azucena",ppto:2700.0,actual:3046.4,final:3029.9,sembradas:370,cosechadas:368,perdidas:2,avance:100.0},
   {act:"GI OLEICO",zona:"BA SDE S",loc:"TANDIL",campo:"La Paulina",ppto:2600.0,actual:2344.5,final:2344.5,sembradas:477,cosechadas:477,perdidas:0,avance:100.0},
@@ -609,37 +693,37 @@ const DATA = [
   {act:"GI OLEICO",zona:"LA PAMPA",loc:"URIBURU",campo:"Los Robles Lonquimay",ppto:2500.0,actual:1953.5,final:1953.5,sembradas:23,cosechadas:23,perdidas:0,avance:100.0},
   // GIRASOL
   {act:"GIRASOL",zona:"BA COS N",loc:"BALCARCE",campo:"La Iaia",ppto:2400.0,actual:0.0,final:1900.0,sembradas:146,cosechadas:0,perdidas:0,avance:0.0},
-  {act:"GIRASOL",zona:"BA COS N",loc:"BALNEARIO MAR CHIQUITA",campo:"Los Tulipanes",ppto:2700.0,actual:2767.0,final:2718.2,sembradas:113,cosechadas:80,perdidas:0,avance:70.8},
+  {act:"GIRASOL",zona:"BA COS N",loc:"BALNEARIO MAR CHIQUITA",campo:"Los Tulipanes",ppto:2700.0,actual:3798.2,final:3448.3,sembradas:113,cosechadas:80,perdidas:0,avance:70.8},
   {act:"GIRASOL",zona:"BA COS N",loc:"BALNEARIO MAR CHIQUITA",campo:"San Marcos",ppto:2340.0,actual:1930.6,final:1911.9,sembradas:121,cosechadas:96,perdidas:5,avance:83.47},
   {act:"GIRASOL",zona:"BA COS N",loc:"GENERAL MADARIAGA",campo:"Don Gustavo",ppto:2800.0,actual:3257.8,final:3211.2,sembradas:105,cosechadas:104,perdidas:2,avance:100.0},
-  {act:"GIRASOL",zona:"BA COS N",loc:"GENERAL MADARIAGA",campo:"La Florida",ppto:2700.0,actual:0.0,final:2900.0,sembradas:205,cosechadas:0,perdidas:0,avance:0.0},
+  {act:"GIRASOL",zona:"BA COS N",loc:"GENERAL MADARIAGA",campo:"La Florida",ppto:2700.0,actual:7284.4,final:3776.9,sembradas:205,cosechadas:41,perdidas:0,avance:20.0},
   {act:"GIRASOL",zona:"BA COS N",loc:"GENERAL MADARIAGA",campo:"Los Robles",ppto:2616.2,actual:0.0,final:2600.0,sembradas:204,cosechadas:0,perdidas:0,avance:0.0},
   {act:"GIRASOL",zona:"BA COS N",loc:"LOBERIA",campo:"Manucam del Moro",ppto:1840.0,actual:0.0,final:1900.0,sembradas:258,cosechadas:0,perdidas:0,avance:0.0},
   {act:"GIRASOL",zona:"BA COS N",loc:"MACEDO",campo:"Macedo",ppto:2700.0,actual:3154.1,final:3146.2,sembradas:225,cosechadas:220,perdidas:0,avance:97.78},
   {act:"GIRASOL",zona:"BA COS N",loc:"MAR DEL PLATA",campo:"El Casalito",ppto:2500.0,actual:0.0,final:2400.0,sembradas:103,cosechadas:0,perdidas:0,avance:0.0},
   {act:"GIRASOL",zona:"BA COS N",loc:"MAR DEL PLATA",campo:"Las Bagualas",ppto:2660.0,actual:0.0,final:2359.6,sembradas:178,cosechadas:0,perdidas:3,avance:1.69},
-  {act:"GIRASOL",zona:"BA COS N",loc:"NAHUEL RUCA",campo:"Teha",ppto:2120.0,actual:2563.3,final:2416.8,sembradas:623,cosechadas:12,perdidas:10,avance:3.53},
+  {act:"GIRASOL",zona:"BA COS N",loc:"NAHUEL RUCA",campo:"Teha",ppto:2120.0,actual:2751.8,final:2431.3,sembradas:623,cosechadas:39,perdidas:10,avance:7.87},
   {act:"GIRASOL",zona:"BA COS N",loc:"VIVORATA",campo:"Aitona",ppto:2600.0,actual:2811.5,final:2811.5,sembradas:380,cosechadas:380,perdidas:0,avance:100.0},
-  {act:"GIRASOL",zona:"BA OESTE",loc:"CORONEL SUAREZ",campo:"Santa Ana OS",ppto:2200.0,actual:1283.7,final:1690.9,sembradas:297,cosechadas:165,perdidas:0,avance:55.56},
+  {act:"GIRASOL",zona:"BA OESTE",loc:"CORONEL SUAREZ",campo:"Santa Ana OS",ppto:2200.0,actual:1649.7,final:1894.3,sembradas:297,cosechadas:165,perdidas:0,avance:55.56},
   {act:"GIRASOL",zona:"BA OESTE",loc:"PELLEGRINI",campo:"La Chana",ppto:2630.0,actual:2761.4,final:2761.2,sembradas:640,cosechadas:639,perdidas:0,avance:99.84},
   {act:"GIRASOL",zona:"BA OESTE",loc:"SALLIQUELO",campo:"El Rosario OS",ppto:2300.0,actual:2380.0,final:2380.0,sembradas:251,cosechadas:251,perdidas:0,avance:100.0},
   {act:"GIRASOL",zona:"BA OESTE DX",loc:"BONIFACIO",campo:"Los Albores",ppto:2150.0,actual:1461.0,final:1461.0,sembradas:178,cosechadas:178,perdidas:0,avance:100.0},
   {act:"GIRASOL",zona:"BA OESTE DX",loc:"DAIREAUX",campo:"Chapaico",ppto:2600.0,actual:2407.7,final:2407.7,sembradas:198,cosechadas:198,perdidas:0,avance:100.0},
-  {act:"GIRASOL",zona:"BA SDE N",loc:"CASTELLI",campo:"La Corina",ppto:2210.0,actual:2642.2,final:2503.2,sembradas:238,cosechadas:177,perdidas:0,avance:74.37},
+  {act:"GIRASOL",zona:"BA SDE N",loc:"CASTELLI",campo:"La Corina",ppto:2210.0,actual:2348.5,final:2348.5,sembradas:238,cosechadas:238,perdidas:0,avance:100.0},
   {act:"GIRASOL",zona:"BA SDE N",loc:"CASTELLI",campo:"Los Indios I",ppto:2340.0,actual:2913.6,final:2913.6,sembradas:75,cosechadas:75,perdidas:0,avance:100.0},
-  {act:"GIRASOL",zona:"BA SDE N",loc:"GENERAL PAZ",campo:"El Negrete",ppto:2500.0,actual:3274.2,final:3012.7,sembradas:231,cosechadas:169,perdidas:0,avance:73.16},
-  {act:"GIRASOL",zona:"BA SDE N",loc:"MONTE",campo:"La Azotea",ppto:2450.0,actual:1908.7,final:1888.8,sembradas:82,cosechadas:67,perdidas:0,avance:81.71},
+  {act:"GIRASOL",zona:"BA SDE N",loc:"GENERAL PAZ",campo:"El Negrete",ppto:2500.0,actual:3191.6,final:3191.6,sembradas:231,cosechadas:231,perdidas:0,avance:100.0},
+  {act:"GIRASOL",zona:"BA SDE N",loc:"MONTE",campo:"La Azotea",ppto:2450.0,actual:1750.7,final:1750.7,sembradas:82,cosechadas:82,perdidas:0,avance:100.0},
   {act:"GIRASOL",zona:"BA SDE N",loc:"PILA",campo:"Banderitas",ppto:1530.0,actual:0.0,final:1028.6,sembradas:49,cosechadas:0,perdidas:21,avance:42.86},
   {act:"GIRASOL",zona:"BA SDE N",loc:"PILA",campo:"Carrizales",ppto:1560.0,actual:0.0,final:1200.0,sembradas:282,cosechadas:0,perdidas:0,avance:0.0},
   {act:"GIRASOL",zona:"BA SDE N",loc:"PILA",campo:"El Fortin",ppto:1760.0,actual:0.0,final:2069.9,sembradas:176,cosechadas:0,perdidas:0,avance:0.0},
-  {act:"GIRASOL",zona:"BA SDE N",loc:"PILA",campo:"El Rincon",ppto:1760.0,actual:0.0,final:1604.3,sembradas:1833,cosechadas:0,perdidas:0,avance:0.0},
-  {act:"GIRASOL",zona:"BA SDE N",loc:"PILA",campo:"San Damian",ppto:1700.0,actual:1889.9,final:1845.9,sembradas:436,cosechadas:137,perdidas:4,avance:32.34},
+  {act:"GIRASOL",zona:"BA SDE N",loc:"PILA",campo:"El Rincon",ppto:1760.0,actual:2000.0,final:1609.8,sembradas:1832,cosechadas:25,perdidas:0,avance:1.36},
+  {act:"GIRASOL",zona:"BA SDE N",loc:"PILA",campo:"San Damian",ppto:1700.0,actual:1705.8,final:1750.7,sembradas:436,cosechadas:221,perdidas:4,avance:51.61},
   {act:"GIRASOL",zona:"BA SDE N",loc:"PILA",campo:"San Jorge de Fourcade",ppto:2200.0,actual:2813.4,final:2813.4,sembradas:184,cosechadas:184,perdidas:0,avance:100.0},
   {act:"GIRASOL",zona:"BA SDE N",loc:"RANCHOS",campo:"Don Eduardo",ppto:2500.0,actual:2911.1,final:2875.2,sembradas:162,cosechadas:160,perdidas:2,avance:100.0},
   {act:"GIRASOL",zona:"BA SDE S",loc:"ADOLFO GONZALES CHAVES",campo:"Santa Teresa",ppto:2200.0,actual:1680.5,final:1680.5,sembradas:233,cosechadas:233,perdidas:0,avance:100.0},
   {act:"GIRASOL",zona:"BA SDE S",loc:"AYACUCHO",campo:"Cupalen II",ppto:2500.0,actual:3475.9,final:3475.9,sembradas:122,cosechadas:122,perdidas:0,avance:100.0},
-  {act:"GIRASOL",zona:"BA SDE S",loc:"AYACUCHO",campo:"El Ceibo",ppto:2160.0,actual:1513.8,final:1574.5,sembradas:288,cosechadas:85,perdidas:0,avance:29.51},
-  {act:"GIRASOL",zona:"BA SDE S",loc:"AYACUCHO",campo:"El Rosario",ppto:1980.0,actual:2818.8,final:2335.3,sembradas:236,cosechadas:134,perdidas:0,avance:56.78},
+  {act:"GIRASOL",zona:"BA SDE S",loc:"AYACUCHO",campo:"El Ceibo",ppto:2160.0,actual:1469.3,final:1545.6,sembradas:288,cosechadas:120,perdidas:0,avance:41.67},
+  {act:"GIRASOL",zona:"BA SDE S",loc:"AYACUCHO",campo:"El Rosario",ppto:1980.0,actual:2848.6,final:2522.5,sembradas:236,cosechadas:169,perdidas:0,avance:71.61},
   {act:"GIRASOL",zona:"BA SDE S",loc:"AYACUCHO",campo:"La Barrancosa",ppto:2250.0,actual:1652.5,final:1690.8,sembradas:213,cosechadas:180,perdidas:0,avance:84.51},
   {act:"GIRASOL",zona:"BA SDE S",loc:"AYACUCHO",campo:"La Reconquista",ppto:2500.0,actual:2711.3,final:2464.7,sembradas:85,cosechadas:62,perdidas:0,avance:72.94},
   {act:"GIRASOL",zona:"BA SDE S",loc:"AZUL",campo:"La Susana II",ppto:2090.0,actual:1905.5,final:1905.5,sembradas:20,cosechadas:20,perdidas:0,avance:100.0},
@@ -661,7 +745,7 @@ const DATA = [
   {act:"GIRASOL",zona:"LA PAMPA",loc:"URIBURU",campo:"Los Robles Lonquimay",ppto:2100.0,actual:1866.5,final:1828.1,sembradas:1120,cosechadas:1097,perdidas:23,avance:100.0},
   {act:"GIRASOL",zona:"LA PAMPA NORTE",loc:"REALICO",campo:"Agrotecnico",ppto:2100.0,actual:1657.7,final:1657.7,sembradas:454,cosechadas:454,perdidas:0,avance:100.0},
   {act:"GIRASOL",zona:"SAN LUIS",loc:"La Punilla",campo:"El 5",ppto:1700.0,actual:1461.2,final:1457.6,sembradas:407,cosechadas:406,perdidas:1,avance:100.0},
-  {act:"GIRASOL",zona:"SAN LUIS",loc:"PEDERNERA",campo:"El Secreto",ppto:1700.0,actual:1599.9,final:1607.1,sembradas:1567,cosechadas:1200,perdidas:0,avance:76.58},
+  {act:"GIRASOL",zona:"SAN LUIS",loc:"PEDERNERA",campo:"El Secreto",ppto:1700.0,actual:1594.3,final:1599.6,sembradas:1567,cosechadas:1248,perdidas:0,avance:79.64},
   {act:"GIRASOL",zona:"SAN LUIS",loc:"PEDERNERA",campo:"El Tastu",ppto:1750.0,actual:1469.9,final:1464.5,sembradas:2269,cosechadas:2176,perdidas:10,avance:96.34},
   // MAIZ
   {act:"MAIZ",zona:"BA COS N",loc:"BALNEARIO MAR CHIQUITA",campo:"Los Tulipanes",ppto:9500.0,actual:0.0,final:8600.0,sembradas:262,cosechadas:0,perdidas:0,avance:0.0},
@@ -689,7 +773,7 @@ const DATA = [
   {act:"MAIZ",zona:"BA SDE S",loc:"NECOCHEA",campo:"Dona Hilda",ppto:8500.0,actual:0.0,final:6500.0,sembradas:101,cosechadas:0,perdidas:0,avance:0.0},
   {act:"MAIZ",zona:"BA SDE S",loc:"QUEQUEN",campo:"Laterza",ppto:9000.0,actual:0.0,final:6800.0,sembradas:117,cosechadas:0,perdidas:0,avance:0.0},
   {act:"MAIZ",zona:"BA SDE S",loc:"TANDIL",campo:"La Paulina",ppto:8500.0,actual:0.0,final:8000.0,sembradas:280,cosechadas:0,perdidas:0,avance:0.0},
-  {act:"MAIZ",zona:"CBA SUR",loc:"CORONEL MOLDES",campo:"La Gama",ppto:8800.0,actual:8122.2,final:8148.4,sembradas:252,cosechadas:225,perdidas:0,avance:89.29},
+  {act:"MAIZ",zona:"CBA SUR",loc:"CORONEL MOLDES",campo:"La Gama",ppto:8800.0,actual:7975.2,final:7975.2,sembradas:252,cosechadas:252,perdidas:0,avance:100.0},
   {act:"MAIZ",zona:"CBA SUR",loc:"JOVITA",campo:"La Pachita",ppto:8800.0,actual:8289.2,final:8271.7,sembradas:206,cosechadas:21,perdidas:0,avance:10.39},
   {act:"MAIZ",zona:"CBA SUR",loc:"JOVITA",campo:"Sofamar",ppto:8800.0,actual:8292.0,final:8420.6,sembradas:178,cosechadas:129,perdidas:0,avance:72.47},
   {act:"MAIZ",zona:"CBA SUR",loc:"LOS CISNES",campo:"Las Pampas",ppto:8000.0,actual:5763.6,final:6071.9,sembradas:511,cosechadas:359,perdidas:0,avance:70.25},
@@ -708,20 +792,20 @@ const DATA = [
   {act:"MAIZ 2a",zona:"CHACO",loc:"PAMPA DEL INFIERNO",campo:"La Providencia II",ppto:4000.0,actual:0.0,final:4445.9,sembradas:545,cosechadas:0,perdidas:0,avance:0.0},
   {act:"MAIZ 2a",zona:"SAN LUIS",loc:"PEDERNERA",campo:"El Tastu",ppto:4000.0,actual:0.0,final:4700.0,sembradas:111,cosechadas:0,perdidas:0,avance:0.0},
   // MAIZ PISINGALLO
-  {act:"MAIZ PISINGALLO",zona:"BA NORTE",loc:"CARLOS TEJEDOR",campo:"La Alicia",ppto:4300.0,actual:5330.9,final:5359.1,sembradas:174,cosechadas:103,perdidas:0,avance:59.2},
+  {act:"MAIZ PISINGALLO",zona:"BA NORTE",loc:"CARLOS TEJEDOR",campo:"La Alicia",ppto:4300.0,actual:4997.3,final:5064.5,sembradas:174,cosechadas:145,perdidas:0,avance:83.33},
   {act:"MAIZ PISINGALLO",zona:"BA NORTE",loc:"COLON",campo:"San Ciriaco",ppto:5000.0,actual:5547.4,final:5547.4,sembradas:718,cosechadas:718,perdidas:0,avance:100.0},
   {act:"MAIZ PISINGALLO",zona:"BA NORTE",loc:"ROBERTS",campo:"La Alicia II",ppto:4000.0,actual:5531.2,final:5531.2,sembradas:168,cosechadas:168,perdidas:0,avance:100.0},
   {act:"MAIZ PISINGALLO",zona:"BA OESTE",loc:"PELLEGRINI",campo:"La Chana",ppto:6200.0,actual:5186.6,final:5186.6,sembradas:91,cosechadas:91,perdidas:0,avance:100.0},
   {act:"MAIZ PISINGALLO",zona:"BA OESTE",loc:"TRENQUE LAUQUEN",campo:"Don Francisco",ppto:4800.0,actual:5371.8,final:5371.8,sembradas:307,cosechadas:307,perdidas:0,avance:100.0},
   {act:"MAIZ PISINGALLO",zona:"BA OESTE",loc:"TRENQUE LAUQUEN",campo:"Don Roberto",ppto:4800.0,actual:5163.7,final:5163.7,sembradas:93,cosechadas:93,perdidas:0,avance:100.0},
-  {act:"MAIZ PISINGALLO",zona:"BA OESTE DX",loc:"ANDANT",campo:"San Jose del Encuentro",ppto:5000.0,actual:5038.7,final:5026.7,sembradas:421,cosechadas:290,perdidas:0,avance:68.88},
+  {act:"MAIZ PISINGALLO",zona:"BA OESTE DX",loc:"ANDANT",campo:"San Jose del Encuentro",ppto:5000.0,actual:5164.7,final:5115.4,sembradas:421,cosechadas:295,perdidas:0,avance:70.07},
   {act:"MAIZ PISINGALLO",zona:"BA OESTE DX",loc:"BONIFACIO",campo:"El Silencio",ppto:4800.0,actual:0.0,final:5300.0,sembradas:45,cosechadas:0,perdidas:0,avance:0.0},
   {act:"MAIZ PISINGALLO",zona:"BA OESTE DX",loc:"BONIFACIO",campo:"El Taita",ppto:4800.0,actual:3632.7,final:3632.7,sembradas:196,cosechadas:196,perdidas:0,avance:100.0},
-  {act:"MAIZ PISINGALLO",zona:"BA OESTE DX",loc:"DAIREAUX",campo:"Chapaico",ppto:4800.0,actual:3637.6,final:4009.3,sembradas:180,cosechadas:127,perdidas:0,avance:70.56},
-  {act:"MAIZ PISINGALLO",zona:"BA OESTE DX",loc:"DAIREAUX",campo:"Sauce Iru",ppto:4600.0,actual:4020.4,final:4015.8,sembradas:133,cosechadas:103,perdidas:0,avance:77.44},
-  {act:"MAIZ PISINGALLO",zona:"BA OESTE DX",loc:"MARIA LUCILA",campo:"La Dorita",ppto:4800.0,actual:4055.6,final:4055.6,sembradas:237,cosechadas:237,perdidas:0,avance:100.0},
-  {act:"MAIZ PISINGALLO",zona:"BA OESTE DX",loc:"SALAZAR",campo:"La Victoriana",ppto:4670.0,actual:5005.3,final:5005.3,sembradas:114,cosechadas:114,perdidas:0,avance:100.0},
-  {act:"MAIZ PISINGALLO",zona:"CBA SUR",loc:"CORONEL MOLDES",campo:"La Pichona",ppto:4700.0,actual:5138.9,final:4939.0,sembradas:472,cosechadas:257,perdidas:0,avance:54.45},
+  {act:"MAIZ PISINGALLO",zona:"BA OESTE DX",loc:"DAIREAUX",campo:"Chapaico",ppto:4800.0,actual:3728.3,final:3728.3,sembradas:180,cosechadas:180,perdidas:0,avance:100.0},
+  {act:"MAIZ PISINGALLO",zona:"BA OESTE DX",loc:"DAIREAUX",campo:"Sauce Iru",ppto:4600.0,actual:4097.9,final:4097.9,sembradas:133,cosechadas:133,perdidas:0,avance:100.0},
+  {act:"MAIZ PISINGALLO",zona:"BA OESTE DX",loc:"MARIA LUCILA",campo:"La Dorita",ppto:4800.0,actual:4054.1,final:4054.1,sembradas:237,cosechadas:237,perdidas:0,avance:100.0},
+  {act:"MAIZ PISINGALLO",zona:"BA OESTE DX",loc:"SALAZAR",campo:"La Victoriana",ppto:4670.0,actual:5003.2,final:5003.2,sembradas:114,cosechadas:114,perdidas:0,avance:100.0},
+  {act:"MAIZ PISINGALLO",zona:"CBA SUR",loc:"CORONEL MOLDES",campo:"La Pichona",ppto:4700.0,actual:5045.6,final:4906.5,sembradas:472,cosechadas:282,perdidas:0,avance:59.75},
   // MAIZ PISINGALLO TARDIO
   {act:"MAIZ PISINGALLO TARDIO",zona:"BA NORTE",loc:"ROBERTS",campo:"La Marcela",ppto:4000.0,actual:0.0,final:4000.0,sembradas:279,cosechadas:0,perdidas:0,avance:0.0},
   {act:"MAIZ PISINGALLO TARDIO",zona:"BA OESTE",loc:"PELLEGRINI",campo:"La Chana",ppto:4300.0,actual:0.0,final:4600.0,sembradas:337,cosechadas:0,perdidas:0,avance:0.0},
@@ -784,7 +868,7 @@ const DATA = [
   {act:"MAIZ TARDIO",zona:"LA PAMPA NORTE",loc:"REALICO",campo:"Agrotecnico",ppto:6000.0,actual:0.0,final:7269.4,sembradas:49,cosechadas:0,perdidas:0,avance:0.0},
   {act:"MAIZ TARDIO",zona:"SALTA",loc:"SALTA",campo:"El Chara II",ppto:6000.0,actual:0.0,final:6185.6,sembradas:2694,cosechadas:0,perdidas:0,avance:0.0},
   {act:"MAIZ TARDIO",zona:"SAN LUIS",loc:"La Punilla",campo:"El 5",ppto:4500.0,actual:0.0,final:4726.5,sembradas:520,cosechadas:0,perdidas:0,avance:0.0},
-  {act:"MAIZ TARDIO",zona:"SAN LUIS",loc:"PEDERNERA",campo:"El Secreto",ppto:4733.3,actual:0.0,final:5219.3,sembradas:321,cosechadas:0,perdidas:0,avance:0.0},
+  {act:"MAIZ TARDIO",zona:"SAN LUIS",loc:"PEDERNERA",campo:"El Secreto",ppto:4733.3,actual:0.0,final:5312.8,sembradas:321,cosechadas:0,perdidas:0,avance:0.0},
   {act:"MAIZ TARDIO",zona:"SAN LUIS",loc:"PEDERNERA",campo:"El Tastu",ppto:4575.0,actual:0.0,final:4782.3,sembradas:1659,cosechadas:0,perdidas:0,avance:0.0},
   {act:"MAIZ TARDIO",zona:"SANTIAGO DEL ESTERO",loc:"-",campo:"Don Pancho",ppto:5500.0,actual:0.0,final:5500.0,sembradas:247,cosechadas:0,perdidas:0,avance:0.0},
   {act:"MAIZ TARDIO",zona:"SANTIAGO DEL ESTERO",loc:"TINTINA",campo:"Los Prados",ppto:5500.0,actual:0.0,final:5500.0,sembradas:1861,cosechadas:0,perdidas:0,avance:0.0},
@@ -818,7 +902,7 @@ const DATA = [
   {act:"SOJA 1",zona:"BA OESTE DX",loc:"ANDANT",campo:"Malda Gain",ppto:2000.0,actual:0.0,final:3087.4,sembradas:127,cosechadas:0,perdidas:0,avance:0.0},
   {act:"SOJA 1",zona:"BA OESTE DX",loc:"ANDANT",campo:"San Jose del Encuentro",ppto:3000.0,actual:0.0,final:2971.5,sembradas:277,cosechadas:0,perdidas:0,avance:0.0},
   {act:"SOJA 1",zona:"BA OESTE DX",loc:"BONIFACIO",campo:"El Estribito",ppto:3500.0,actual:0.0,final:3800.0,sembradas:40,cosechadas:0,perdidas:0,avance:0.0},
-  {act:"SOJA 1",zona:"BA OESTE DX",loc:"BONIFACIO",campo:"El Silencio",ppto:3500.0,actual:0.0,final:3610.3,sembradas:668,cosechadas:0,perdidas:0,avance:0.0},
+  {act:"SOJA 1",zona:"BA OESTE DX",loc:"BONIFACIO",campo:"El Silencio",ppto:3500.0,actual:4141.2,final:3634.9,sembradas:668,cosechadas:48,perdidas:0,avance:7.19},
   {act:"SOJA 1",zona:"BA OESTE DX",loc:"DAIREAUX",campo:"Chapaico",ppto:3038.9,actual:0.0,final:3650.0,sembradas:180,cosechadas:0,perdidas:0,avance:0.0},
   {act:"SOJA 1",zona:"BA OESTE DX",loc:"DAIREAUX",campo:"Gabilo",ppto:3500.0,actual:0.0,final:3200.0,sembradas:155,cosechadas:0,perdidas:0,avance:0.0},
   {act:"SOJA 1",zona:"BA OESTE DX",loc:"DAIREAUX",campo:"La Josefina",ppto:3000.0,actual:0.0,final:2402.9,sembradas:70,cosechadas:0,perdidas:0,avance:0.0},
@@ -877,7 +961,7 @@ const DATA = [
   {act:"SOJA 1 NO GMO",zona:"BA NORTE",loc:"DRABBLE",campo:"La Constanza",ppto:4000.0,actual:0.0,final:4620.5,sembradas:979,cosechadas:0,perdidas:0,avance:0.0},
   {act:"SOJA 1 NO GMO",zona:"BA NORTE",loc:"FORTIN TIBURCIO",campo:"La Vijorca",ppto:4200.0,actual:0.0,final:3712.7,sembradas:205,cosechadas:0,perdidas:0,avance:0.0},
   {act:"SOJA 1 NO GMO",zona:"BA NORTE",loc:"PERGAMINO",campo:"San Federico",ppto:4200.0,actual:3308.5,final:3302.0,sembradas:263,cosechadas:63,perdidas:0,avance:23.95},
-  {act:"SOJA 1 NO GMO",zona:"BA NORTE",loc:"PERGAMINO",campo:"San Federico II",ppto:3800.0,actual:0.0,final:4200.0,sembradas:47,cosechadas:0,perdidas:0,avance:0.0},
+  {act:"SOJA 1 NO GMO",zona:"BA NORTE",loc:"PERGAMINO",campo:"San Federico II",ppto:3800.0,actual:4763.3,final:4559.5,sembradas:47,cosechadas:30,perdidas:0,avance:63.83},
   // SOJA 2
   {act:"SOJA 2",zona:"BA COS N",loc:"BALCARCE",campo:"La Cantera",ppto:2000.0,actual:0.0,final:1500.0,sembradas:117,cosechadas:0,perdidas:0,avance:0.0},
   {act:"SOJA 2",zona:"BA COS N",loc:"BALNEARIO MAR CHIQUITA",campo:"Los Tulipanes",ppto:2000.0,actual:0.0,final:1700.0,sembradas:65,cosechadas:0,perdidas:0,avance:0.0},
@@ -1757,6 +1841,7 @@ function switchTab(tab){
   if(pane){ pane.classList.add('active'); pane.style.display='block'; }
   if(tab==='detalle') filterTable();
   if(tab==='resumen') renderResumen();
+  if(tab==='inteligencia') renderInteligencia();
 }
 
 // ===== RENDER RESUMEN (fully dynamic) =====
@@ -2418,6 +2503,290 @@ function refreshResumenZonas(acts){
     const el = document.getElementById(tbodyId);
     if(el) renderZonaTable(buildZonas(act), tbodyId);
   });
+}
+
+// ===== INTELIGENCIA DE COSECHA =====
+function renderInteligencia(){
+  const data = getScopedData();
+  const S = (arr,k) => arr.reduce((a,d)=>a+(+d[k]||0),0);
+  const fmt  = n => (!n&&n!==0)||isNaN(n)?'—':Math.round(n).toLocaleString('es-AR');
+  const fmtD = n => (n>=0?'+':'')+n.toFixed(1)+'%';
+  const fmtTn = n => Math.round(Math.abs(n)).toLocaleString('es-AR');
+
+  if(!data.length){
+    ['intel-kpi-grid','intel-insights','intel-concl-grid','intel-pending-grid'].forEach(id=>{
+      const el=document.getElementById(id); if(el) el.innerHTML=`<div class="intel-empty">Sin datos cargados.</div>`;
+    });
+    return;
+  }
+
+  // ── Stats por cultivo ──────────────────────────────────────────────
+  const acts = [...new Set(data.map(d=>d.act))];
+
+  function actStats(act){
+    const sub = data.filter(d=>d.act===act);
+    const sembr = S(sub,'sembradas');
+    const cos   = S(sub,'cosechadas');
+    const perd  = S(sub,'perdidas');
+    const pend  = Math.max(0, sembr - cos - perd);
+    const av    = sembr>0 ? cos/sembr*100 : 0;
+
+    // Rindes ponderados
+    const wPpto  = sub.reduce((a,d)=>a+d.ppto *d.sembradas,0) / (sembr||1);
+    const wFinal = sub.reduce((a,d)=>a+d.final*d.sembradas,0) / (sembr||1);
+    const wEst   = sub.reduce((a,d)=>a+(d.final>0?d.final:d.ppto)*d.sembradas,0) / (sembr||1);
+
+    // Solo campos con cosecha real para rinde actual
+    const conCos = sub.filter(d=>d.cosechadas>0);
+    const cosHas = S(conCos,'cosechadas');
+    const wActual= cosHas>0 ? conCos.reduce((a,d)=>a+d.actual*d.cosechadas,0)/cosHas : 0;
+
+    // Desviación vs presupuesto
+    const devFinal = wPpto>0 ? (wFinal/wPpto-1)*100 : 0;
+    const devAct   = wPpto>0 && wActual>0 ? (wActual/wPpto-1)*100 : null;
+    const devEst   = wPpto>0 ? (wEst/wPpto-1)*100 : 0;
+
+    // TN impacto (diferencia vs ppto, sobre has cosechadas)
+    const tnExtraCos  = (wFinal - wPpto) * cos / 1000;
+    const tnEstPend   = wEst * pend / 1000;
+    const tnPptoPend  = wPpto * pend / 1000;
+    const tnExtraPend = (wEst - wPpto) * pend / 1000;
+
+    // Mejores y peores zonas (por desviación ponderada)
+    const byZona = {};
+    sub.forEach(d=>{
+      if(!byZona[d.zona]) byZona[d.zona]={sembr:0,wDev:0};
+      byZona[d.zona].sembr += d.sembradas;
+      byZona[d.zona].wDev  += (d.final>0?d.final:d.ppto)*d.sembradas;
+    });
+    const zonaRanked = Object.entries(byZona)
+      .map(([z,v])=>({zona:z, sembr:v.sembr, rinde:v.wDev/(v.sembr||1)}))
+      .filter(z=>z.sembr>50)
+      .sort((a,b)=>b.rinde-a.rinde);
+    const mejorZona  = zonaRanked[0];
+    const peorZona   = zonaRanked[zonaRanked.length-1];
+
+    return { act, sembr, cos, perd, pend, av, wPpto, wFinal, wActual, wEst,
+             devFinal, devAct, devEst, tnExtraCos, tnEstPend, tnPptoPend, tnExtraPend,
+             mejorZona, peorZona, nZonas:[...new Set(sub.map(d=>d.zona))].length,
+             nCampos: sub.length };
+  }
+
+  const stats = acts.map(actStats);
+
+  // ── KPIs globales ──────────────────────────────────────────────────
+  const totalHasSembr = S(data,'sembradas');
+  const totalHasCos   = S(data,'cosechadas');
+  const totalHasPerd  = S(data,'perdidas');
+  const totalHasPend  = Math.max(0, totalHasSembr - totalHasCos - totalHasPerd);
+  const avG = totalHasSembr>0 ? totalHasCos/totalHasSembr*100 : 0;
+
+  const totalTnExtraCos  = stats.reduce((a,s)=>a+s.tnExtraCos,0);
+  const totalTnEstPend   = stats.reduce((a,s)=>a+s.tnEstPend,0);
+  const totalTnExtraPend = stats.reduce((a,s)=>a+s.tnExtraPend,0);
+
+  const bestAct = [...stats].filter(s=>s.cos>0).sort((a,b)=>b.devFinal-a.devFinal)[0];
+  const worstAct= [...stats].filter(s=>s.cos>0).sort((a,b)=>a.devFinal-b.devFinal)[0];
+
+  const kpiEl = document.getElementById('intel-kpi-grid');
+  if(kpiEl) kpiEl.innerHTML = `
+    <div class="intel-kpi ${totalTnExtraCos>=0?'pos':'neg'}">
+      <span class="intel-kpi-icon">${totalTnExtraCos>=0?'📈':'📉'}</span>
+      <div class="intel-kpi-lbl">Impacto cosechado vs. ppto</div>
+      <div class="intel-kpi-val">${totalTnExtraCos>=0?'+':''}${fmtTn(totalTnExtraCos)}<span class="intel-kpi-unit">tn</span></div>
+      <div class="intel-kpi-sub">${totalTnExtraCos>=0?'Por encima':'Por debajo'} del presupuesto en lo ya cosechado · ${fmt(totalHasCos)} ha · ${avG.toFixed(1)}% del área</div>
+    </div>
+    <div class="intel-kpi ${totalTnExtraPend>=0?'pos':'neg'}">
+      <span class="intel-kpi-icon">🌾</span>
+      <div class="intel-kpi-lbl">Impacto estimado en pie</div>
+      <div class="intel-kpi-val">${totalTnExtraPend>=0?'+':''}${fmtTn(totalTnExtraPend)}<span class="intel-kpi-unit">tn</span></div>
+      <div class="intel-kpi-sub">Estimación para las ${fmt(totalHasPend)} ha pendientes de cosecha</div>
+    </div>
+    <div class="intel-kpi gold">
+      <span class="intel-kpi-icon">⏳</span>
+      <div class="intel-kpi-lbl">Producción estimada en pie</div>
+      <div class="intel-kpi-val">${fmtTn(totalTnEstPend)}<span class="intel-kpi-unit">tn</span></div>
+      <div class="intel-kpi-sub">Estimado total a cosechar sobre ${fmt(totalHasPend)} ha restantes</div>
+    </div>
+    <div class="intel-kpi blue">
+      <span class="intel-kpi-icon">🏆</span>
+      <div class="intel-kpi-lbl">Mejor cultivo cosechado</div>
+      <div class="intel-kpi-val" style="font-size:18px">${bestAct?bestAct.act:'—'}</div>
+      <div class="intel-kpi-sub">${bestAct?fmtD(bestAct.devFinal)+' vs ppto · '+fmt(bestAct.wFinal)+' kg/ha':'Sin datos'}</div>
+    </div>`;
+
+  // ── Insights clave ─────────────────────────────────────────────────
+  const insights = [];
+
+  // Cultivos con cosecha avanzada vs presupuesto
+  stats.filter(s=>s.cos>500&&s.devFinal>2).forEach(s=>{
+    const tnLabel = s.tnExtraCos>=1000
+      ? `${(s.tnExtraCos/1000).toFixed(1)}k tn`
+      : `${fmtTn(s.tnExtraCos)} tn`;
+    insights.push({type:'pos', text:`<strong>${s.act}</strong>: rinde ${fmtD(s.devFinal)} vs presupuesto en lo cosechado, sumando <strong>+${tnLabel}</strong> de producción adicional. Mejor zona: <strong>${s.mejorZona?.zona||'—'}</strong>.`});
+  });
+  stats.filter(s=>s.cos>500&&s.devFinal<-2).forEach(s=>{
+    const tnLabel = Math.abs(s.tnExtraCos)>=1000
+      ? `${(Math.abs(s.tnExtraCos)/1000).toFixed(1)}k tn`
+      : `${fmtTn(s.tnExtraCos)} tn`;
+    insights.push({type:'neg', text:`<strong>${s.act}</strong>: rinde ${fmtD(s.devFinal)} vs presupuesto en lo cosechado, implicando <strong>−${tnLabel}</strong> vs lo esperado. Zona más afectada: <strong>${s.peorZona?.zona||'—'}</strong>.`});
+  });
+
+  // Cultivos en espera con estimación favorable
+  stats.filter(s=>s.cos<s.sembr*0.3&&s.pend>500&&s.devEst>3).forEach(s=>{
+    insights.push({type:'gld', text:`<strong>${s.act}</strong> tiene <strong>${fmt(s.pend)} ha</strong> pendientes con estimación de rinde ${fmtD(s.devEst)} vs ppto — potencial de <strong>+${fmtTn(s.tnExtraPend)} tn</strong> adicionales si se confirma.`});
+  });
+  stats.filter(s=>s.cos<s.sembr*0.3&&s.pend>500&&s.devEst<-3).forEach(s=>{
+    insights.push({type:'neg', text:`<strong>${s.act}</strong> tiene <strong>${fmt(s.pend)} ha</strong> pendientes y un estimado de rinde ${fmtD(s.devEst)} vs ppto — riesgo de <strong>−${fmtTn(Math.abs(s.tnExtraPend))} tn</strong> vs presupuesto en lo que falta.`});
+  });
+
+  // Cultivos ya terminados
+  stats.filter(s=>s.av>=95).forEach(s=>{
+    const sg = s.devFinal>=0;
+    insights.push({type: sg?'pos':'neg', text:`<strong>${s.act}</strong> prácticamente cosechado al 100% (${s.av.toFixed(0)}%). Rinde final de <strong>${fmt(s.wFinal)} kg/ha</strong> ${sg?'superando':'por debajo de'} el presupuesto de ${fmt(s.wPpto)} kg/ha en ${fmtD(Math.abs(s.devFinal))}.`});
+  });
+
+  // Cultivos sin arrancar con mucha superficie
+  stats.filter(s=>s.av<5&&s.sembr>2000).forEach(s=>{
+    insights.push({type:'neu', text:`<strong>${s.act}</strong>: ${fmt(s.sembr)} ha prácticamente sin cosechar aún. Estimación de <strong>${fmtTn(s.tnEstPend)} tn</strong> en pie a un rinde proyectado de ${fmt(s.wEst)} kg/ha.`});
+  });
+
+  if(!insights.length){
+    insights.push({type:'neu', text:'Sin conclusiones relevantes para el alcance actual de datos.'});
+  }
+
+  const insightsEl = document.getElementById('intel-insights');
+  if(insightsEl) insightsEl.innerHTML = insights.map(ins=>`
+    <div class="insight-item">
+      <div class="insight-dot ${ins.type}"></div>
+      <div class="insight-text">${ins.text}</div>
+    </div>`).join('');
+
+  // ── Conclusiones por cultivo ───────────────────────────────────────
+  function narrativa(s){
+    const avTxt = s.av>=99?'cosecha finalizada':
+                  s.av>=75?`cosecha avanzada (${s.av.toFixed(0)}%)`:
+                  s.av>=30?`en cosecha (${s.av.toFixed(0)}%)`:
+                  s.av>=5 ?`cosecha iniciada (${s.av.toFixed(0)}%)`:
+                  'pendiente de cosecha';
+
+    const fmtTnImp = (n) => {
+      const abs = Math.abs(n);
+      const str = abs>=1000 ? `${(abs/1000).toFixed(1)}k` : fmtTn(abs);
+      return (n>=0?'+':'-')+str+' tn';
+    };
+
+    let txt = '';
+
+    if(s.av >= 95){
+      // Cultivo terminado — hablamos de resultados reales
+      const sg = s.devFinal>=0;
+      txt = `La <strong>${s.act}</strong> prácticamente terminó su cosecha sobre <strong>${fmt(s.sembr)} ha</strong> en ${s.nZonas} zonas. `
+          + `El rinde final ponderado fue <strong>${fmt(s.wFinal)} kg/ha</strong>, `
+          + `${sg?'superando':'por debajo de'} el presupuesto de ${fmt(s.wPpto)} kg/ha en <strong>${fmtD(s.devFinal)}</strong>. `
+          + `Esto representa <strong>${fmtTnImp(s.tnExtraCos)}</strong> respecto a lo previsto. `;
+      if(s.mejorZona && s.peorZona && s.mejorZona.zona!==s.peorZona.zona)
+        txt += `La zona de mejor desempeño fue <strong>${s.mejorZona.zona}</strong> (${fmt(s.mejorZona.rinde)} kg/ha) y la de menor rendimiento <strong>${s.peorZona.zona}</strong> (${fmt(s.peorZona.rinde)} kg/ha).`;
+
+    } else if(s.av >= 5){
+      // En cosecha — combinamos real + estimación
+      const sgAct = s.devAct!=null ? s.devAct>=0 : null;
+      const sgEst = s.devEst>=0;
+      txt = `La <strong>${s.act}</strong> se encuentra en cosecha con <strong>${fmt(s.cos)} ha</strong> de <strong>${fmt(s.sembr)} ha</strong> (${s.av.toFixed(0)}%). `;
+      if(s.devAct!=null && Math.abs(s.devAct)>0.5)
+        txt += `El rinde actual en lo cosechado es <strong>${fmt(s.wActual)} kg/ha</strong> (${sgAct?'<strong style="color:var(--green)">':'<strong style="color:var(--red)">'}${fmtD(s.devAct)} vs ppto</strong>), `
+             + `implicando <strong>${fmtTnImp(s.tnExtraCos)}</strong> respecto al presupuesto en lo ya cosechado. `;
+      if(s.pend > 200)
+        txt += `Para las <strong>${fmt(s.pend)} ha pendientes</strong>, el estimado apunta a <strong>${fmt(s.wEst)} kg/ha</strong> (${sgEst?'<strong style="color:var(--green)">':'<strong style="color:var(--red)">'}${fmtD(s.devEst)} vs ppto</strong>), `
+             + `con <strong>${fmtTnImp(s.tnExtraPend)}</strong> estimadas vs presupuesto. `;
+      if(s.mejorZona)
+        txt += `Zona de mejor rinde actual: <strong>${s.mejorZona.zona}</strong>.`;
+
+    } else {
+      // Sin cosechar — proyecciones puras
+      const sgEst = s.devEst>=0;
+      txt = `La <strong>${s.act}</strong> tiene <strong>${fmt(s.sembr)} ha</strong> prácticamente sin cosechar. `
+          + `Las estimaciones apuntan a un rinde de <strong>${fmt(s.wEst)} kg/ha</strong> `
+          + `(${sgEst?'<strong style="color:var(--green)">':'<strong style="color:var(--red)">'}${fmtD(s.devEst)} vs el presupuesto</strong> de ${fmt(s.wPpto)} kg/ha). `
+          + `Esto implica una producción estimada de <strong>${fmtTn(s.tnEstPend)} tn</strong>, `
+          + `con <strong>${fmtTnImp(s.tnExtraPend)}</strong> vs lo presupuestado. `;
+      if(s.mejorZona)
+        txt += `La mayor superficie se concentra en <strong>${s.mejorZona.zona}</strong>.`;
+    }
+
+    return txt;
+  }
+
+  function hdrClass(s){
+    if(s.av>=95) return s.devFinal>=0?'hdr-pos':'hdr-neg';
+    if(s.av>=5)  return s.devAct!=null&&s.devAct>=0?'hdr-pos': s.devAct!=null&&s.devAct<0?'hdr-neg':'hdr-neu';
+    return 'hdr-gld';
+  }
+
+  // Agrupar en filas de 2
+  const conclEl = document.getElementById('intel-concl-grid');
+  if(conclEl){
+    // Sort: finished first, then in-progress, then pending
+    const sorted = [...stats].sort((a,b)=>{
+      const order = s => s.av>=95?0:s.av>=5?1:2;
+      return order(a)-order(b) || b.sembr-a.sembr;
+    });
+    let html = '<div class="intel-two-col">';
+    sorted.forEach((s,i)=>{
+      if(i>0 && i%2===0) html += '</div><div class="intel-two-col">';
+      const devCos = s.cos>0 ? `<div class="cs-lbl">Desvío cosechado</div><div class="cs-val ${s.devFinal>=0?'pos':'neg'}">${fmtD(s.devFinal)}</div><div class="cs-sub">${fmt(s.wFinal)} kg/ha</div>` : `<div class="cs-lbl">Desvío cosechado</div><div class="cs-val" style="color:var(--muted);font-size:13px">Sin datos</div><div class="cs-sub">—</div>`;
+      const devPend = s.pend>0 ? `<div class="cs-lbl">Estimado pendiente</div><div class="cs-val gld">${fmtD(s.devEst)}</div><div class="cs-sub">${fmt(s.wEst)} kg/ha</div>` : `<div class="cs-lbl">Estimado pendiente</div><div class="cs-val" style="color:var(--muted);font-size:13px">Finalizado</div><div class="cs-sub">—</div>`;
+      const tnImpCos = s.cos>0 ? `<div class="cs-lbl">Impacto tn cosechado</div><div class="cs-val ${s.tnExtraCos>=0?'pos':'neg'}">${s.tnExtraCos>=0?'+':''}${fmtTn(s.tnExtraCos)}</div><div class="cs-sub">tn vs ppto</div>` : `<div class="cs-lbl">Impacto tn cosechado</div><div class="cs-val" style="color:var(--muted);font-size:13px">—</div><div class="cs-sub">Sin cosecha aún</div>`;
+      const tnImpPend = s.pend>0 ? `<div class="cs-lbl">Impacto tn estimado</div><div class="cs-val ${s.tnExtraPend>=0?'pos':'neg'}">${s.tnExtraPend>=0?'+':''}${fmtTn(s.tnExtraPend)}</div><div class="cs-sub">tn vs ppto en pie</div>` : `<div class="cs-lbl">Impacto tn estimado</div><div class="cs-val" style="color:var(--muted);font-size:13px">—</div><div class="cs-sub">Todo cosechado</div>`;
+      html += `
+        <div class="concl-card">
+          <div class="concl-hdr ${hdrClass(s)}">
+            <div class="concl-crop">${s.act}</div>
+            <div class="concl-meta">
+              ${fmt(s.sembr)} ha · ${s.nZonas} zonas · ${s.nCampos} campos<br>
+              ${s.av>=99?'✅ Finalizado':s.av>=5?'🌀 En cosecha ('+s.av.toFixed(0)+'%)':'⏳ Pendiente'}
+            </div>
+          </div>
+          <div class="concl-body">
+            <div class="concl-narrative">${narrativa(s)}</div>
+            <div class="concl-stats">
+              <div>${devCos}</div>
+              <div>${devPend}</div>
+              <div>${tnImpCos}</div>
+              <div>${tnImpPend}</div>
+            </div>
+          </div>
+        </div>`;
+    });
+    html += '</div>';
+    conclEl.innerHTML = html;
+  }
+
+  // ── Lo que falta cosechar ──────────────────────────────────────────
+  const pendEl = document.getElementById('intel-pending-grid');
+  if(pendEl){
+    const pending = stats.filter(s=>s.pend>50).sort((a,b)=>b.tnEstPend-a.tnEstPend);
+    if(!pending.length){
+      pendEl.innerHTML = `<div class="intel-empty" style="grid-column:1/-1">🎉 ¡Todo cosechado! No quedan hectáreas pendientes.</div>`;
+    } else {
+      const maxTn = Math.max(...pending.map(s=>s.tnEstPend));
+      pendEl.innerHTML = pending.map(s=>{
+        const pct = maxTn>0 ? s.tnEstPend/maxTn*100 : 0;
+        const avPend = s.sembr>0 ? (s.pend/s.sembr*100).toFixed(0) : 0;
+        const tnImpStr = s.tnExtraPend>=0
+          ? `<span style="color:var(--green)">+${fmtTn(s.tnExtraPend)} tn vs ppto</span>`
+          : `<span style="color:var(--red)">−${fmtTn(Math.abs(s.tnExtraPend))} tn vs ppto</span>`;
+        return `
+          <div class="pend-card">
+            <div class="pend-crop">${s.act}</div>
+            <div class="pend-has">${fmt(s.pend)}<span style="font-size:13px;font-family:'IBM Plex Mono',monospace;color:var(--muted);margin-left:4px">ha</span></div>
+            <div class="pend-tn">${fmtTn(s.tnEstPend)} tn estimadas</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:8px">${avPend}% del área pendiente · ${fmt(s.wEst)} kg/ha estimado · ${tnImpStr}</div>
+            <div class="pend-bar-wrap"><div class="pend-bar-fill" style="width:${pct.toFixed(1)}%"></div></div>
+          </div>`;
+      }).join('');
+    }
+  }
 }
 
 // Init
