@@ -64,6 +64,12 @@ body { background:var(--bg); color:var(--text); font-family:'IBM Plex Sans',sans
 .kpi-val { font-family:'Playfair Display',serif; font-size:26px; font-weight:700; line-height:1; color:var(--text); }
 .kpi-unit { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); margin-left:2px; }
 .kpi-sub { font-size:10px; color:var(--muted); margin-top:5px; font-weight:300; }
+.desvio-dual { display:flex; gap:12px; margin-top:6px; }
+.desvio-dual .dv-col { flex:1; }
+.desvio-dual .dv-lbl { font-family:'IBM Plex Mono',monospace; font-size:7px; letter-spacing:.1em; color:var(--muted); text-transform:uppercase; margin-bottom:3px; }
+.desvio-dual .dv-val { font-family:'Playfair Display',serif; font-size:18px; font-weight:700; line-height:1.2; }
+.desvio-dual .dv-sub { font-size:9px; color:var(--muted); margin-top:2px; }
+.desvio-dual .dv-div { width:1px; background:var(--border); }
 .badge { display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:9px; padding:2px 7px; border-radius:2px; margin-top:4px; font-weight:600; }
 .badge.pos { background:var(--green-lt); color:var(--green); }
 .badge.neg { background:var(--red-lt); color:var(--red); }
@@ -443,7 +449,7 @@ tbody tr.detail-row.open { display:table-row; }
   <div>
     <div class="h-eyebrow">Espartina SA · Campaña 25/26</div>
     <div class="h-title" id="h-title">Informe de Cosecha & Producción</div>
-    <div class="h-sub" id="h-sub">Estado al 14/04/2026 · Todas las zonas · Actualizado 15:57</div>
+    <div class="h-sub" id="h-sub">Estado al 14/04/2026 · Todas las zonas · Actualizado 16:48</div>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
     <button id="export-btn" onclick="exportarExcel()" style="display:none;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;padding:7px 14px;border-radius:3px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">
@@ -1926,8 +1932,9 @@ function renderResumen(){
     const totC    = S(sub.filter(d=>d.cosechadas>0),'cosechadas');
     const wA      = totC>0?sub.reduce((a,d)=>a+d.actual*d.cosechadas,0)/totC:0;
     const dev     = wP>0?(wF-wP)/wP*100:0;
+    const devCos  = wP>0&&wA>0?(wA-wP)/wP*100:null;
     const nZonas  = new Set(sub.map(d=>d.zona)).size;
-    return {act,sembr,cos,av,ppto:wP,actual:wA,final:wF,dev,nZonas};
+    return {act,sembr,cos,av,ppto:wP,actual:wA,final:wF,dev,devCos,nZonas};
   };
 
   const statsArr = acts.map(actStats).filter(Boolean);
@@ -1963,11 +1970,21 @@ function renderResumen(){
         <div class="kpi-val">${fmt(totPend)}<span class="kpi-unit">ha</span></div>
         <div class="kpi-sub">${(100-st.av).toFixed(1)}% pendiente</div>
       </div>
-      <div class="kpi ${st.dev>=0?'g':'r'}">
+      <div class="kpi">
         <div class="kpi-lbl">Desvío Rinde</div>
-        <div class="kpi-val" style="color:${st.dev>=0?'var(--green)':'var(--red)'}">${st.dev>=0?'+':''}${st.dev.toFixed(1)}<span class="kpi-unit">%</span></div>
-        <div class="kpi-sub">Ppto ${fmtR(st.ppto)} → Final ${fmtR(st.final)} kg/ha</div>
-        <span class="badge ${st.dev>=0?'pos':'neg'}">${st.dev>=0?'+':''}${Math.round(st.final-st.ppto)} kg/ha</span>
+        <div class="desvio-dual">
+          <div class="dv-col">
+            <div class="dv-lbl">Cosechado</div>
+            <div class="dv-val ${st.devCos!==null&&st.devCos>=0?'pos':'neg'}">${st.devCos!==null?(st.devCos>=0?'+':'')+st.devCos.toFixed(1):'—'}<span class="kpi-unit">${st.devCos!==null?'%':''}</span></div>
+            <div class="dv-sub">${st.actual>0?fmtR(st.actual)+' kg/ha vs ppto':'sin cosecha'}</div>
+          </div>
+          <div class="dv-div"></div>
+          <div class="dv-col">
+            <div class="dv-lbl">Final</div>
+            <div class="dv-val ${st.dev>=0?'pos':'neg'}">${st.dev>=0?'+':''}${st.dev.toFixed(1)}<span class="kpi-unit">%</span></div>
+            <div class="dv-sub">${fmtR(st.final)} kg/ha final</div>
+          </div>
+        </div>
       </div>`;
   } else {
     kpiEl.innerHTML = `
@@ -1988,11 +2005,21 @@ function renderResumen(){
         <div class="kpi-sub">${(100-avPct).toFixed(1)}% pendiente</div>
       </div>
       ${statsArr.map(st=>`
-      <div class="kpi ${st.dev>=0?'g':'r'}">
+      <div class="kpi">
         <div class="kpi-lbl">Desvío ${st.act}</div>
-        <div class="kpi-val" style="color:${st.dev>=0?'var(--green)':'var(--red)'}">${st.dev>=0?'+':''}${st.dev.toFixed(1)}<span class="kpi-unit">%</span></div>
-        <div class="kpi-sub">Ppto ${fmtR(st.ppto)} → Final ${fmtR(st.final)} kg/ha</div>
-        <span class="badge ${st.dev>=0?'pos':'neg'}">${st.dev>=0?'+':''}${Math.round(st.final-st.ppto)} kg/ha</span>
+        <div class="desvio-dual">
+          <div class="dv-col">
+            <div class="dv-lbl">Cosechado</div>
+            <div class="dv-val ${st.devCos!==null&&st.devCos>=0?'pos':'neg'}">${st.devCos!==null?(st.devCos>=0?'+':'')+st.devCos.toFixed(1):'—'}<span class="kpi-unit">${st.devCos!==null?'%':''}</span></div>
+            <div class="dv-sub">${st.actual>0?fmtR(st.actual)+' kg/ha vs ppto':'sin cosecha'}</div>
+          </div>
+          <div class="dv-div"></div>
+          <div class="dv-col">
+            <div class="dv-lbl">Final</div>
+            <div class="dv-val ${st.dev>=0?'pos':'neg'}">${st.dev>=0?'+':''}${st.dev.toFixed(1)}<span class="kpi-unit">%</span></div>
+            <div class="dv-sub">${fmtR(st.final)} kg/ha final</div>
+          </div>
+        </div>
       </div>`).join('')}`;
   }
   } // end kpiEl guard
