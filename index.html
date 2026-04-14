@@ -449,7 +449,7 @@ tbody tr.detail-row.open { display:table-row; }
   <div>
     <div class="h-eyebrow">Espartina SA · Campaña 25/26</div>
     <div class="h-title" id="h-title">Informe de Cosecha & Producción</div>
-    <div class="h-sub" id="h-sub">Estado al 14/04/2026 · Todas las zonas · Actualizado 16:48</div>
+    <div class="h-sub" id="h-sub">Estado al 14/04/2026 · Todas las zonas · Actualizado 17:01</div>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
     <button id="export-btn" onclick="exportarExcel()" style="display:none;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;padding:7px 14px;border-radius:3px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">
@@ -2737,6 +2737,7 @@ function buildCard(s, label, mode, totalTnPpto){
           <div class="dev-hero-num ${heroClass}">${fmtD(devProt)}</div>
           <div class="dev-hero-lbl">${devProtLabel}</div>
           <div class="dev-hero-ref">${devProtRef}</div>
+          ${s.av>=5 && s.av<95 && s.devCos!=null && s.devFinal!=null ? `<div class="dev-hero-ref" style="margin-top:3px;font-weight:500;color:${s.devFinal>=0?'var(--green)':'var(--red)'}">Final: ${fmtD(s.devFinal)} vs ppto · ${fmt(s.wFinal)} kg/ha</div>` : ''}
         </div>
         <div class="concl-avance">
           <div class="concl-av-hdr">
@@ -2833,7 +2834,8 @@ function renderInteligencia(){
     <div class="intel-kpi kv-bl">
       <div class="intel-kpi-lbl">Mejor cultivo cosechado</div>
       <div class="intel-kpi-val" style="font-size:18px">${bestAct?bestAct.act:'—'}</div>
-      <div class="intel-kpi-badge" style="background:var(--green-lt);color:var(--green)">${bestAct&&bestAct.s.devCos!=null?fmtD(bestAct.s.devCos)+' vs ppto':'—'}</div>
+      <div class="intel-kpi-badge" style="background:var(--green-lt);color:var(--green)">${bestAct&&bestAct.s.devCos!=null?fmtD(bestAct.s.devCos)+' cosechado vs ppto':'—'}</div>
+      <div class="intel-kpi-badge" style="background:${bestAct&&bestAct.s.devFinal>=0?'var(--green-lt)':'var(--red-lt)'};color:${bestAct&&bestAct.s.devFinal>=0?'var(--green)':'var(--red)'};margin-top:3px">${bestAct&&bestAct.s.devFinal!=null?fmtD(bestAct.s.devFinal)+' final vs ppto':'—'}</div>
       <div class="intel-kpi-sub">${bestAct?fmt(bestAct.s.wActual)+' kg/ha · '+bestAct.s.nZonas+' zonas':'Sin datos'}</div>
     </div>`;
 
