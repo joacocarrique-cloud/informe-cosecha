@@ -366,8 +366,9 @@ tbody tr.detail-row.open { display:table-row; }
 .intel-kpi-sub { font-size:10px; color:var(--muted); margin-top:5px; font-weight:300; line-height:1.45; }
 .intel-filter-row { display:flex; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
 .intel-filter-lbl { font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); white-space:nowrap; }
-.intel-filter-row select { background:var(--surface); border:1px solid var(--border); color:var(--text); font-family:'IBM Plex Mono',monospace; font-size:11px; padding:7px 10px; border-radius:3px; outline:none; cursor:pointer; min-width:220px; }
-.intel-filter-row select:focus { border-color:var(--brand); }
+.intel-filter-row select, .intel-filter-row .ms-dropdown { background:var(--surface); border:1px solid var(--border); color:var(--text); font-family:'IBM Plex Mono',monospace; font-size:11px; border-radius:3px; outline:none; cursor:pointer; min-width:220px; }
+.intel-filter-row select:focus, .intel-filter-row .ms-dropdown:focus { border-color:var(--brand); }
+.intel-filter-row .ms-dropdown { border:none; }
 .intel-filter-hint { font-family:'IBM Plex Sans',sans-serif; font-size:11px; color:var(--muted); font-weight:300; }
 .intel-two-col { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
 .concl-card { background:var(--card); border:1px solid var(--border); border-radius:4px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,.04); }
@@ -453,7 +454,7 @@ tbody tr.detail-row.open { display:table-row; }
   <div>
     <div class="h-eyebrow">Espartina SA · Campaña 25/26</div>
     <div class="h-title" id="h-title">Informe de Cosecha & Producción</div>
-    <div class="h-sub" id="h-sub">Estado al 17/04/2026 · Todas las zonas · Actualizado 09:06</div>
+    <div class="h-sub" id="h-sub">Estado al 17/04/2026 · Todas las zonas · Actualizado 10:16</div>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
     <button id="export-btn" onclick="exportarExcel()" style="display:none;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;padding:7px 14px;border-radius:3px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">
@@ -523,11 +524,15 @@ tbody tr.detail-row.open { display:table-row; }
   <!-- Análisis con filtro drilldown -->
   <div class="sec-title" id="intel-analisis-title">Análisis por cultivo</div>
   <div class="intel-filter-row">
-    <span class="intel-filter-lbl">Ver análisis por</span>
-    <select id="intel-filter-select" onchange="renderInteligenciaCards()">
-      <option value="">Todos los cultivos</option>
-    </select>
-    <span class="intel-filter-hint" id="intel-filter-hint">Seleccioná un cultivo para desglosar por zona</span>
+    <span class="intel-filter-lbl">Filtrar cultivos</span>
+    <div class="ms-dropdown" id="ms-intel-act">
+      <div class="ms-trigger" onclick="toggleMsDrop('ms-intel-act')">
+        <span class="ms-placeholder">Todos los cultivos</span>
+        <span class="ms-arrow">▾</span>
+      </div>
+      <div class="ms-panel" id="ms-intel-act-panel"></div>
+    </div>
+    <span class="intel-filter-hint" id="intel-filter-hint">Seleccioná uno o más cultivos para desglosar por zona</span>
   </div>
   <div id="intel-concl-grid"></div>
 
@@ -1401,7 +1406,7 @@ function toggleLoc(locId){
 
 // ── MULTI-SELECT DROPDOWN FILTERS FOR DETALLE ──────────────
 
-const msState = { 'ms-act':[], 'ms-zona':[], 'ms-loc':[] };
+const msState = { 'ms-act':[], 'ms-zona':[], 'ms-loc':[], 'ms-intel-act':[] };
 
 function toggleMsDrop(id){
   const panel = document.getElementById(id+'-panel');
@@ -1442,8 +1447,12 @@ function toggleMsOption(id, val){
   const idx = sel.indexOf(val);
   if(idx>=0) sel.splice(idx,1); else sel.push(val);
   updateMsTrigger(id);
-  cascadeFilters(id);
-  filterTable();
+  if(id==='ms-intel-act'){
+    renderInteligenciaCards();
+  } else {
+    cascadeFilters(id);
+    filterTable();
+  }
 }
 
 function removeMsTag(id, val, e){
@@ -1457,8 +1466,12 @@ function removeMsTag(id, val, e){
   panel.querySelectorAll('.ms-opt input').forEach(cb=>{
     if(cb.dataset.val===val) cb.checked=false;
   });
-  cascadeFilters(id);
-  filterTable();
+  if(id==='ms-intel-act'){
+    renderInteligenciaCards();
+  } else {
+    cascadeFilters(id);
+    filterTable();
+  }
 }
 
 function clearMsSelection(id){
@@ -1466,15 +1479,20 @@ function clearMsSelection(id){
   updateMsTrigger(id);
   const panel = document.getElementById(id+'-panel');
   panel.querySelectorAll('.ms-opt input').forEach(cb=>cb.checked=false);
-  cascadeFilters(id);
-  filterTable();
+  if(id==='ms-intel-act'){
+    renderInteligenciaCards();
+  } else {
+    cascadeFilters(id);
+    filterTable();
+  }
 }
 
 function updateMsTrigger(id){
   const trigger = document.querySelector(`#${id} .ms-trigger`);
   const sel = msState[id];
+  const placeholder = id==='ms-intel-act' ? 'Todos los cultivos' : 'Todas';
   if(!sel.length){
-    trigger.innerHTML = `<span class="ms-placeholder">Todas</span><span class="ms-arrow">▾</span>`;
+    trigger.innerHTML = `<span class="ms-placeholder">${placeholder}</span><span class="ms-arrow">▾</span>`;
   } else {
     const tags = sel.map(v=>`<span class="ms-tag">${v}<span class="ms-tag-x" onclick="removeMsTag('${id}','${v.replace(/'/g,"\\'")}',event)">×</span></span>`).join('');
     trigger.innerHTML = tags + `<span class="ms-arrow">▾</span>`;
@@ -2814,10 +2832,10 @@ function renderInteligencia(){
 
   const acts = [...new Set(data.map(d=>d.act))];
 
-  // Populate filter select
-  const sel = document.getElementById('intel-filter-select');
-  if(sel && sel.options.length<=1){
-    acts.forEach(a=>{ const o=document.createElement('option'); o.value=a; o.textContent=a; sel.appendChild(o); });
+  // Populate intel multi-select filter
+  const intelPanel = document.getElementById('ms-intel-act-panel');
+  if(intelPanel && !intelPanel.children.length){
+    buildMsOptions('ms-intel-act', acts.sort(), []);
   }
 
   // ── Stats globales para KPIs ───────────────────────────────────────
@@ -2892,8 +2910,7 @@ function renderInteligenciaCards(){
   if(!data.length) return;
 
   const totalTnPpto = data.reduce((a,d)=>a+d.ppto*d.sembradas/1000,0);
-  const sel = document.getElementById('intel-filter-select');
-  const selectedAct = sel ? sel.value : '';
+  const selectedActs = getMsSelection('ms-intel-act');
   const titleEl  = document.getElementById('intel-analisis-title');
   const hintEl   = document.getElementById('intel-filter-hint');
   const conclEl  = document.getElementById('intel-concl-grid');
@@ -2901,27 +2918,38 @@ function renderInteligenciaCards(){
 
   let items = [];
 
-  if(!selectedAct){
+  if(selectedActs.length === 0){
     // Modo: todos los cultivos
     if(titleEl) titleEl.textContent = 'Análisis por cultivo';
-    if(hintEl)  hintEl.textContent  = 'Seleccioná un cultivo para desglosar por zona';
+    if(hintEl)  hintEl.textContent  = 'Seleccioná uno o más cultivos para desglosar por zona';
     const acts = [...new Set(data.map(d=>d.act))];
     items = acts.map(act=>({
       label: act,
       s: buildEntityStats(data.filter(d=>d.act===act)),
       mode: 'act'
-    })).sort((a,b)=>b.s.av-a.s.av); // ordenar por avance desc
+    })).sort((a,b)=>b.s.av-a.s.av);
 
-  } else {
+  } else if(selectedActs.length === 1){
     // Modo drilldown: un cultivo → por zona
-    if(titleEl) titleEl.textContent = `Análisis por zona — ${selectedAct}`;
-    if(hintEl)  hintEl.textContent  = `Mostrando desglose por zona de ${selectedAct}`;
-    const sub   = data.filter(d=>d.act===selectedAct);
+    const act = selectedActs[0];
+    if(titleEl) titleEl.textContent = `Análisis por zona — ${act}`;
+    if(hintEl)  hintEl.textContent  = `Mostrando desglose por zona de ${act}`;
+    const sub   = data.filter(d=>d.act===act);
     const zonas = [...new Set(sub.map(d=>d.zona))];
     items = zonas.map(zona=>({
       label: zona,
       s: buildEntityStats(sub.filter(d=>d.zona===zona)),
       mode: 'zona'
+    })).sort((a,b)=>b.s.av-a.s.av);
+
+  } else {
+    // Modo multi-cultivo: varios cultivos seleccionados → cards por cultivo
+    if(titleEl) titleEl.textContent = `Análisis — ${selectedActs.length} cultivos seleccionados`;
+    if(hintEl)  hintEl.textContent  = 'Seleccioná un solo cultivo para ver desglose por zona';
+    items = selectedActs.map(act=>({
+      label: act,
+      s: buildEntityStats(data.filter(d=>d.act===act)),
+      mode: 'act'
     })).sort((a,b)=>b.s.av-a.s.av);
   }
 
