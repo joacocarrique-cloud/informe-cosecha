@@ -1,0 +1,1916 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Informe de Cosecha & Producción — Espartina</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── ESPARTINA DESIGN SYSTEM ──────────────────────────────────── */
+:root {
+  --brand:      #2d6b4a;
+  --brand-dk:   #1f4e35;
+  --brand-lt:   #e8f2ec;
+  --gold:       #c9963a;
+  --gold-lt:    #faf3e6;
+  --red:        #c0504a;
+  --red-lt:     #fbeeed;
+  --green:      #3a8a5c;
+  --green-lt:   #eaf4ee;
+  --blue:       #4a7fb5;
+  --bg:         #f5f2ed;
+  --surface:    #ffffff;
+  --card:       #ffffff;
+  --card-alt:   #faf9f7;
+  --border:     #e0dbd2;
+  --border-dk:  #c8c1b5;
+  --text:       #1c1c18;
+  --text-2:     #4a4842;
+  --muted:      #8a8278;
+  --mono:       #3d3b35;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'IBM Plex Sans',sans-serif; font-size:14px; min-height:100vh; }
+
+/* HEADER */
+.header { background:var(--brand); padding:22px 36px 20px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 12px rgba(0,0,0,.15); position:relative; overflow:hidden; }
+.header::after { content:''; position:absolute; right:-40px; top:-40px; width:220px; height:220px; border-radius:50%; background:rgba(255,255,255,.04); }
+.h-eyebrow { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.22em; color:rgba(255,255,255,.55); text-transform:uppercase; margin-bottom:4px; }
+.h-title { font-family:'Playfair Display',serif; font-size:24px; font-weight:700; color:#ffffff; line-height:1.15; }
+.h-sub { font-size:11px; color:rgba(255,255,255,.6); margin-top:4px; font-weight:300; }
+
+/* TABS */
+.tabs { display:flex; background:var(--surface); border-bottom:2px solid var(--border); padding:0 36px; box-shadow:0 1px 4px rgba(0,0,0,.05); }
+.tab { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; padding:14px 22px; cursor:pointer; color:var(--muted); border-bottom:2px solid transparent; margin-bottom:-2px; transition:all .2s; user-select:none; }
+.tab:hover { color:var(--brand); }
+.tab.active { color:var(--brand); border-bottom-color:var(--brand); font-weight:600; }
+
+/* PANE */
+.pane { display:none; padding:28px 36px; max-width:1400px; }
+.pane.active { display:block; }
+
+/* SECTION TITLE */
+.sec-title { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.22em; color:var(--brand); text-transform:uppercase; margin-bottom:14px; padding-bottom:9px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px; }
+.sec-title::before { content:''; display:inline-block; width:3px; height:12px; background:var(--brand); border-radius:1px; flex-shrink:0; }
+
+/* KPI GRID */
+.kpi-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:28px; }
+.kpi { background:var(--card); border:1px solid var(--border); border-left:3px solid var(--border-dk); padding:18px 16px; border-radius:4px; box-shadow:0 1px 4px rgba(0,0,0,.04); transition:box-shadow .15s; }
+.kpi:hover { box-shadow:0 3px 10px rgba(0,0,0,.08); }
+.kpi.g { border-left-color:var(--green); }
+.kpi.r { border-left-color:var(--red); }
+.kpi.b { border-left-color:var(--blue); }
+.kpi-lbl { font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.14em; color:var(--muted); text-transform:uppercase; margin-bottom:9px; }
+.kpi-val { font-family:'Playfair Display',serif; font-size:26px; font-weight:700; line-height:1; color:var(--text); }
+.kpi-unit { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); margin-left:2px; }
+.kpi-sub { font-size:10px; color:var(--muted); margin-top:5px; font-weight:300; }
+.desvio-dual { display:flex; gap:12px; margin-top:6px; }
+.desvio-dual .dv-col { flex:1; }
+.desvio-dual .dv-lbl { font-family:'IBM Plex Mono',monospace; font-size:7px; letter-spacing:.1em; color:var(--muted); text-transform:uppercase; margin-bottom:3px; }
+.desvio-dual .dv-val { font-family:'Playfair Display',serif; font-size:18px; font-weight:700; line-height:1.2; }
+.desvio-dual .dv-sub { font-size:9px; color:var(--muted); margin-top:2px; }
+.desvio-dual .dv-div { width:1px; background:var(--border); }
+.badge { display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:9px; padding:2px 7px; border-radius:2px; margin-top:4px; font-weight:600; }
+.badge.pos { background:var(--green-lt); color:var(--green); }
+.badge.neg { background:var(--red-lt); color:var(--red); }
+.badge.neu { background:var(--bg); color:var(--muted); border:1px solid var(--border); }
+.badge.gld { background:var(--gold-lt); color:var(--gold); }
+
+/* HERO STRIP */
+.hero-strip { background:var(--card); border:1px solid var(--border); border-radius:4px; padding:20px 24px; display:flex; align-items:center; gap:24px; margin-bottom:20px; box-shadow:0 1px 4px rgba(0,0,0,.04); }
+.hero-main { flex-shrink:0; }
+.hero-val { font-family:'Playfair Display',serif; font-size:44px; font-weight:900; line-height:1; }
+.hero-val.pos { color:var(--green); }
+.hero-val.neg { color:var(--red); }
+.hero-lbl { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.12em; margin-top:6px; }
+.hero-side { flex:1; display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; border-left:1px solid var(--border); padding-left:24px; }
+.hs-lbl { font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:.1em; margin-bottom:4px; }
+.hs-val { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; }
+.hs-sub { font-size:11px; color:var(--muted); margin-top:3px; }
+@media(max-width:700px){ .hero-strip{flex-direction:column;gap:16px} .hero-side{border-left:none;padding-left:0;border-top:1px solid var(--border);padding-top:16px} }
+
+/* ACCORDION */
+.acc { background:var(--card); border:1px solid var(--border); border-radius:4px; margin-bottom:8px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,.04); }
+.acc-h { padding:13px 18px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; user-select:none; transition:background .12s; }
+.acc-h:hover { background:var(--brand-lt); }
+.acc-title { display:flex; align-items:center; gap:8px; }
+.acc-icon { font-size:11px; color:var(--muted); transition:transform .2s; }
+.acc-icon.open { transform:rotate(90deg); }
+.acc-name { font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:var(--brand-dk); }
+.acc-badge { font-family:'IBM Plex Mono',monospace; font-size:9px; font-weight:600; padding:2px 8px; border-radius:2px; }
+.acc-meta { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); }
+.acc-body { padding:0 18px 16px; border-top:1px solid var(--border); }
+.acc-body.closed { display:none; }
+.acc-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; padding-top:14px; }
+.acc-stat-lbl { font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.1em; color:var(--muted); text-transform:uppercase; margin-bottom:2px; }
+.acc-stat-val { font-family:'Playfair Display',serif; font-size:18px; font-weight:700; }
+.acc-stat-sub { font-size:10px; color:var(--muted); margin-top:2px; }
+
+/* CAMPAIGN CARDS */
+.camp-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; margin-bottom:20px; }
+.camp-card { background:var(--card); border:1px solid var(--border); border-radius:4px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,.04); }
+.camp-card-hdr { padding:10px 14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); }
+.camp-card-hdr.hdr-pos { background:var(--green-lt); }
+.camp-card-hdr.hdr-neg { background:var(--red-lt); }
+.camp-card-hdr.hdr-neu { background:var(--brand-lt); }
+.camp-card-name { font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:var(--brand-dk); }
+.camp-card-meta { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); }
+.camp-card-body { padding:12px 14px; display:flex; align-items:baseline; gap:8px; }
+.camp-card-dev { font-family:'Playfair Display',serif; font-size:26px; font-weight:900; line-height:1; }
+.camp-card-dev.pos { color:var(--green); }
+.camp-card-dev.neg { color:var(--red); }
+.camp-card-lbl { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); }
+
+/* ACT BLOCKS */
+.act-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:28px; }
+.act-block { background:var(--card); border:1px solid var(--border); border-radius:4px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,.04); }
+.act-hdr { padding:13px 18px; background:var(--brand-lt); border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+.act-name { font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:var(--brand-dk); }
+.act-meta { font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted); }
+.act-body { padding:16px 18px; }
+.prg-wrap { margin-bottom:12px; }
+.prg-hdr { display:flex; justify-content:space-between; margin-bottom:5px; }
+.prg-lbl { font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted); letter-spacing:.08em; }
+.prg-pct { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--brand); font-weight:600; }
+.prg-bg { background:var(--border); border-radius:2px; height:5px; overflow:hidden; }
+.prg-fill { height:100%; border-radius:2px; background:linear-gradient(90deg,var(--gold),#e8b850); }
+.prg-fill.g { background:linear-gradient(90deg,var(--brand),#4a9e6a); }
+.stat-row { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:12px; }
+.stat-lbl { font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.1em; color:var(--muted); text-transform:uppercase; margin-bottom:2px; }
+.stat-val { font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:var(--text); }
+.stat-val.pos { color:var(--green); }
+.stat-val.neg { color:var(--red); }
+
+/* ZONE TABLE */
+.tbl-wrap { background:var(--card); border:1px solid var(--border); border-radius:4px; overflow:hidden; margin-bottom:24px; overflow-x:auto; box-shadow:0 1px 4px rgba(0,0,0,.04); }
+table { width:100%; border-collapse:collapse; min-width:600px; }
+thead th { background:var(--brand); font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.16em; text-transform:uppercase; color:rgba(255,255,255,.75); padding:10px 12px; text-align:left; border-bottom:none; font-weight:400; white-space:nowrap; }
+thead th.r { text-align:right; }
+thead th.sortable { cursor:pointer; user-select:none; }
+thead th.sortable:hover { color:#fff; }
+thead th.sort-asc::after { content:' ↑'; color:var(--gold); }
+thead th.sort-desc::after { content:' ↓'; color:var(--gold); }
+tbody tr { border-bottom:1px solid var(--border); transition:background .12s; }
+tbody tr:nth-child(even) { background:var(--card-alt); }
+tbody tr:last-child { border-bottom:none; }
+tbody tr:hover { background:var(--brand-lt); }
+tbody td { padding:9px 12px; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--mono); }
+tbody td.name { font-family:'IBM Plex Sans',sans-serif; font-size:12px; color:var(--text); font-weight:500; }
+tbody td.r { text-align:right; }
+tbody td.sm { font-size:10px; color:var(--muted); }
+tfoot tr { background:var(--brand-lt) !important; border-top:2px solid var(--border-dk); }
+
+/* MINI PROGRESS */
+.mp { display:flex; align-items:center; gap:6px; }
+.mp-bg { flex:1; height:4px; background:var(--border); border-radius:2px; overflow:hidden; min-width:50px; }
+.mp-fill { height:100%; background:var(--gold); border-radius:2px; }
+.mp-fill.g { background:var(--brand); }
+.mp-pct { font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted); min-width:28px; text-align:right; }
+
+/* PILL */
+.pill { display:inline-block; padding:2px 7px; border-radius:2px; font-size:9px; font-weight:600; font-family:'IBM Plex Mono',monospace; white-space:nowrap; }
+.pill.pos { background:var(--green-lt); color:var(--green); }
+.pill.neg { background:var(--red-lt); color:var(--red); }
+.pill.gld { background:var(--gold-lt); color:var(--gold); }
+.pill.neu { background:var(--bg); color:var(--muted); border:1px solid var(--border); }
+.pill.blu { background:#eef3fb; color:var(--blue); }
+
+/* DESTACADOS */
+.dest-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:28px; }
+.dest { background:var(--card); border:1px solid var(--border); border-radius:4px; padding:16px; box-shadow:0 1px 4px rgba(0,0,0,.04); }
+.dest.win { border-left:3px solid var(--green); }
+.dest.los { border-left:3px solid var(--red); }
+.dest-tag { font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+.dest-campo { font-family:'Playfair Display',serif; font-size:16px; font-weight:700; margin-bottom:2px; color:var(--text); }
+.dest-loc { font-size:10px; color:var(--muted); margin-bottom:10px; font-weight:300; }
+.dest-num { font-family:'Playfair Display',serif; font-size:28px; font-weight:900; line-height:1; }
+.dest-num.pos { color:var(--green); }
+.dest-num.neg { color:var(--red); }
+.dest-detail { font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted); margin-top:6px; line-height:1.5; }
+
+/* COMENTARIOS */
+.coments { background:var(--card); border:1px solid var(--border); border-radius:4px; padding:0 18px; box-shadow:0 1px 4px rgba(0,0,0,.04); }
+.com-item { display:flex; gap:12px; padding:14px 0; border-bottom:1px solid var(--border); }
+.com-item:last-child { border-bottom:none; }
+.com-icon { width:28px; height:28px; border-radius:3px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:14px; margin-top:1px; }
+.com-icon.ok { background:var(--green-lt); }
+.com-icon.warn { background:var(--gold-lt); }
+.com-icon.alert { background:var(--red-lt); }
+.com-icon.info { background:#eef3fb; }
+.com-text { font-size:12.5px; color:var(--text-2); line-height:1.65; font-weight:300; }
+.com-text strong { color:var(--text); font-weight:600; }
+
+/* DETALLE */
+.filters { display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap; align-items:center; }
+.filter-group { display:flex; flex-direction:column; gap:4px; }
+.filter-lbl { font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.15em; text-transform:uppercase; color:var(--muted); }
+select, input[type=text] { background:var(--surface); border:1px solid var(--border); color:var(--text); font-family:'IBM Plex Mono',monospace; font-size:11px; padding:7px 10px; border-radius:3px; outline:none; cursor:pointer; min-width:140px; transition:border-color .15s; }
+select:focus, input[type=text]:focus { border-color:var(--brand); }
+.filter-check-wrap { display:flex; align-items:center; gap:6px; margin-top:16px; cursor:pointer; }
+.filter-check-wrap input[type=checkbox] { width:14px; height:14px; accent-color:var(--brand); cursor:pointer; }
+.filter-check-wrap span { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:.06em; }
+.results-count { font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted); margin-left:auto; align-self:flex-end; padding-bottom:4px; }
+
+tbody tr.campo-row { cursor:pointer; }
+tbody tr.campo-row:hover td.name { color:var(--brand); }
+tbody tr.detail-row { display:none; }
+tbody tr.detail-row.open { display:table-row; }
+.detail-inner { padding:14px 16px; background:var(--brand-lt); border-top:1px solid var(--border); display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+.di-lbl { font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.12em; color:var(--muted); text-transform:uppercase; margin-bottom:3px; }
+.di-val { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; color:var(--text); }
+.di-val.pos { color:var(--green); }
+.di-val.neg { color:var(--red); }
+.di-note { font-family:'IBM Plex Sans',sans-serif; font-size:11px; color:var(--muted); font-weight:300; margin-top:2px; }
+
+.dev-bar { display:flex; align-items:center; gap:6px; }
+.dev-track { width:80px; height:5px; background:var(--border); border-radius:2px; position:relative; flex-shrink:0; }
+.dev-fill { position:absolute; top:0; height:100%; border-radius:2px; max-width:38px; }
+.dev-fill.pos { left:50%; background:var(--green); }
+.dev-fill.neg { right:50%; background:var(--red); }
+.dev-track::after { content:''; position:absolute; left:50%; top:-2px; width:1px; height:9px; background:var(--border-dk); }
+
+.tbl-summary { background:var(--brand-lt); border-top:2px solid var(--border); padding:10px 12px; display:flex; gap:24px; }
+.tbl-sum-item { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); }
+.tbl-sum-item span { color:var(--brand-dk); font-weight:700; }
+.no-results { text-align:center; padding:40px; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted); }
+
+/* ANALYSIS PANEL */
+.detalle-layout { display:block; }
+.detalle-main { width:100%; }
+.panel-toggle-btn { display:flex; align-items:center; gap:6px; cursor:pointer; background:var(--surface); border:1px solid var(--border); border-radius:3px; padding:7px 12px; font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); transition:all .2s; white-space:nowrap; align-self:flex-end; user-select:none; }
+.panel-toggle-btn:hover { border-color:var(--brand); color:var(--brand); }
+.panel-toggle-btn.active { border-color:var(--brand); color:var(--brand); background:var(--brand-lt); }
+.panel-toggle-btn .pt-icon { font-size:13px; transition:transform .3s; }
+.panel-toggle-btn.active .pt-icon { transform:rotate(180deg); }
+.analysis-panel { width:100%; background:var(--brand-lt); border:1px solid var(--border); border-radius:4px; overflow:hidden; max-height:0; opacity:0; transition:max-height .35s ease, opacity .25s ease; margin-bottom:14px; }
+.analysis-panel.open { max-height:600px; opacity:1; }
+.ap-header { padding:13px 16px 10px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; background:var(--brand-lt); }
+.ap-title { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.18em; text-transform:uppercase; color:var(--brand); }
+.ap-context { font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted); }
+.ap-body { padding:14px 16px; display:flex; flex-wrap:wrap; gap:24px; }
+.ap-section { flex:1; min-width:200px; margin-bottom:0; }
+.ap-section:last-child { margin-bottom:0; }
+.ap-sec-title { font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; padding-bottom:5px; border-bottom:1px solid var(--border); }
+.bullet { display:flex; gap:9px; align-items:flex-start; padding:5px 0; border-bottom:1px solid var(--border); font-family:'IBM Plex Sans',sans-serif; font-size:11.5px; line-height:1.5; color:var(--text-2); font-weight:300; }
+.bullet:last-child { border-bottom:none; }
+.bullet-icon { font-size:12px; flex-shrink:0; margin-top:1px; width:16px; text-align:center; }
+.bullet strong { color:var(--text); font-weight:600; }
+.bullet .pos { color:var(--green); font-weight:600; font-family:'IBM Plex Mono',monospace; }
+.bullet .neg { color:var(--red); font-weight:600; font-family:'IBM Plex Mono',monospace; }
+.bullet .gld { color:var(--gold); font-weight:600; font-family:'IBM Plex Mono',monospace; }
+.ap-conf-lbl { font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.15em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+.ap-conf-bar-bg { background:var(--border); border-radius:2px; height:4px; overflow:hidden; margin-bottom:4px; }
+.ap-conf-bar-fill { height:100%; background:var(--brand); border-radius:2px; }
+.ap-conf-note { font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted); }
+
+/* CHIPS */
+.chip-wrap { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+.chip { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.05em; padding:5px 12px; border-radius:3px; cursor:pointer; user-select:none; border:1px solid var(--border); color:var(--muted); background:var(--surface); transition:all .15s; white-space:nowrap; }
+.chip:hover { border-color:var(--brand); color:var(--brand); }
+.chip.active { background:var(--brand); border-color:var(--brand); color:#fff; }
+.chip-group { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.08em; padding:5px 10px; border-radius:3px; cursor:pointer; user-select:none; border:1.5px dashed var(--border-dk); color:var(--muted); background:transparent; transition:all .15s; white-space:nowrap; font-weight:500; }
+.chip-group:hover { border-color:var(--brand); color:var(--brand); }
+.chip-group.active { border-color:var(--brand); color:var(--brand); border-style:solid; background:var(--green-lt); }
+.chip-sep { width:1px; height:18px; background:var(--border); margin:0 4px; }
+.chip-all { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.1em; padding:5px 10px; border-radius:3px; cursor:pointer; user-select:none; border:1px solid var(--border-dk); color:var(--muted); background:transparent; transition:all .15s; }
+.chip-all:hover { color:var(--brand); border-color:var(--brand); }
+
+/* MULTI-SELECT DROPDOWN */
+.ms-dropdown { position:relative; min-width:160px; }
+.ms-trigger { background:var(--surface); border:1px solid var(--border); border-radius:3px; padding:7px 28px 7px 10px; cursor:pointer; display:flex; align-items:center; gap:4px; flex-wrap:wrap; min-height:33px; transition:border-color .15s; position:relative; }
+.ms-trigger:hover { border-color:var(--brand); }
+.ms-trigger.open { border-color:var(--brand); border-radius:3px 3px 0 0; }
+.ms-placeholder { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted); white-space:nowrap; }
+.ms-arrow { position:absolute; right:8px; top:50%; transform:translateY(-50%); font-size:10px; color:var(--muted); pointer-events:none; transition:transform .2s; }
+.ms-trigger.open .ms-arrow { transform:translateY(-50%) rotate(180deg); }
+.ms-tag { display:inline-flex; align-items:center; gap:3px; background:var(--brand); color:#fff; font-family:'IBM Plex Mono',monospace; font-size:9px; padding:2px 6px; border-radius:2px; white-space:nowrap; line-height:1.3; }
+.ms-tag-x { cursor:pointer; opacity:.7; font-size:11px; line-height:1; }
+.ms-tag-x:hover { opacity:1; }
+.ms-panel { display:none; position:absolute; top:100%; left:0; right:0; background:var(--surface); border:1px solid var(--brand); border-top:none; border-radius:0 0 3px 3px; max-height:240px; overflow-y:auto; z-index:100; box-shadow:0 4px 12px rgba(0,0,0,.1); }
+.ms-panel.open { display:block; }
+.ms-panel-search { width:100%; border:none; border-bottom:1px solid var(--border); padding:7px 10px; font-family:'IBM Plex Mono',monospace; font-size:10px; outline:none; background:var(--card-alt); }
+.ms-opt { display:flex; align-items:center; gap:8px; padding:6px 10px; cursor:pointer; transition:background .1s; font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--text-2); }
+.ms-opt:hover { background:var(--brand-lt); }
+.ms-opt input[type=checkbox] { width:13px; height:13px; accent-color:var(--brand); cursor:pointer; flex-shrink:0; margin:0; }
+.ms-opt label { cursor:pointer; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ms-clear { font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--brand); cursor:pointer; padding:5px 10px; border-top:1px solid var(--border); text-align:center; }
+.ms-clear:hover { background:var(--brand-lt); }
+
+/* UPLOAD */
+
+/* MODAL */
+
+/* ANIMATIONS */
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+.kpi { animation:fadeUp .4s ease both; }
+.kpi:nth-child(1){animation-delay:.04s} .kpi:nth-child(2){animation-delay:.08s}
+.kpi:nth-child(3){animation-delay:.12s} .kpi:nth-child(4){animation-delay:.16s}
+.kpi:nth-child(5){animation-delay:.20s}
+
+/* RESPONSIVE */
+
+/* LOCALIDAD GROUPING */
+.loc-header:hover { background:var(--brand-lt) !important; filter:brightness(.97); }
+.loc-header td { border-bottom:2px solid var(--border-dk); }
+
+@media(max-width:900px){ .detalle-layout{display:block} }
+@media(max-width:768px){
+  .header{padding:18px 20px 16px;flex-direction:column;align-items:flex-start;gap:12px}
+  .tabs{padding:0 20px;overflow-x:auto} .pane{padding:20px 16px}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)} .act-grid{grid-template-columns:1fr}
+  .stat-row{grid-template-columns:repeat(2,1fr)} .dest-grid{grid-template-columns:repeat(2,1fr)}
+  .detail-inner{grid-template-columns:repeat(2,1fr)}
+  #ret-adm-kpi{grid-template-columns:repeat(2,1fr) !important}
+}
+@media(max-width:480px){ .kpi-grid{grid-template-columns:1fr 1fr} .dest-grid{grid-template-columns:1fr} }
+
+/* ── POSICIÓN DE GRANOS ──────────────────────────────────────────── */
+.grain-summary { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:28px; }
+.grain-kpi { background:var(--card); border:1px solid var(--border); border-radius:4px; padding:16px; box-shadow:0 1px 4px rgba(0,0,0,.04); }
+.grain-kpi.highlight { border-left:3px solid var(--brand); }
+.grain-kpi.alert-kpi { border-left:3px solid var(--red); }
+.grain-kpi-lbl { font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.14em; color:var(--muted); text-transform:uppercase; margin-bottom:8px; }
+.grain-kpi-val { font-family:'Playfair Display',serif; font-size:24px; font-weight:700; color:var(--text); }
+.grain-kpi-unit { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); margin-left:3px; }
+.grain-kpi-sub { font-size:10px; color:var(--muted); margin-top:4px; }
+
+.grain-bar-wrap { margin-bottom:6px; }
+.grain-bar-lbl { display:flex; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted); margin-bottom:4px; }
+.grain-bar-track { height:8px; background:var(--border); border-radius:4px; overflow:hidden; display:flex; }
+.grain-bar-ret  { height:100%; background:var(--brand); border-radius:4px 0 0 4px; transition:width .4s; }
+.grain-bar-emb  { height:100%; background:var(--gold); transition:width .4s; }
+.grain-bar-pend { height:100%; background:var(--red-lt); border:1px solid var(--red); border-radius:0 4px 4px 0; transition:width .4s; }
+
+.grain-table-wrap { background:var(--card); border:1px solid var(--border); border-radius:4px; overflow:hidden; margin-bottom:24px; box-shadow:0 1px 4px rgba(0,0,0,.04); overflow-x:auto; }
+.grain-tbl { width:100%; border-collapse:collapse; min-width:700px; }
+.grain-tbl thead th { background:var(--brand); font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.75); padding:10px 12px; text-align:left; white-space:nowrap; }
+.grain-tbl thead th.r { text-align:right; }
+.grain-tbl tbody tr { border-bottom:1px solid var(--border); transition:background .1s; }
+.grain-tbl tbody tr:nth-child(even){ background:var(--card-alt); }
+.grain-tbl tbody tr:hover { background:var(--brand-lt); }
+.grain-tbl tbody td { padding:9px 12px; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--mono); }
+.grain-tbl tbody td.name { font-family:'IBM Plex Sans',sans-serif; font-size:12px; color:var(--text); font-weight:500; }
+.grain-tbl tbody td.r { text-align:right; }
+.grain-tbl tfoot td { background:var(--brand-lt); font-weight:700; border-top:2px solid var(--border); padding:9px 12px; font-family:'IBM Plex Mono',monospace; font-size:11px; }
+.grain-tbl tfoot td.r { text-align:right; }
+
+.comp-badge { font-family:'IBM Plex Mono',monospace; font-size:9px; padding:2px 7px; border-radius:2px; }
+.comp-badge.loc  { background:rgba(74,127,181,.12); color:var(--blue); }
+.comp-badge.zona { background:rgba(201,150,58,.12); color:var(--gold); }
+.comp-badge.none { background:var(--red-lt); color:var(--red); }
+.comp-badge.ok   { background:var(--green-lt); color:var(--green); }
+
+/* ESCENARIOS PRODUCCIÓN */
+.esc-card { background:var(--card); border:1px solid var(--border); border-radius:4px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,.04); margin-bottom:24px; }
+.esc-header { padding:14px 20px; background:var(--card-alt); border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+.esc-header-title { font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:var(--brand-dk); }
+.esc-header-sub { font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted); }
+.esc-body { padding:20px; }
+.esc-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:18px; }
+.esc-col { text-align:center; padding:16px 12px; border-radius:4px; border:1px solid var(--border); position:relative; }
+.esc-col.pesi { background:var(--red-lt); border-color:var(--red); }
+.esc-col.opti { background:var(--green-lt); border-color:var(--green); }
+.esc-col.ppto { background:var(--gold-lt); border-color:var(--gold); }
+.esc-col.real { background:#eef3fb; border-color:var(--blue); border-width:2px; }
+.esc-tag { font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.14em; text-transform:uppercase; margin-bottom:8px; }
+.esc-col.ppto .esc-tag { color:var(--gold); }
+.esc-col.pesi .esc-tag { color:var(--red); }
+.esc-col.opti .esc-tag { color:var(--green); }
+.esc-col.real .esc-tag { color:var(--blue); font-weight:600; }
+.esc-val { font-family:'Playfair Display',serif; font-size:26px; font-weight:700; line-height:1.1; margin-bottom:4px; }
+.esc-unit { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); }
+.esc-detail { font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted); margin-top:8px; line-height:1.6; }
+.esc-diff { font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:600; margin-top:6px; }
+.esc-diff.pos { color:var(--green); }
+.esc-diff.neg { color:var(--red); }
+.esc-bar-section { margin-top:16px; padding-top:16px; border-top:1px solid var(--border); }
+.esc-bar-row { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+.esc-bar-lbl { font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted); width:90px; text-align:right; flex-shrink:0; }
+.esc-bar-track { flex:1; height:16px; background:var(--border); border-radius:3px; overflow:hidden; position:relative; }
+.esc-bar-fill { height:100%; border-radius:3px; transition:width .4s; }
+.esc-bar-val { font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--text-2); min-width:60px; }
+.esc-note { font-family:'IBM Plex Sans',sans-serif; font-size:11px; color:var(--muted); font-weight:300; line-height:1.6; margin-top:14px; padding:10px 14px; background:var(--card-alt); border-radius:3px; border-left:3px solid var(--border-dk); }
+@media(max-width:768px){ .esc-grid{grid-template-columns:repeat(2,1fr)} }
+
+/* ── INTELIGENCIA DE COSECHA ────────────────────────────────── */
+.intel-kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:28px; }
+.intel-kpi { background:var(--card); border:1px solid var(--border); border-radius:4px; padding:18px 16px; box-shadow:0 1px 4px rgba(0,0,0,.04); position:relative; overflow:hidden; }
+.intel-kpi::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--kc, var(--border-dk)); }
+.intel-kpi.kv-dp { --kc:#1a6635; --kc-lt:#d4edda; }
+.intel-kpi.kv-mp { --kc:#3a8a5c; --kc-lt:#e4f2ea; }
+.intel-kpi.kv-lp { --kc:#5aaa7c; --kc-lt:#edf7f1; }
+.intel-kpi.kv-zr { --kc:#b8860b; --kc-lt:#fdf6e3; }
+.intel-kpi.kv-ln { --kc:#c88a4a; --kc-lt:#fdf0e8; }
+.intel-kpi.kv-mn { --kc:#c0504a; --kc-lt:#fbeeed; }
+.intel-kpi.kv-dn { --kc:#8b1a1a; --kc-lt:#f8dede; }
+.intel-kpi.kv-bl { --kc:#185fa5; --kc-lt:#e6f1fb; }
+.intel-kpi-lbl { font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.14em; color:var(--muted); text-transform:uppercase; margin-bottom:8px; }
+.intel-kpi-val { font-family:'Playfair Display',serif; font-size:28px; font-weight:700; line-height:1; color:var(--kc, var(--text)); }
+.intel-kpi-unit { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); margin-left:2px; }
+.intel-kpi-badge { display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:9px; font-weight:600; padding:2px 8px; border-radius:2px; margin-top:6px; background:var(--kc-lt, var(--bg)); color:var(--kc, var(--muted)); }
+.intel-kpi-sub { font-size:10px; color:var(--muted); margin-top:5px; font-weight:300; line-height:1.45; }
+.intel-filter-row { display:flex; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
+.intel-filter-lbl { font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); white-space:nowrap; }
+.intel-filter-row select, .intel-filter-row .ms-dropdown { background:var(--surface); border:1px solid var(--border); color:var(--text); font-family:'IBM Plex Mono',monospace; font-size:11px; border-radius:3px; outline:none; cursor:pointer; min-width:220px; }
+.intel-filter-row select:focus, .intel-filter-row .ms-dropdown:focus { border-color:var(--brand); }
+.intel-filter-row .ms-dropdown { border:none; }
+.intel-filter-hint { font-family:'IBM Plex Sans',sans-serif; font-size:11px; color:var(--muted); font-weight:300; }
+.intel-two-col { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+.concl-card { background:var(--card); border:1px solid var(--border); border-radius:4px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,.04); }
+.concl-hdr { padding:12px 16px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); }
+.concl-hdr.hdr-pos { background:var(--green-lt); }
+.concl-hdr.hdr-neg { background:var(--red-lt); }
+.concl-hdr.hdr-neu { background:var(--brand-lt); }
+.concl-hdr.hdr-gld { background:var(--gold-lt); }
+.concl-crop { font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:var(--brand-dk); }
+.concl-meta { font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted); text-align:right; line-height:1.6; }
+.concl-body { padding:14px 16px; }
+.dev-hero { display:flex; align-items:baseline; gap:8px; margin-bottom:10px; }
+.dev-hero-num { font-family:'Playfair Display',serif; font-size:36px; font-weight:900; line-height:1; }
+.dev-hero-num.pos { color:var(--green); }
+.dev-hero-num.neg { color:var(--red); }
+.dev-hero-num.gld { color:var(--gold); }
+.dev-hero-lbl { font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted); padding-bottom:4px; }
+.dev-hero-ref { font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted); margin-left:auto; text-align:right; line-height:1.6; }
+.concl-avance { margin-bottom:10px; }
+.concl-av-hdr { display:flex; justify-content:space-between; margin-bottom:4px; }
+.concl-av-lbl { font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.1em; color:var(--muted); text-transform:uppercase; }
+.concl-av-pct { font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--brand); font-weight:600; }
+.concl-av-bg { height:5px; background:var(--border); border-radius:2px; overflow:hidden; }
+.concl-av-fill { height:100%; border-radius:2px; }
+.av-fill-done { background:var(--green); }
+.av-fill-prog { background:var(--blue); }
+.av-fill-pend { background:var(--gold); }
+.concl-narrative { font-size:12px; color:var(--text-2); line-height:1.65; font-weight:300; margin-bottom:10px; padding:8px 10px; background:var(--card-alt); border-radius:3px; border-left:2px solid var(--border-dk); }
+.concl-narrative strong { color:var(--text); font-weight:600; }
+.zona-tag { display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:9px; padding:1px 6px; border-radius:2px; font-weight:600; }
+.zona-tag.win { background:var(--green-lt); color:var(--green); }
+.zona-tag.los { background:var(--red-lt); color:var(--red); }
+.concl-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; border-top:1px solid var(--border); padding-top:10px; }
+.cs-lbl { font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.1em; color:var(--muted); text-transform:uppercase; margin-bottom:2px; }
+.cs-val { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; color:var(--text); }
+.cs-val.pos { color:var(--green); }
+.cs-val.neg { color:var(--red); }
+.cs-val.gld { color:var(--gold); }
+.cs-val.muted { font-size:12px; color:var(--muted); font-family:'IBM Plex Sans',sans-serif; font-weight:300; }
+.cs-sub { font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted); margin-top:1px; }
+.intel-empty { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted); padding:24px; text-align:center; }
+@media(max-width:900px){ .intel-kpi-grid{grid-template-columns:repeat(2,1fr)} .intel-two-col{grid-template-columns:1fr} .concl-stats{grid-template-columns:repeat(2,1fr)} }
+@media(max-width:600px){ .intel-kpi-grid{grid-template-columns:1fr 1fr} }
+
+/* ADMIN RETIROS */
+.comp-bar-wrap { display:flex; align-items:center; gap:4px; }
+.comp-bar-track { flex:1; height:8px; background:var(--border); border-radius:4px; overflow:hidden; display:flex; min-width:80px; }
+.comp-bar-ret  { height:100%; background:var(--green); }
+.comp-bar-emb  { height:100%; background:var(--gold); }
+.comp-bar-pend { height:100%; background:var(--red-lt); }
+.admin-legend { display:flex; gap:16px; align-items:center; margin-bottom:12px; }
+.admin-legend-item { display:flex; align-items:center; gap:5px; font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--muted); }
+.admin-legend-dot { width:10px; height:10px; border-radius:2px; }
+
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+
+<!-- PASSWORD SCREEN -->
+<div id="pwd-screen" style="position:fixed;inset:0;z-index:9999;background:#2d6b4a;display:flex;align-items:center;justify-content:center;flex-direction:column;">
+  <div style="text-align:center;max-width:360px;width:90%;padding:0 20px;">
+    <div style="font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:#fff;margin-bottom:6px;">Espartina SA</div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;color:rgba(255,255,255,.5);text-transform:uppercase;margin-bottom:40px;">Informe de Cosecha & Producción · 25/26</div>
+    <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:32px 28px;">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:14px;">Acceso restringido</div>
+      <input id="pwd-input" type="password" placeholder="Contraseña"
+        onkeydown="if(event.key==='Enter')checkPwd()"
+        onkeyup="if(event.key==='Enter')checkPwd()"
+        inputmode="text"
+        autocomplete="current-password"
+        style="width:100%;padding:11px 14px;border-radius:3px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none;margin-bottom:12px;letter-spacing:.05em;box-sizing:border-box;-webkit-appearance:none;">
+      <button onclick="checkPwd()" ontouchend="event.preventDefault();checkPwd()"
+        style="width:100%;padding:11px;border-radius:3px;border:none;background:#c9963a;color:#fff;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;font-weight:600;-webkit-appearance:none;touch-action:manipulation;"
+        onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Ingresar</button>
+      <div id="pwd-error" style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#f5a0a0;margin-top:10px;display:none;">Contraseña incorrecta — intentá de nuevo.</div>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div>
+    <div class="h-eyebrow">Espartina SA · Campaña 25/26</div>
+    <div class="h-title" id="h-title">Informe de Cosecha & Producción</div>
+    <div class="h-sub" id="h-sub">@@FECHA_ESTADO@@</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <button id="export-btn" onclick="exportarExcel()" style="display:none;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;padding:7px 14px;border-radius:3px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">
+      📥 Exportar a Excel
+    </button>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('campana')">Mi Campaña</div>
+  <div class="tab" onclick="switchTab('analisis')">Análisis por Cultivo</div>
+  <div class="tab" onclick="switchTab('detalle')">Detalle por Campo</div>
+</div>
+
+
+
+
+<!-- ===================== TAB 1: MI CAMPAÑA ===================== -->
+<div class="pane" id="pane-campana">
+
+  <!-- Hero strip — desvío global -->
+  <div class="hero-strip" id="camp-hero"></div>
+
+  <!-- Escenarios de producción (moved up from old tab) -->
+  <div id="camp-escenarios-section" style="display:none">
+    <div class="sec-title">Escenarios de producción</div>
+    <div id="camp-escenarios"></div>
+  </div>
+
+  <!-- Cultivos — cards compactas -->
+  <div class="sec-title">Cultivos</div>
+  <div class="camp-cards" id="camp-cultivos"></div>
+
+  <!-- Comentarios dinámicos -->
+  <div class="sec-title">Análisis de campaña</div>
+  <div class="coments" id="camp-coments"></div>
+
+</div>
+
+<!-- ===================== TAB 2: ANÁLISIS POR CULTIVO ===================== -->
+<div class="pane active" id="pane-analisis">
+
+  <!-- Accordion sections — one per crop + destacados -->
+  <div class="sec-title">Desglose por cultivo</div>
+  <div style="font-size:11px;color:var(--muted);margin-bottom:14px;font-family:'IBM Plex Sans',sans-serif;font-weight:300">Cada sección se expande con zonas, rindes y campos destacados.</div>
+  <div id="analisis-accordions"></div>
+
+</div>
+
+<!-- ===================== TAB 3: DETALLE ===================== -->
+<div class="pane" id="pane-detalle">
+  <div class="filters" style="flex-wrap:wrap;gap:8px;align-items:flex-end">
+    <div class="filter-group">
+      <div class="filter-lbl">Actividad</div>
+      <div class="ms-dropdown" id="ms-act">
+        <div class="ms-trigger" onclick="toggleMsDrop('ms-act')">
+          <span class="ms-placeholder">Todas</span>
+          <span class="ms-arrow">▾</span>
+        </div>
+        <div class="ms-panel" id="ms-act-panel"></div>
+      </div>
+    </div>
+    <div class="filter-group">
+      <div class="filter-lbl">Zona</div>
+      <div class="ms-dropdown" id="ms-zona">
+        <div class="ms-trigger" onclick="toggleMsDrop('ms-zona')">
+          <span class="ms-placeholder">Todas</span>
+          <span class="ms-arrow">▾</span>
+        </div>
+        <div class="ms-panel" id="ms-zona-panel"></div>
+      </div>
+    </div>
+    <div class="filter-group">
+      <div class="filter-lbl">Localidad</div>
+      <div class="ms-dropdown" id="ms-loc">
+        <div class="ms-trigger" onclick="toggleMsDrop('ms-loc')">
+          <span class="ms-placeholder">Todas</span>
+          <span class="ms-arrow">▾</span>
+        </div>
+        <div class="ms-panel" id="ms-loc-panel"></div>
+      </div>
+    </div>
+    <div class="filter-group">
+      <div class="filter-lbl">Buscar campo</div>
+      <input type="text" id="f-search" placeholder="Ej: La Merced…" oninput="filterTable()">
+    </div>
+    <div class="filter-group">
+      <div class="filter-lbl">Ordenar por</div>
+      <select id="f-sort" onchange="filterTable()">
+        <option value="desvio-asc">Desvío ↑</option>
+        <option value="desvio-desc">Desvío ↓</option>
+        <option value="avance-desc">Mayor avance</option>
+        <option value="has-desc">Mayor superficie</option>
+        <option value="rinde-desc">Mayor rinde final</option>
+        <option value="nombre-asc">Nombre A→Z</option>
+      </select>
+    </div>
+    <div class="filter-check-wrap">
+      <input type="checkbox" id="f-cosecha" onchange="filterTable()">
+      <span>Solo con cosecha iniciada</span>
+    </div>
+    <div class="results-count" id="results-count"></div>
+    <div class="panel-toggle-btn" id="panel-toggle-btn" onclick="togglePanel()">
+      <span class="pt-icon">📋</span> Análisis
+    </div>
+  </div>
+
+  <div class="detalle-layout">
+    <div class="detalle-main">
+      <div class="analysis-panel" id="analysis-panel">
+        <div class="ap-header">
+          <div class="ap-title">Análisis</div>
+          <div class="ap-context" id="ap-context">—</div>
+        </div>
+        <div class="ap-body" id="ap-body"></div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Actividad</th><th>Zona</th><th>Campo</th>
+              <th class="r">Has Sembr.</th><th class="r">Has Cosech.</th><th>Avance</th>
+              <th class="r">Ppto kg/ha</th><th class="r">Actual kg/ha</th><th class="r">Final kg/ha</th>
+              <th class="r">Desvío</th><th style="width:16px"></th>
+            </tr>
+          </thead>
+          <tbody id="detalle-tbody"></tbody>
+        </table>
+        <div class="tbl-summary" id="tbl-summary"></div>
+      </div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);margin-top:8px;letter-spacing:.08em;">
+        ↕ Click en cualquier fila para ver el detalle expandido
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- ===================== TAB 4: RETIROS & BOLSA ===================== -->
+
+
+
+
+
+
+
+<script>
+
+
+
+@@DATA_BLOCK@@
+
+
+// ===== SOCIOS DATA =====
+const DEPOSITO_DATA = {
+  "La Graciela||CEBADA":{tn:139.25,zona:"BA COS N",loc:"DOS NACIONES"},
+  "San Jose||CEBADA":{tn:376.65,zona:"BA COS N",loc:"LICENCIADO MATIENZO"},
+  "Santa Maria del Moro||CEBADA":{tn:173.16,zona:"BA COS N",loc:"LOBERIA"},
+  "Los Alamos||CEBADA":{tn:438.02,zona:"BA OESTE DX",loc:"ANDANT"},
+  "El Silencio||CEBADA":{tn:610.32,zona:"BA OESTE DX",loc:"BONIFACIO"},
+  "Chapaico||CEBADA":{tn:217.6,zona:"BA OESTE DX",loc:"DAIREAUX"},
+  "Sauce Iru||CEBADA":{tn:330.0,zona:"BA OESTE DX",loc:"DAIREAUX"},
+  "Santa Isabel Cozumel||CEBADA":{tn:324.71,zona:"BA SDE S",loc:"ENERGIA"},
+  "Las Overas||CEBADA":{tn:26.92,zona:"BA SDE S",loc:"LOBERIA"},
+  "Dona Hilda||CEBADA":{tn:151.72,zona:"BA SDE S",loc:"NECOCHEA"},
+  "La Paulina||CEBADA":{tn:354.9,zona:"BA SDE S",loc:"TANDIL"},
+  "Campanella||CEBADA":{tn:60.49,zona:"BA SDE S",loc:"TRES ARROYOS"},
+  "El Cuajarote||GI OLEICO":{tn:627.95,zona:"BA NORTE",loc:"PASTEUR"},
+  "La Encarnacion||GI OLEICO":{tn:168.19,zona:"BA OESTE",loc:"CASBAS"},
+  "La Chana||GI OLEICO":{tn:122.52,zona:"BA OESTE",loc:"PELLEGRINI"},
+  "La Providencia II||GI OLEICO":{tn:375.11,zona:"CHACO",loc:"PAMPA DEL INFIERNO"},
+  "La Merced||GI OLEICO":{tn:18.26,zona:"LA PAMPA",loc:"TOMAS M. DE ANCHORENA"},
+  "Los Robles Lonquimay||GI OLEICO":{tn:31.07,zona:"LA PAMPA",loc:"URIBURU"},
+  "La Chana||GIRASOL":{tn:393.17,zona:"BA OESTE",loc:"PELLEGRINI"},
+  "La Providencia II||GIRASOL":{tn:211.06,zona:"CHACO",loc:"PAMPA DEL INFIERNO"},
+  "La Merced||GIRASOL":{tn:1859.33,zona:"LA PAMPA",loc:"TOMAS M. DE ANCHORENA"},
+  "Los Robles Lonquimay||GIRASOL":{tn:300.24,zona:"LA PAMPA",loc:"URIBURU"},
+  "El 5||GIRASOL":{tn:130.96,zona:"SAN LUIS",loc:"La Punilla"},
+  "El Tastu||GIRASOL":{tn:412.57,zona:"SAN LUIS",loc:"PEDERNERA"},
+  "San Federico||MAIZ":{tn:847.0,zona:"BA NORTE",loc:"PERGAMINO"},
+  "Las Pampas||MAIZ":{tn:299.82,zona:"CBA SUR",loc:"LOS CISNES"},
+  "El Trebol II||MAIZ":{tn:1457.66,zona:"ENTRE RIOS",loc:"GENERAL GALARZA"},
+  "El Trochi||MAIZ":{tn:484.09,zona:"ENTRE RIOS",loc:"LA PAZ"},
+  "Los Tulipanes||TRIGO":{tn:234.22,zona:"BA COS N",loc:"BALNEARIO MAR CHIQUITA"},
+  "San Marcos||TRIGO":{tn:142.2,zona:"BA COS N",loc:"BALNEARIO MAR CHIQUITA"},
+  "Los Hermanos||TRIGO":{tn:1139.82,zona:"BA COS N",loc:"CORONEL VIDAL"},
+  "La Graciela||TRIGO":{tn:258.0,zona:"BA COS N",loc:"DOS NACIONES"},
+  "Bella Vista||TRIGO":{tn:1670.15,zona:"BA COS N",loc:"GENERAL MADARIAGA"},
+  "La Loma||TRIGO":{tn:1293.92,zona:"BA COS N",loc:"GENERAL MADARIAGA"},
+  "Las Lomas Carlos||TRIGO":{tn:955.48,zona:"BA COS N",loc:"GENERAL MADARIAGA"},
+  "San Luciano||TRIGO":{tn:275.74,zona:"BA COS N",loc:"GENERAL MADARIAGA"},
+  "El Moro Viejo||TRIGO":{tn:1165.77,zona:"BA COS N",loc:"LOBERIA"},
+  "La Magdalena Sudeste||TRIGO":{tn:1509.51,zona:"BA COS N",loc:"LOBERIA"},
+  "Macedo||TRIGO":{tn:1430.98,zona:"BA COS N",loc:"MACEDO"},
+  "Santa Ana Cobo||TRIGO":{tn:629.2,zona:"BA COS N",loc:"Mar de Cobo"},
+  "La Ballenera||TRIGO":{tn:1797.92,zona:"BA COS N",loc:"MAR DEL PLATA"},
+  "Ernestina_FK||TRIGO":{tn:14.5,zona:"BA NORTE",loc:"25 de Mayo"},
+  "Ernestina_LK||TRIGO":{tn:218.0,zona:"BA NORTE",loc:"25 de Mayo"},
+  "San Ciriaco||TRIGO":{tn:3670.0,zona:"BA NORTE",loc:"COLON"},
+  "El Cuajarote||TRIGO":{tn:656.2,zona:"BA NORTE",loc:"PASTEUR"},
+  "San Federico||TRIGO":{tn:644.0,zona:"BA NORTE",loc:"PERGAMINO"},
+  "San Federico II||TRIGO":{tn:368.27,zona:"BA NORTE",loc:"PERGAMINO"},
+  "La Alicia II||TRIGO":{tn:984.51,zona:"BA NORTE",loc:"ROBERTS"},
+  "La Marcela||TRIGO":{tn:2002.6,zona:"BA NORTE",loc:"ROBERTS"},
+  "La Chana||TRIGO":{tn:79.96,zona:"BA OESTE",loc:"PELLEGRINI"},
+  "La California||TRIGO":{tn:372.57,zona:"BA OESTE DX",loc:"ANDANT"},
+  "La Golondrina E||TRIGO":{tn:806.39,zona:"BA OESTE DX",loc:"ANDANT"},
+  "La Golondrina O||TRIGO":{tn:927.24,zona:"BA OESTE DX",loc:"ANDANT"},
+  "Los Alamos||TRIGO":{tn:56.69,zona:"BA OESTE DX",loc:"ANDANT"},
+  "Malda Gain||TRIGO":{tn:549.38,zona:"BA OESTE DX",loc:"ANDANT"},
+  "San Jose del Encuentro||TRIGO":{tn:113.74,zona:"BA OESTE DX",loc:"ANDANT"},
+  "Santa Marta||TRIGO":{tn:202.86,zona:"BA OESTE DX",loc:"ANDANT"},
+  "El Silencio||TRIGO":{tn:799.73,zona:"BA OESTE DX",loc:"BONIFACIO"},
+  "Sauce Iru||TRIGO":{tn:422.98,zona:"BA OESTE DX",loc:"DAIREAUX"},
+  "Fortin Paunero||TRIGO":{tn:483.54,zona:"BA OESTE DX",loc:"LAGUNA ALSINA"},
+  "La Maria Elena||TRIGO":{tn:899.56,zona:"BA OESTE DX",loc:"MONES CAZON"},
+  "Santa Teresa||TRIGO":{tn:3099.45,zona:"BA SDE S",loc:"ADOLFO GONZALES CHAVES"},
+  "La Barrancosa||TRIGO":{tn:1056.82,zona:"BA SDE S",loc:"AYACUCHO"},
+  "Sejor||TRIGO":{tn:785.92,zona:"BA SDE S",loc:"LA AZUCENA"},
+  "El Tatu||TRIGO":{tn:1899.07,zona:"BA SDE S",loc:"LA DULCE"},
+  "La Fe||TRIGO":{tn:934.21,zona:"BA SDE S",loc:"NECOCHEA"},
+  "Dos Hermanas||TRIGO":{tn:1833.5,zona:"BA SDE S",loc:"TANDIL"},
+  "La Azucena||TRIGO":{tn:737.13,zona:"BA SDE S",loc:"TANDIL"},
+  "La Florida Fulton||TRIGO":{tn:851.62,zona:"BA SDE S",loc:"TANDIL"},
+  "Los Charitos||TRIGO":{tn:263.26,zona:"BA SDE S",loc:"TANDIL"},
+  "El Trebol II||TRIGO":{tn:2048.04,zona:"ENTRE RIOS",loc:"GENERAL GALARZA"},
+  "La Rinconada II||TRIGO":{tn:1787.2,zona:"ENTRE RIOS",loc:"GUALEGUAYCHU"},
+  "Las Flores||TRIGO":{tn:261.88,zona:"ENTRE RIOS",loc:"GUALEGUAYCHU"},
+  "San Benito||TRIGO":{tn:946.17,zona:"ENTRE RIOS",loc:"GUALEGUAYCHU"},
+  "El Trochi||TRIGO":{tn:130.45,zona:"ENTRE RIOS",loc:"LA PAZ"},
+};
+
+@@SOCIOS_BLOCK@@
+
+// ===== RETIRO DATA =====
+@@RETIRO_BLOCK@@
+
+// ===== PREV SNAPSHOT (para deltas vs día anterior) =====
+@@PREV_SNAPSHOT_BLOCK@@
+
+// ===== AUTH & SOCIO STATE =====
+const ADMIN_PWD = 'Espartina2026+';
+let CURRENT_SOCIO = null; // null = admin (ver todo), object = socio filtrado
+
+function checkPwd(){
+  const val = document.getElementById('pwd-input').value.trim();
+  if(!val){ return; }
+  
+  // Admin
+  if(val === ADMIN_PWD){
+    loginAs(null);
+    return;
+  }
+  
+  // Socio
+  if(SOCIOS_DATA[val]){
+    loginAs(SOCIOS_DATA[val]);
+    return;
+  }
+  
+  document.getElementById('pwd-error').style.display='block';
+  document.getElementById('pwd-input').value='';
+  document.getElementById('pwd-input').focus();
+}
+
+function loginAs(socio){
+  CURRENT_SOCIO = socio;
+  document.getElementById('pwd-screen').style.display='none';
+
+  const titleEl   = document.getElementById('h-title');
+  const exportBtn = document.getElementById('export-btn');
+
+  if(socio){
+    if(titleEl)   titleEl.textContent = socio.name;
+    if(exportBtn) exportBtn.style.display = 'block';
+  } else {
+    if(titleEl)   titleEl.textContent = 'Informe de Cosecha & Producción';
+    if(exportBtn) exportBtn.style.display = 'none';
+  }
+
+  renderMiCampana();
+  filterTable();
+}
+
+// ===== SOCIO DATA FILTER =====
+function getScopedData(){
+  if(!CURRENT_SOCIO) return DATA;
+  const result = [];
+  DATA.forEach(d => {
+    const key = d.campo + '||' + d.act;
+    const info = CURRENT_SOCIO.campos[key];
+    if(!info) return;
+    const pct = typeof info === 'number' ? info : info.pct;
+    result.push({
+      ...d,
+      sembradas:  Math.round(d.sembradas  * pct),
+      cosechadas: Math.round(d.cosechadas * pct),
+      perdidas:   Math.round(d.perdidas   * pct),
+      _pct: pct
+    });
+  });
+  return result;
+}
+
+window.addEventListener('load',()=>{
+  const i=document.getElementById('pwd-input'); 
+  if(i) i.focus(); 
+});
+
+
+
+
+function fmt(n){ return n==0?'—':n.toLocaleString('es-AR',{minimumFractionDigits:0,maximumFractionDigits:0}); }
+function fmtR(n){ return n==0?'—':n.toLocaleString('es-AR',{minimumFractionDigits:0,maximumFractionDigits:0}); }
+
+function pillDesvio(d){
+  const cls = d>0?'pos':d<-5?'neg':'neu';
+  const sign = d>0?'+':'';
+  return `<span class="pill ${cls}">${sign}${d.toFixed(1)}%</span>`;
+}
+function miniBar(pct){
+  const cls = pct>=70?'g':'';
+  const w = Math.min(pct,100);
+  return `<div class="mp"><div class="mp-bg"><div class="mp-fill ${cls}" style="width:${w}%"></div></div><span class="mp-pct">${pct==0?'0':pct>=100?'100':pct.toFixed(1)}%</span></div>`;
+}
+
+// ===== DETALLE TAB =====
+function getDesvio(d){ return ((d.final - d.ppto)/d.ppto)*100; }
+
+
+function toggleLoc(locId){
+  const rows = document.querySelectorAll('.loc-child.'+locId);
+  const icon = document.getElementById('icon-'+locId);
+  const isOpen = rows.length > 0 && rows[0].style.display !== 'none';
+  rows.forEach(r=>{ r.style.display = isOpen ? 'none' : ''; });
+  if(icon) icon.textContent = isOpen ? '▸' : '▾';
+  // Also hide detail rows when closing
+  if(isOpen){
+    rows.forEach(r=>{
+      const detId = r.id.replace('row-','det-');
+      const det = document.getElementById(detId);
+      if(det) det.style.display='none';
+    });
+  }
+}
+
+// ── CASCADE FILTERS ─────────────────────────────────────────
+
+
+// ── MULTI-SELECT DROPDOWN FILTERS FOR DETALLE ──────────────
+
+const msState = { 'ms-act':[], 'ms-zona':[], 'ms-loc':[] };
+
+function toggleMsDrop(id){
+  const panel = document.getElementById(id+'-panel');
+  const trigger = document.querySelector(`#${id} .ms-trigger`);
+  const isOpen = panel.classList.contains('open');
+  // Close all others
+  document.querySelectorAll('.ms-panel.open').forEach(p=>p.classList.remove('open'));
+  document.querySelectorAll('.ms-trigger.open').forEach(t=>t.classList.remove('open'));
+  if(!isOpen){
+    panel.classList.add('open');
+    trigger.classList.add('open');
+    const search = panel.querySelector('.ms-panel-search');
+    if(search){ search.value=''; filterMsOptions(id,''); search.focus(); }
+  }
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', e=>{
+  if(!e.target.closest('.ms-dropdown')){
+    document.querySelectorAll('.ms-panel.open').forEach(p=>p.classList.remove('open'));
+    document.querySelectorAll('.ms-trigger.open').forEach(t=>t.classList.remove('open'));
+  }
+});
+
+function getMsSelection(id){ return msState[id]||[]; }
+
+function filterMsOptions(id, search){
+  const panel = document.getElementById(id+'-panel');
+  const s = search.toLowerCase();
+  panel.querySelectorAll('.ms-opt').forEach(opt=>{
+    const lbl = opt.querySelector('label').textContent.toLowerCase();
+    opt.style.display = (!s || lbl.includes(s)) ? '' : 'none';
+  });
+}
+
+function toggleMsOption(id, val){
+  const sel = msState[id];
+  const idx = sel.indexOf(val);
+  if(idx>=0) sel.splice(idx,1); else sel.push(val);
+  updateMsTrigger(id);
+  cascadeFilters(id);
+  filterTable();
+}
+
+function removeMsTag(id, val, e){
+  e.stopPropagation();
+  const sel = msState[id];
+  const idx = sel.indexOf(val);
+  if(idx>=0) sel.splice(idx,1);
+  updateMsTrigger(id);
+  // Also uncheck in panel
+  const panel = document.getElementById(id+'-panel');
+  panel.querySelectorAll('.ms-opt input').forEach(cb=>{
+    if(cb.dataset.val===val) cb.checked=false;
+  });
+  cascadeFilters(id);
+  filterTable();
+}
+
+function clearMsSelection(id){
+  msState[id] = [];
+  updateMsTrigger(id);
+  const panel = document.getElementById(id+'-panel');
+  panel.querySelectorAll('.ms-opt input').forEach(cb=>cb.checked=false);
+  cascadeFilters(id);
+  filterTable();
+}
+
+function updateMsTrigger(id){
+  const trigger = document.querySelector(`#${id} .ms-trigger`);
+  const sel = msState[id];
+  const placeholder = 'Todas';
+  if(!sel.length){
+    trigger.innerHTML = `<span class="ms-placeholder">${placeholder}</span><span class="ms-arrow">▾</span>`;
+  } else {
+    const tags = sel.map(v=>`<span class="ms-tag">${v}<span class="ms-tag-x" onclick="removeMsTag('${id}','${v.replace(/'/g,"\\'")}',event)">×</span></span>`).join('');
+    trigger.innerHTML = tags + `<span class="ms-arrow">▾</span>`;
+  }
+}
+
+function buildMsOptions(id, values, selected){
+  const panel = document.getElementById(id+'-panel');
+  const selSet = new Set(selected||[]);
+  // Update msState to only keep valid selections
+  msState[id] = (msState[id]||[]).filter(v=>values.includes(v));
+
+  const showSearch = values.length > 8;
+  panel.innerHTML =
+    (showSearch ? `<input class="ms-panel-search" type="text" placeholder="Buscar…" oninput="filterMsOptions('${id}',this.value)">` : '') +
+    values.map(v=>{
+      const checked = selSet.has(v) ? 'checked' : '';
+      return `<div class="ms-opt" onclick="event.preventDefault();this.querySelector('input').checked=!this.querySelector('input').checked;toggleMsOption('${id}','${v.replace(/'/g,"\\'")}')">
+        <input type="checkbox" data-val="${v.replace(/"/g,'&quot;')}" ${checked}>
+        <label>${v}</label>
+      </div>`;
+    }).join('') +
+    (values.length > 3 ? `<div class="ms-clear" onclick="event.stopPropagation();clearMsSelection('${id}')">Limpiar selección</div>` : '');
+
+  updateMsTrigger(id);
+}
+
+function cascadeFilters(changed){
+  const data     = getScopedData();
+  const selActs  = getMsSelection('ms-act');
+  const selZonas = getMsSelection('ms-zona');
+  const selLocs  = getMsSelection('ms-loc');
+
+  if(changed !== 'ms-act'){
+    const scope = data.filter(d=>
+      (selZonas.length===0 || selZonas.includes(d.zona)) &&
+      (selLocs.length===0  || selLocs.includes(d.loc))
+    );
+    const acts = [...new Set(scope.map(d=>d.act))].sort();
+    buildMsOptions('ms-act', acts, selActs.filter(a=>acts.includes(a)));
+  }
+
+  if(changed !== 'ms-zona'){
+    const scope = data.filter(d=>
+      (selActs.length===0 || selActs.includes(d.act)) &&
+      (selLocs.length===0 || selLocs.includes(d.loc))
+    );
+    const zonas = [...new Set(scope.map(d=>d.zona))].sort();
+    buildMsOptions('ms-zona', zonas, selZonas.filter(z=>zonas.includes(z)));
+  }
+
+  if(changed !== 'ms-loc'){
+    const scope = data.filter(d=>
+      (selActs.length===0  || selActs.includes(d.act)) &&
+      (selZonas.length===0 || selZonas.includes(d.zona))
+    );
+    const locs = [...new Set(scope.map(d=>d.loc).filter(Boolean))].sort();
+    buildMsOptions('ms-loc', locs, selLocs.filter(l=>locs.includes(l)));
+  }
+}
+
+function filterTable(){
+  const selActs  = getMsSelection('ms-act');
+  const selZonas = getMsSelection('ms-zona');
+  const selLocs  = getMsSelection('ms-loc');
+  const search  = document.getElementById('f-search').value.toLowerCase();
+  const soloC   = document.getElementById('f-cosecha').checked;
+  const sortVal = document.getElementById('f-sort').value;
+
+  let filtered = getScopedData().filter(d=>{
+    if(selActs.length  && !selActs.includes(d.act))   return false;
+    if(selZonas.length && !selZonas.includes(d.zona))  return false;
+    if(selLocs.length  && !selLocs.includes(d.loc))    return false;
+    if(search && !d.campo.toLowerCase().includes(search) && !d.loc.toLowerCase().includes(search)) return false;
+    if(soloC && d.cosechadas===0) return false;
+    return true;
+  });
+
+  // Sort
+  filtered.sort((a,b)=>{
+    if(sortVal==='desvio-asc') return getDesvio(a)-getDesvio(b);
+    if(sortVal==='desvio-desc') return getDesvio(b)-getDesvio(a);
+    if(sortVal==='avance-desc') return b.avance-a.avance;
+    if(sortVal==='has-desc') return b.sembradas-a.sembradas;
+    if(sortVal==='rinde-desc') return b.final-a.final;
+    if(sortVal==='nombre-asc') return a.campo.localeCompare(b.campo);
+    return 0;
+  });
+
+  document.getElementById('results-count').textContent = `${filtered.length} campos`;
+
+  const tbody = document.getElementById('detalle-tbody');
+
+  if(filtered.length===0){
+    tbody.innerHTML = `<tr><td colspan="11" class="no-results">Sin resultados para los filtros seleccionados</td></tr>`;
+    document.getElementById('tbl-summary').innerHTML='';
+    return;
+  }
+
+  // Group by localidad
+  const locGroups = {};
+  filtered.forEach((d,i)=>{
+    const locKey = d.loc || '(Sin localidad)';
+    if(!locGroups[locKey]) locGroups[locKey]={loc:locKey,zona:d.zona,campos:[]};
+    locGroups[locKey].campos.push({...d,_idx:i});
+  });
+
+  const S = (arr,k)=>arr.reduce((a,d)=>a+(d[k]||0),0);
+  let rowCounter = 0;
+
+  tbody.innerHTML = Object.values(locGroups).sort((a,b)=>a.loc.localeCompare(b.loc)).map(g=>{
+    const sembr  = S(g.campos,'sembradas');
+    const cos    = S(g.campos,'cosechadas');
+    const perd   = S(g.campos,'perdidas');
+    const avLoc  = sembr>0?(cos+perd)/sembr*100:0;
+    const wPpto  = sembr>0?g.campos.reduce((a,d)=>a+d.ppto*d.sembradas,0)/sembr:0;
+    const hasProd= g.campos.reduce((a,d)=>a+(d.sembradas-d.perdidas),0);
+    const wFinal = hasProd>0?g.campos.reduce((a,d)=>a+d.final*(d.sembradas-d.perdidas),0)/hasProd:0;
+    const devLoc = wPpto>0?(wFinal-wPpto)/wPpto*100:0;
+    const devCls = devLoc>0?'pos':devLoc<-5?'neg':'neu';
+    const locId  = 'loc-'+g.loc.replace(/[^a-z0-9]/gi,'_');
+
+    const campoRows = g.campos.map(d=>{
+      const dev = getDesvio(d);
+      const devcls = dev>0?'pos':dev<-5?'neg':'neu';
+      const devsign = dev>0?'+':'';
+      const actShort = d.act.split(' ').map(w=>w[0]).join('').substring(0,4);
+      const actCls = d.act==='GI OLEICO'?'gld': d.act==='GIRASOL'?'blu': d.act.startsWith('MAIZ')?'pos': d.act.startsWith('SOJA')?'neu': d.act==='TRIGO'||d.act==='CEBADA'?'neg':'neu';
+      const actpill = `<span class="pill ${actCls}" style="font-size:9px">${actShort}</span>`;
+      const avBar = miniBar(d.avance);
+      const barW = Math.min(Math.abs(dev)*1.2,38);
+      const devBar = `<div class="dev-bar"><div class="dev-track"><div class="dev-fill ${dev>=0?'pos':'neg'}" style="width:${barW}px"></div></div><span class="pill ${devcls}">${devsign}${dev.toFixed(1)}%</span></div>`;
+      const i = rowCounter++;
+      const rowId = `row-${i}`; const detId = `det-${i}`;
+      const detHas = d.perdidas>0?`<div class="di-item"><div class="di-lbl">Has Perdidas</div><div class="di-val" style="color:var(--red)">${d.perdidas}</div></div>`:'';
+      const detAct = d.cosechadas>0?`<div class="di-item"><div class="di-lbl">Rinde Actual</div><div class="di-val ${dev>=0?'pos':'neg'}">${fmtR(d.actual)}</div><div class="di-note">kg/ha cosechado</div></div>`:`<div class="di-item"><div class="di-lbl">Rinde Actual</div><div class="di-val" style="color:var(--muted)">—</div><div class="di-note">Sin cosecha aún</div></div>`;
+      const detNote = d.cosechadas>0&&d.avance<100?`<div class="di-item" style="grid-column:span 2"><div class="di-lbl">Nota</div><div class="di-note">Rinde final combina <strong style="color:var(--text)">${fmtR(d.cosechadas)} ha</strong> al rinde actual (${fmtR(d.actual)} kg/ha) y <strong>${fmtR(d.sembradas-d.cosechadas-d.perdidas)} ha</strong> al rinde estimado.</div></div>`:'';
+      return `<tr class="campo-row loc-child ${locId}" id="${rowId}" onclick="toggleDetail('${detId}','${rowId}')">
+        <td>${actpill}</td>
+        <td class="sm">${d.zona}</td>
+        <td class="name" style="padding-left:24px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px" title="${d.campo}">${d.campo}</td>
+      <td class="r">${fmt(d.sembradas)}</td>
+      <td class="r">${d.cosechadas>0?fmt(d.cosechadas):'<span style="color:var(--muted)">—</span>'}</td>
+      <td>${avBar}</td>
+      <td class="r">${fmt(d.ppto)}</td>
+      <td class="r">${d.cosechadas>0?fmt(d.actual):'<span style="color:var(--muted)">—</span>'}</td>
+      <td class="r">${fmt(d.final)}</td>
+      <td class="r">${devBar}</td>
+      <td style="color:var(--muted);font-size:10px;text-align:center" class="toggle-icon">▸</td>
+    </tr>
+    <tr class="detail-row" id="${detId}">
+      <td colspan="11" style="padding:0">
+        <div class="detail-inner">
+          <div class="di-item">
+            <div class="di-lbl">Campo</div>
+            <div class="di-val" style="font-size:14px">${d.campo}</div>
+            <div class="di-note">${d.loc} · ${d.zona}</div>
+          </div>
+          <div class="di-item">
+            <div class="di-lbl">Rinde Final</div>
+            <div class="di-val ${dev>=0?'pos':'neg'}">${fmtR(d.final)}<span style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono'"> kg/ha</span></div>
+            <div class="di-note">Presupuesto: ${fmtR(d.ppto)} kg/ha</div>
+          </div>
+          ${detAct}
+          <div class="di-item">
+            <div class="di-lbl">Avance</div>
+            <div class="di-val">${d.avance>=100?'100':d.avance.toFixed(1)}<span style="font-size:14px;color:var(--muted)">%</span></div>
+            <div class="di-note">${fmt(d.cosechadas)} ha de ${fmt(d.sembradas)}</div>
+          </div>
+          ${detHas}
+          ${detNote}
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+    // Localidad header row — rinde actual ponderado (solo campos con cosecha)
+    const locConCos = g.campos.filter(d=>d.cosechadas>0);
+    const locTotCos = locConCos.reduce((a,d)=>a+d.cosechadas,0);
+    const wActualLoc = locTotCos>0 ? locConCos.reduce((a,d)=>a+d.actual*d.cosechadas,0)/locTotCos : 0;
+
+    const locHeader = `<tr class="loc-header" onclick="toggleLoc('${locId}')" style="cursor:pointer;background:var(--brand-lt)">
+      <td colspan="3" style="padding:10px 12px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);margin-right:8px" id="icon-${locId}">▾</span>
+        <strong style="color:var(--brand-dk);font-size:12px">${g.loc}</strong>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);margin-left:8px">${g.zona} · ${g.campos.length} campo${g.campos.length>1?'s':''}</span>
+      </td>
+      <td class="r" style="font-family:'IBM Plex Mono',monospace;font-size:11px">${sembr.toLocaleString('es-AR')}</td>
+      <td class="r" style="font-family:'IBM Plex Mono',monospace;font-size:11px">${cos>0?cos.toLocaleString('es-AR'):'—'}</td>
+      <td>${miniBar(avLoc)}</td>
+      <td class="r" style="font-family:'IBM Plex Mono',monospace;font-size:11px">${Math.round(wPpto).toLocaleString('es-AR')}</td>
+      <td class="r" style="font-family:'IBM Plex Mono',monospace;font-size:11px">${wActualLoc>0?Math.round(wActualLoc).toLocaleString('es-AR'):'<span style="color:var(--muted)">—</span>'}</td>
+      <td class="r" style="font-family:'IBM Plex Mono',monospace;font-size:11px">${Math.round(wFinal).toLocaleString('es-AR')}</td>
+      <td><div class="dev-bar"><div class="dev-track"><div class="dev-fill ${devLoc>=0?'pos':'neg'}" style="width:${Math.min(Math.abs(devLoc)*1.2,38)}px"></div></div><span class="pill ${devCls}">${devLoc>=0?'+':''}${devLoc.toFixed(1)}%</span></div></td>
+      <td></td>
+    </tr>`;
+    return locHeader + campoRows;
+  }).join('');
+
+  // Summary row
+  const totSembr = filtered.reduce((a,d)=>a+d.sembradas,0);
+  const totCos = filtered.reduce((a,d)=>a+d.cosechadas,0);
+  const totPerd = filtered.reduce((a,d)=>a+d.perdidas,0);
+  const avgAvance = (totCos+totPerd)/totSembr*100;
+  const conCos = filtered.filter(d=>d.cosechadas>0);
+  const avgDesvio = conCos.length>0 ? conCos.reduce((a,d)=>a+getDesvio(d),0)/conCos.length : 0;
+  const dSign = avgDesvio>=0?'+':'';
+
+
+
+  document.getElementById('tbl-summary').innerHTML = `
+    <div class="tbl-sum-item">Campos: <span>${filtered.length}</span></div>
+    <div class="tbl-sum-item">Has sembradas: <span>${totSembr.toLocaleString('es-AR')}</span></div>
+    <div class="tbl-sum-item">Has cosechadas: <span>${fmt(totCos)}</span></div>
+    <div class="tbl-sum-item">Perdidas: <span>${fmt(totPerd)}</span></div>
+    <div class="tbl-sum-item">Avance promedio: <span>${avgAvance.toFixed(1)}%</span></div>
+    ${conCos.length>0?`<div class="tbl-sum-item">Desvío promedio: <span style="color:${avgDesvio>=0?'var(--green)':'var(--red)'}">${dSign}${avgDesvio.toFixed(1)}%</span></div>`:''}
+  `;
+
+  buildAnalysis(filtered);
+}
+
+// ===== ANALYSIS PANEL =====
+let panelOpen = false;
+function togglePanel(){
+  panelOpen = !panelOpen;
+  const panel = document.getElementById('analysis-panel');
+  const btn = document.getElementById('panel-toggle-btn');
+  panel.classList.toggle('open', panelOpen);
+  btn.classList.toggle('active', panelOpen);
+  if(panelOpen) filterTable(); // render analysis immediately on open
+}
+
+function buildAnalysis(filtered){
+  if(!panelOpen) return;
+
+  const selActs  = getMsSelection('ms-act');
+  const selZonas = getMsSelection('ms-zona');
+  const contextLabel = selZonas.length ? selZonas.join(', ') : (selActs.length ? selActs.join(', ') : 'Todos los campos');
+  document.getElementById('ap-context').textContent = contextLabel;
+
+  if(filtered.length === 0){
+    document.getElementById('ap-body').innerHTML = `<div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);text-align:center;padding:20px">Sin datos para analizar</div>`;
+    return;
+  }
+
+  const totSembr = filtered.reduce((a,d)=>a+d.sembradas,0);
+  const totCos = filtered.reduce((a,d)=>a+d.cosechadas,0);
+  const totPerd = filtered.reduce((a,d)=>a+d.perdidas,0);
+  const totPend = totSembr - totCos - totPerd;
+  const avancePct = totSembr > 0 ? (totCos+totPerd)/totSembr*100 : 0;
+
+  const conCos = filtered.filter(d=>d.cosechadas>0);
+  const sinCos = filtered.filter(d=>d.cosechadas===0);
+
+  // Weighted average desvio (by sembradas)
+  const wDesvio = filtered.reduce((a,d)=>a+getDesvio(d)*d.sembradas,0) / totSembr;
+  const wDesvioSign = wDesvio>=0?'+':'';
+
+  // Best / worst by desvio (solo con cosecha para confiabilidad)
+  const ranked = [...conCos].sort((a,b)=>getDesvio(b)-getDesvio(a));
+  const best = ranked[0];
+  const worst = ranked[ranked.length-1];
+
+  // High confidence negatives: >40% avance AND desvio < -15%
+  const alertas = filtered.filter(d=>d.avance>40 && getDesvio(d)<-15);
+
+  // High confidence positives: >40% avance AND desvio > 15%
+  const destacados = filtered.filter(d=>d.avance>40 && getDesvio(d)>15);
+
+  // Campos con rindes altos (actual > 10% sobre ppto)
+  const superandoPpto = conCos.filter(d=>d.actual>0 && (d.actual-d.ppto)/d.ppto>0.10);
+
+  // Perdidas
+  const conPerdidas = filtered.filter(d=>d.perdidas>0);
+
+  // Positive / negative split
+  const nPos = filtered.filter(d=>getDesvio(d)>0).length;
+  const nNeg = filtered.filter(d=>getDesvio(d)<0).length;
+
+  // Confiabilidad
+  const confianza = avancePct;
+  const confianzaLabel = confianza>=80?'Alta':confianza>=40?'Media':confianza>=15?'Baja':'Muy baja';
+  const confianzaNote = confianza<15 ? 'Los desvíos son estimados, pocos datos reales.' : confianza<40 ? 'Datos parciales. Los desvíos pueden cambiar.' : confianza<80 ? 'Datos representativos. Desvíos confiables.' : 'Datos sólidos. Alta confiabilidad.';
+
+  const f = (n)=>Math.round(n).toLocaleString('es-AR');
+  const pct = (n)=>{const s=n>=0?'+':''; return `${s}${n.toFixed(1)}%`;};
+
+  let html = '';
+
+  // --- RESUMEN ---
+  html += `<div class="ap-section">
+    <div class="ap-sec-title">Resumen</div>
+    <div class="bullet"><span class="bullet-icon">📌</span><span><strong>${filtered.length} campos</strong> · <span class="mono">${f(totSembr)} ha</span> sembradas</span></div>
+    <div class="bullet"><span class="bullet-icon">🌾</span><span><span class="mono">${f(totCos)} ha</span> cosechadas · <span class="${avancePct>=50?'pos':'gld'}">${avancePct.toFixed(1)}%</span> de avance</span></div>
+    <div class="bullet"><span class="bullet-icon">⏳</span><span><span class="mono">${f(totPend)} ha</span> pendientes de cosecha</span></div>
+    ${totPerd>0?`<div class="bullet"><span class="bullet-icon">⚠️</span><span><span class="neg">${f(totPerd)} ha</span> con pérdidas registradas</span></div>`:''}
+  </div>`;
+
+  // --- DESVIOS ---
+  html += `<div class="ap-section">
+    <div class="ap-sec-title">Desvíos vs presupuesto</div>
+    <div class="bullet"><span class="bullet-icon">📊</span><span>Desvío ponderado: <span class="${wDesvio>=0?'pos':'neg'}">${wDesvioSign}${wDesvio.toFixed(1)}%</span> sobre ppto</span></div>
+    <div class="bullet"><span class="bullet-icon">🟢</span><span><strong>${nPos}</strong> campos sobre presupuesto · <strong>${nNeg}</strong> por debajo</span></div>
+    ${best?`<div class="bullet"><span class="bullet-icon">🏆</span><span>Mejor: <strong>${best.campo}</strong> · <span class="pos">${pct(getDesvio(best))}</span></span></div>`:''}
+    ${worst&&worst!==best?`<div class="bullet"><span class="bullet-icon">🔻</span><span>Peor: <strong>${worst.campo}</strong> · <span class="neg">${pct(getDesvio(worst))}</span></span></div>`:''}
+  </div>`;
+
+  // --- ALERTAS ---
+  if(alertas.length>0){
+    html += `<div class="ap-section">
+      <div class="ap-sec-title">🚨 Alertas (alta confiabilidad)</div>
+      ${alertas.map(d=>`
+        <div class="bullet"><span class="bullet-icon">❗</span><span><strong>${d.campo}</strong> · <span class="neg">${pct(getDesvio(d))}</span> · ${d.avance.toFixed(0)}% avance</span></div>
+      `).join('')}
+    </div>`;
+  }
+
+  // --- DESTACADOS CONFIRMADOS ---
+  if(destacados.length>0){
+    html += `<div class="ap-section">
+      <div class="ap-sec-title">✅ Destacados confirmados</div>
+      ${destacados.map(d=>`
+        <div class="bullet"><span class="bullet-icon">⭐</span><span><strong>${d.campo}</strong> · <span class="pos">${pct(getDesvio(d))}</span> · ${d.avance.toFixed(0)}% avance</span></div>
+      `).join('')}
+    </div>`;
+  }
+
+  // --- RINDES ACTUALES vs PPTO ---
+  if(superandoPpto.length>0 && superandoPpto.length<=6){
+    html += `<div class="ap-section">
+      <div class="ap-sec-title">📈 Superando ppto (rinde actual)</div>
+      ${superandoPpto.map(d=>`
+        <div class="bullet"><span class="bullet-icon">↑</span><span><strong>${d.campo}</strong> · real <span class="pos">${f(d.actual)}</span> vs ppto <span class="mono">${f(d.ppto)}</span> kg/ha</span></div>
+      `).join('')}
+    </div>`;
+  }
+
+  // --- SIN COSECHA ---
+  if(sinCos.length>0){
+    const hasSinCos = sinCos.reduce((a,d)=>a+d.sembradas,0);
+    html += `<div class="ap-section">
+      <div class="ap-sec-title">📋 Sin cosecha iniciada</div>
+      <div class="bullet"><span class="bullet-icon">🕐</span><span><strong>${sinCos.length} campos</strong> · <span class="mono">${f(hasSinCos)} ha</span> aún sin arrancar</span></div>
+      ${sinCos.length<=4?sinCos.map(d=>`<div class="bullet"><span class="bullet-icon">·</span><span>${d.campo} <span class="mono">(${f(d.sembradas)} ha)</span></span></div>`).join(''):''}
+    </div>`;
+  }
+
+  // --- CONFIABILIDAD ---
+  html += `<div class="ap-confianza">
+    <div class="ap-conf-lbl">Confiabilidad de datos · ${confianzaLabel}</div>
+    <div class="ap-conf-bar-bg"><div class="ap-conf-bar-fill" style="width:${Math.min(confianza,100).toFixed(0)}%;background:${confianza>=60?'var(--green)':confianza>=30?'var(--gold)':'var(--red)'}"></div></div>
+    <div class="ap-conf-note">${avancePct.toFixed(1)}% cosechado · ${confianzaNote}</div>
+  </div>`;
+
+  document.getElementById('ap-body').innerHTML = html;
+}
+
+function toggleDetail(detId, rowId){
+  const det = document.getElementById(detId);
+  const row = document.getElementById(rowId);
+  const icon = row.querySelector('.toggle-icon');
+  const isOpen = det.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.detail-row.open').forEach(r=>r.classList.remove('open'));
+  document.querySelectorAll('.toggle-icon').forEach(i=>i.textContent='▸');
+  if(!isOpen){
+    det.classList.add('open');
+    if(icon) icon.textContent='▾';
+  }
+}
+
+function switchTab(tab){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.pane').forEach(p=>{ p.classList.remove('active'); p.style.display='none'; });
+  document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
+  const pane = document.getElementById(`pane-${tab}`);
+  if(pane){ pane.classList.add('active'); pane.style.display='block'; }
+  if(tab==='detalle') filterTable();
+  if(tab==='campana') renderMiCampana();
+  if(tab==='analisis') renderAnalisis();
+}
+
+// ===== RENDER MI CAMPAÑA (Tab 1) =====
+
+function renderMiCampana(){
+  const data = getScopedData();
+  if(!data.length) return;
+
+  const fmt  = n => (!n&&n!==0)||isNaN(n)?'—':Math.round(n).toLocaleString('es-AR');
+  const S    = (arr,k) => arr.reduce((a,d)=>a+(+d[k]||0), 0);
+  const fmtD = n => (n>=0?'+':'')+n.toFixed(1)+'%';
+
+  const acts = [...new Set(data.map(d=>d.act))].sort();
+  const totSembr = S(data,'sembradas');
+  const totCos   = S(data,'cosechadas');
+  const totPerd  = S(data,'perdidas');
+  const totPend  = Math.max(0, totSembr - totCos - totPerd);
+  const avPct    = totSembr>0 ? (totCos+totPerd)/totSembr*100 : 0;
+
+  // Weighted global desvío
+  const hasProd = data.reduce((a,d)=>a+(d.sembradas-d.perdidas),0);
+  const wPpto = totSembr>0 ? data.reduce((a,d)=>a+d.ppto*d.sembradas,0)/totSembr : 0;
+  const wFinal = hasProd>0 ? data.reduce((a,d)=>a+d.final*(d.sembradas-d.perdidas),0)/hasProd : 0;
+  const globalDev = wPpto>0 ? (wFinal-wPpto)/wPpto*100 : 0;
+
+  // ── Hero strip ──
+  const heroEl = document.getElementById('camp-hero');
+  if(heroEl) heroEl.innerHTML = `
+    <div class="hero-main">
+      <div class="hero-val ${globalDev>=0?'pos':'neg'}">${globalDev>=0?'+':''}${globalDev.toFixed(1)}%</div>
+      <div class="hero-lbl">Desvío global vs presupuesto</div>
+    </div>
+    <div class="hero-side">
+      <div><div class="hs-lbl">Sembradas</div><div class="hs-val">${fmt(totSembr)} <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted)">ha</span></div><div class="hs-sub">${[...new Set(data.map(d=>d.zona))].length} zonas · ${data.length} campos</div></div>
+      <div><div class="hs-lbl">Cosechadas</div><div class="hs-val">${fmt(totCos)} <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted)">ha</span></div><div class="hs-sub"><span class="badge gld">${avPct.toFixed(1)}% avance</span></div></div>
+      <div><div class="hs-lbl">Pendientes</div><div class="hs-val">${fmt(totPend)} <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted)">ha</span></div><div class="hs-sub">${(100-avPct).toFixed(1)}% del área</div></div>
+    </div>`;
+
+  // ── Escenarios ──
+  buildEscenariosCamp(data, acts);
+
+  // ── Cultivo cards ──
+  const cardsEl = document.getElementById('camp-cultivos');
+  if(cardsEl){
+    cardsEl.innerHTML = acts.map(act => {
+      const sub = data.filter(d=>d.act===act);
+      const sembr = S(sub,'sembradas');
+      const cos   = S(sub,'cosechadas');
+      const perd  = S(sub,'perdidas');
+      const av    = sembr>0?(cos+perd)/sembr*100:0;
+      const hp    = sub.reduce((a,d)=>a+(d.sembradas-d.perdidas),0);
+      const wP    = sembr>0?sub.reduce((a,d)=>a+d.ppto*d.sembradas,0)/sembr:0;
+      const wF    = hp>0?sub.reduce((a,d)=>a+d.final*(d.sembradas-d.perdidas),0)/hp:0;
+      const totC  = S(sub.filter(d=>d.cosechadas>0),'cosechadas');
+      const wA    = totC>0?sub.reduce((a,d)=>a+d.actual*d.cosechadas,0)/totC:0;
+      const devCos = wP>0&&totC>0?(wA-wP)/wP*100:null;
+      const devFin = wP>0?(wF-wP)/wP*100:0;
+      const devShow = devCos!==null ? devCos : devFin;
+      const devLabel = devCos!==null ? 'vs ppto (cosechado)' : 'vs ppto (estimado)';
+      const hdrCls = devShow>=2?'hdr-pos':devShow<=-2?'hdr-neg':'hdr-neu';
+
+      return `<div class="camp-card">
+        <div class="camp-card-hdr ${hdrCls}"><div class="camp-card-name">${act}</div><div class="camp-card-meta">${fmt(sembr)} ha</div></div>
+        <div class="camp-card-body">
+          <div class="camp-card-dev ${devShow>=0?'pos':'neg'}">${devShow>=0?'+':''}${devShow.toFixed(1)}%</div>
+          <div class="camp-card-lbl">${devLabel}</div>
+          <div style="margin-left:auto"><span class="badge gld">${av.toFixed(0)}% avance</span></div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── Comentarios ──
+  buildComents(data, acts);
+}
+
+// ===== ESCENARIOS FOR MI CAMPAÑA =====
+function buildEscenariosCamp(scope, acts){
+  const section = document.getElementById('camp-escenarios-section');
+  const el = document.getElementById('camp-escenarios');
+  if(!section || !el) return;
+
+  const fmt  = n => Math.round(n).toLocaleString('es-AR');
+  const S    = (arr,k) => arr.reduce((a,d)=>a+(d[k]||0),0);
+
+  const totSembr = S(scope,'sembradas');
+  const totCos   = S(scope,'cosechadas');
+  const totPerd  = S(scope,'perdidas');
+  const totPend  = totSembr - totCos - totPerd;
+
+  const conCos = scope.filter(d=>d.cosechadas>0 && d.actual>0);
+  if(!conCos.length || totPend<=0){
+    section.style.display='none';
+    return;
+  }
+  section.style.display='block';
+
+  const tnPpto = scope.reduce((a,d)=> a + ((d.sembradas - d.perdidas) * d.ppto / 1000), 0);
+
+  function estadoCampo(d){
+    if(d.avance >= 99.5) return 'cerrado';
+    if(d.cosechadas > 0) return 'en_curso';
+    return 'sin_arrancar';
+  }
+
+  function tnPesiCampo(d){
+    const hasProd = d.sembradas - d.perdidas;
+    if(hasProd <= 0) return 0;
+    const estado = estadoCampo(d);
+    if(estado === 'cerrado') return hasProd * d.final / 1000;
+    if(estado === 'en_curso') return hasProd * Math.min(d.actual, d.final) / 1000;
+    return hasProd * d.final / 1000;
+  }
+  function tnRealCampo(d){
+    const hasProd = d.sembradas - d.perdidas;
+    if(hasProd <= 0) return 0;
+    const estado = estadoCampo(d);
+    if(estado === 'cerrado') return hasProd * d.final / 1000;
+    if(estado === 'en_curso') return hasProd * d.actual / 1000;
+    return hasProd * d.final / 1000;
+  }
+  function tnOptiCampo(d){
+    const hasProd = d.sembradas - d.perdidas;
+    if(hasProd <= 0) return 0;
+    const estado = estadoCampo(d);
+    if(estado === 'cerrado') return hasProd * d.final / 1000;
+    if(estado === 'en_curso') return hasProd * Math.max(d.actual, d.final) / 1000;
+    return hasProd * d.final / 1000;
+  }
+
+  const tnPesi = scope.reduce((a,d)=>a+tnPesiCampo(d),0);
+  const tnReal = scope.reduce((a,d)=>a+tnRealCampo(d),0);
+  const tnOpti = scope.reduce((a,d)=>a+tnOptiCampo(d),0);
+
+  const diffPesi = tnPesi - tnPpto;
+  const diffReal = tnReal - tnPpto;
+  const diffOpti = tnOpti - tnPpto;
+  const pctReal = tnPpto>0 ? (diffReal/tnPpto*100) : 0;
+  const pctPesi = tnPpto>0 ? (diffPesi/tnPpto*100) : 0;
+  const pctOpti = tnPpto>0 ? (diffOpti/tnPpto*100) : 0;
+
+  const maxTn = Math.max(tnPpto, tnPesi, tnOpti, tnReal);
+  const barPct = n => (maxTn>0 ? n/maxTn*100 : 0).toFixed(1);
+
+  const fmtDiff = (diff, pct) => {
+    const sign = diff>=0?'+':'';
+    const cls = diff>=0?'pos':'neg';
+    return `<div class="esc-diff ${cls}">${sign}${fmt(diff)} tn (${sign}${pct.toFixed(1)}%)</div>`;
+  };
+
+  const nCerrados   = scope.filter(d=>estadoCampo(d)==='cerrado').length;
+  const nEnCurso    = scope.filter(d=>estadoCampo(d)==='en_curso').length;
+  const nSinArrancar= scope.filter(d=>estadoCampo(d)==='sin_arrancar').length;
+  const hasSinArr   = scope.filter(d=>estadoCampo(d)==='sin_arrancar').reduce((a,d)=>a+d.sembradas,0);
+
+  el.innerHTML = `
+    <div class="esc-card">
+      <div class="esc-header">
+        <div class="esc-header-title">Escenarios de producción</div>
+        <div class="esc-header-sub">${nCerrados} cerrados · ${nEnCurso} en cosecha · ${nSinArrancar} sin arrancar (${fmt(hasSinArr)} ha)</div>
+      </div>
+      <div class="esc-body">
+        <div class="esc-grid" style="grid-template-columns:repeat(4,1fr)">
+          <div class="esc-col pesi">
+            <div class="esc-tag">Pesimista</div>
+            <div class="esc-val" style="color:var(--red)">${fmt(tnPesi)}</div>
+            <div class="esc-unit">toneladas</div>
+            ${fmtDiff(diffPesi, pctPesi)}
+          </div>
+          <div class="esc-col ppto">
+            <div class="esc-tag">Presupuesto</div>
+            <div class="esc-val" style="color:var(--gold)">${fmt(tnPpto)}</div>
+            <div class="esc-unit">toneladas</div>
+          </div>
+          <div class="esc-col real">
+            <div class="esc-tag">Real proyectado</div>
+            <div class="esc-val" style="color:var(--blue)">${fmt(tnReal)}</div>
+            <div class="esc-unit">toneladas</div>
+            ${fmtDiff(diffReal, pctReal)}
+          </div>
+          <div class="esc-col opti">
+            <div class="esc-tag">Optimista</div>
+            <div class="esc-val" style="color:var(--green)">${fmt(tnOpti)}</div>
+            <div class="esc-unit">toneladas</div>
+            ${fmtDiff(diffOpti, pctOpti)}
+          </div>
+        </div>
+
+        <div class="esc-bar-section">
+          <div class="esc-bar-row"><div class="esc-bar-lbl" style="color:var(--red)">Pesimista</div><div class="esc-bar-track"><div class="esc-bar-fill" style="width:${barPct(tnPesi)}%;background:var(--red)"></div></div><div class="esc-bar-val">${fmt(tnPesi)} tn</div></div>
+          <div class="esc-bar-row"><div class="esc-bar-lbl" style="color:var(--gold)">Presupuesto</div><div class="esc-bar-track"><div class="esc-bar-fill" style="width:${barPct(tnPpto)}%;background:var(--gold)"></div></div><div class="esc-bar-val">${fmt(tnPpto)} tn</div></div>
+          <div class="esc-bar-row"><div class="esc-bar-lbl" style="color:var(--blue);font-weight:600">Real proy.</div><div class="esc-bar-track"><div class="esc-bar-fill" style="width:${barPct(tnReal)}%;background:var(--blue)"></div></div><div class="esc-bar-val" style="font-weight:600">${fmt(tnReal)} tn</div></div>
+          <div class="esc-bar-row"><div class="esc-bar-lbl" style="color:var(--green)">Optimista</div><div class="esc-bar-track"><div class="esc-bar-fill" style="width:${barPct(tnOpti)}%;background:var(--green)"></div></div><div class="esc-bar-val">${fmt(tnOpti)} tn</div></div>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ===== DYNAMIC COMMENTS (for Mi Campaña) =====
+function buildComents(scope, acts){
+  const el = document.getElementById('camp-coments');
+  if(!el) return;
+
+  const fmt  = n => Math.round(n).toLocaleString('es-AR');
+  const pctS = n => { const s=n>=0?'+':''; return `${s}${n.toFixed(1)}%`; };
+  const S    = (arr,k) => arr.reduce((a,d)=>a+d[k],0);
+  const actLabel = acts.length===1 ? acts[0] : acts.join(' + ');
+
+  const totSembr = S(scope,'sembradas');
+  const totCos   = S(scope,'cosechadas');
+  const totPerd  = S(scope,'perdidas');
+  const avPct    = totSembr>0 ? (totCos+totPerd)/totSembr*100 : 0;
+
+  const items = [];
+  const com = (icon, cls, title, body) =>
+    `<div class="com-item"><div class="com-icon ${cls}">${icon}</div><div class="com-text"><strong>${title}</strong> ${body}</div></div>`;
+
+  // Avance
+  const confianza = avPct<15 ? 'muy bajo — los desvíos son estimaciones con poca base real'
+    : avPct<40 ? 'parcial — los números pueden cambiar al avanzar la cosecha'
+    : avPct<80 ? 'representativo — los datos reflejan una tendencia confiable'
+    : 'alto — la campaña está prácticamente definida';
+
+  items.push(com('📊','info',
+    `Campaña al ${avPct.toFixed(1)}% de avance.`,
+    `Se cosecharon ${fmt(totCos)} de ${fmt(totSembr)} ha sembradas${totPerd>0?`, con ${fmt(totPerd)} ha de pérdidas`:''}. Confiabilidad: <strong>${confianza}</strong>.`
+  ));
+
+  // Zonas
+  const zonaStats = [...new Set(scope.map(d=>d.zona))].map(zona=>{
+    const z = scope.filter(d=>d.zona===zona);
+    const sembr = S(z,'sembradas');
+    const cos = S(z,'cosechadas');
+    const perd = S(z,'perdidas');
+    const av = sembr>0 ? (cos+perd)/sembr*100 : 0;
+    const hasProd = z.reduce((a,d)=>a+(d.sembradas-d.perdidas),0);
+    const wP = sembr>0 ? z.reduce((a,d)=>a+d.ppto*d.sembradas,0)/sembr : 0;
+    const wF = hasProd>0 ? z.reduce((a,d)=>a+d.final*(d.sembradas-d.perdidas),0)/hasProd : 0;
+    const dev = wP>0 ? (wF-wP)/wP*100 : 0;
+    return {zona, sembr, cos, av, ppto:wP, final:wF, dev};
+  }).sort((a,b)=>b.dev-a.dev);
+
+  const mejores = zonaStats.filter(z=>z.av>=10&&z.dev>0);
+  const peores  = zonaStats.filter(z=>z.av>=10&&z.dev<-5);
+  if(mejores.length){
+    const lista = mejores.slice(0,3).map(z=>`<strong>${z.zona}</strong> (${pctS(z.dev)})`).join('; ');
+    items.push(com('🌟','ok', `Zonas con rinde superior al presupuesto:`, lista));
+  }
+  if(peores.length){
+    const lista = peores.slice(0,3).map(z=>`<strong>${z.zona}</strong> (${pctS(z.dev)})`).join('; ');
+    items.push(com('⚠️','warn', `Zonas por debajo del presupuesto:`, lista));
+  }
+
+  // Campos críticos
+  const campCriticos = scope
+    .filter(d=>d.cosechadas>0&&d.ppto>0&&d.avance>=30&&getDesvio(d)<-15)
+    .sort((a,b)=>getDesvio(a)-getDesvio(b)).slice(0,2);
+  campCriticos.forEach(d=>{
+    items.push(com('🚨','alert',
+      `${d.campo} (${d.zona}) — desvío ${pctS(getDesvio(d))}.`,
+      `Rinde: ${fmt(d.actual)} vs ppto ${fmt(d.ppto)} kg/ha · ${d.avance.toFixed(0)}% avance.`));
+  });
+
+  // Sin cosechar
+  const sinCos = scope.filter(d=>d.cosechadas===0&&d.sembradas>0);
+  if(sinCos.length){
+    const hasSin = S(sinCos,'sembradas');
+    items.push(com('🕐','info',
+      `${fmt(hasSin)} ha sin cosechar en ${sinCos.length} campos.`,
+      `El resultado final depende de que los estimados se confirmen.`));
+  }
+
+  el.innerHTML = items.length ? items.join('') : `<div class="com-item"><div class="com-text" style="color:var(--muted)">Sin datos suficientes.</div></div>`;
+}
+
+
+// ===== RENDER ANÁLISIS POR CULTIVO (Tab 2 — accordions) =====
+
+function toggleAccordion(id){
+  const body = document.getElementById(id+'-body');
+  const icon = document.querySelector('#'+id+' .acc-icon');
+  if(!body) return;
+  const isClosed = body.classList.contains('closed');
+  body.classList.toggle('closed');
+  if(icon) icon.classList.toggle('open', isClosed);
+}
+
+function renderAnalisis(){
+  const data = getScopedData();
+  if(!data.length) return;
+
+  const fmt  = n => (!n&&n!==0)||isNaN(n)?'—':Math.round(n).toLocaleString('es-AR');
+  const fmtD = n => (n>=0?'+':'')+n.toFixed(1)+'%';
+  const S    = (arr,k) => arr.reduce((a,d)=>a+(+d[k]||0), 0);
+  const acts = [...new Set(data.map(d=>d.act))].sort();
+
+  const container = document.getElementById('analisis-accordions');
+  if(!container) return;
+
+  let html = '';
+
+  // One accordion per crop
+  acts.forEach((act, idx) => {
+    const sub = data.filter(d=>d.act===act);
+    const sembr = S(sub,'sembradas');
+    const cos   = S(sub,'cosechadas');
+    const perd  = S(sub,'perdidas');
+    const av    = sembr>0?(cos+perd)/sembr*100:0;
+    const hp    = sub.reduce((a,d)=>a+(d.sembradas-d.perdidas),0);
+    const wP    = sembr>0?sub.reduce((a,d)=>a+d.ppto*d.sembradas,0)/sembr:0;
+    const wF    = hp>0?sub.reduce((a,d)=>a+d.final*(d.sembradas-d.perdidas),0)/hp:0;
+    const totC  = S(sub.filter(d=>d.cosechadas>0),'cosechadas');
+    const wA    = totC>0?sub.reduce((a,d)=>a+d.actual*d.cosechadas,0)/totC:0;
+    const devCos = wP>0&&totC>0?(wA-wP)/wP*100:null;
+    const devFin = wP>0?(wF-wP)/wP*100:0;
+    const devShow = devCos!==null ? devCos : devFin;
+    const nZonas = [...new Set(sub.map(d=>d.zona))].length;
+
+    const pillCls = devShow>0?'pos':devShow<-5?'neg':'neu';
+    const isOpen = idx===0; // first one open by default
+
+    // Build zone table for this crop
+    const zonas = [...new Set(sub.map(d=>d.zona))].map(zona => {
+      const z = sub.filter(d=>d.zona===zona);
+      const zS = S(z,'sembradas');
+      const zC = S(z,'cosechadas');
+      const zP = S(z,'perdidas');
+      const zAv = zS>0?(zC+zP)/zS*100:0;
+      const zHP = z.reduce((a,d)=>a+(d.sembradas-d.perdidas),0);
+      const zWP = zS>0?z.reduce((a,d)=>a+d.ppto*d.sembradas,0)/zS:0;
+      const zWF = zHP>0?z.reduce((a,d)=>a+d.final*(d.sembradas-d.perdidas),0)/zHP:0;
+      const zTC = S(z.filter(d=>d.cosechadas>0),'cosechadas');
+      const zWA = zTC>0?z.reduce((a,d)=>a+d.actual*d.cosechadas,0)/zTC:0;
+      const zDev = zWP>0?(zWF-zWP)/zWP*100:0;
+      return {zona, sembradas:zS, avance:zAv, ppto:Math.round(zWP), actual:Math.round(zWA), final:Math.round(zWF), desvio:zDev};
+    }).sort((a,b)=>b.desvio-a.desvio);
+
+    // Narrative
+    const s = buildEntityStats(sub);
+    const narrative = buildNarrativa(s, act, 'act');
+
+    const accId = 'acc-'+act.replace(/\s+/g,'-').toLowerCase();
+
+    html += `<div class="acc" id="${accId}">
+      <div class="acc-h" onclick="toggleAccordion('${accId}')">
+        <div class="acc-title">
+          <span class="acc-icon ${isOpen?'open':''}">▸</span>
+          <span class="acc-name">${act}</span>
+          <span class="pill ${pillCls}">${devShow>=0?'+':''}${devShow.toFixed(1)}%</span>
+        </div>
+        <div class="acc-meta">${fmt(sembr)} ha · ${nZonas} zonas</div>
+      </div>
+      <div class="acc-body ${isOpen?'':'closed'}" id="${accId}-body">
+        <div class="acc-stats">
+          <div><div class="acc-stat-lbl">Rinde actual</div><div class="acc-stat-val">${wA>0?fmt(Math.round(wA)):'—'} <span style="font-size:10px;color:var(--muted)">kg/ha</span></div></div>
+          <div><div class="acc-stat-lbl">Rinde final</div><div class="acc-stat-val">${fmt(Math.round(wF))} <span style="font-size:10px;color:var(--muted)">kg/ha</span></div></div>
+          <div><div class="acc-stat-lbl">Presupuesto</div><div class="acc-stat-val">${fmt(Math.round(wP))} <span style="font-size:10px;color:var(--muted)">kg/ha</span></div></div>
+          <div><div class="acc-stat-lbl">Impacto</div><div class="acc-stat-val ${s.tnExtraCos>=0?'pos':'neg'}" style="color:${s.tnExtraCos>=0?'var(--green)':'var(--red)'}">${s.tnExtraCos>=0?'+':''}${Math.round(s.tnExtraCos).toLocaleString('es-AR')} <span style="font-size:10px;color:var(--muted)">tn</span></div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin:12px 0 8px">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;min-width:50px">Avance</span>
+          <div style="flex:1;height:5px;background:var(--border);border-radius:2px;overflow:hidden"><div style="width:${Math.min(av,100).toFixed(1)}%;height:100%;background:${av>=70?'var(--brand)':'var(--gold)'};border-radius:2px"></div></div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--brand);font-weight:600">${av.toFixed(1)}%</span>
+        </div>
+        <div style="font-size:12px;color:var(--text-2);line-height:1.65;padding:8px 10px;background:var(--card-alt);border-radius:3px;border-left:2px solid var(--border-dk);margin:10px 0">${narrative}</div>
+        <div class="tbl-wrap" style="margin-top:12px">
+          <table>
+            <thead><tr><th>Zona</th><th class="r">Has</th><th>Avance</th><th class="r">Ppto</th><th class="r">Actual</th><th class="r">Final</th><th class="r">Desvío</th></tr></thead>
+            <tbody>${zonas.map(z=>{
+              const dcls = z.desvio>0?'pos':z.desvio<-5?'neg':'neu';
+              return `<tr>
+                <td class="name">${z.zona}</td>
+                <td class="r">${z.sembradas.toLocaleString('es-AR')}</td>
+                <td>${miniBar(z.avance)}</td>
+                <td class="r">${fmt(z.ppto)}</td>
+                <td class="r">${z.actual>0?fmt(z.actual):'<span style="color:var(--muted)">—</span>'}</td>
+                <td class="r">${fmt(z.final)}</td>
+                <td class="r"><span class="pill ${dcls}">${z.desvio>=0?'+':''}${z.desvio.toFixed(1)}%</span></td>
+              </tr>`;
+            }).join('')}</tbody>
+          </table>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  // Destacados accordion
+  const conCos = data.filter(d=>d.cosechadas>0&&d.ppto>0);
+  if(conCos.length){
+    const ranked = [...conCos].sort((a,b)=>getDesvio(b)-getDesvio(a));
+    const top3pos = ranked.filter(d=>getDesvio(d)>0).slice(0,3);
+    const top3neg = [...ranked].reverse().filter(d=>getDesvio(d)<0).slice(0,3);
+
+    const dCard = (c, cls, tag) => {
+      const d = getDesvio(c);
+      return `<div class="dest ${cls}">
+        <div class="dest-tag">${tag}</div>
+        <div class="dest-campo">${c.campo}</div>
+        <div class="dest-loc">${c.zona} · ${c.loc} · ${c.act}</div>
+        <div class="dest-num ${d>=0?'pos':'neg'}">${d>=0?'+':''}${d.toFixed(1)}%</div>
+        <div class="dest-detail">Ppto ${fmt(c.ppto)} → Real ${fmt(c.final)} kg/ha<br>${fmt(c.cosechadas)} ha · ${c.avance.toFixed(0)}% avance</div>
+      </div>`;
+    };
+    const medals = ['🥇','🥈','🥉'];
+    const warns  = ['🔴','🟠','🟡'];
+
+    html += `<div class="acc" id="acc-dest">
+      <div class="acc-h" onclick="toggleAccordion('acc-dest')">
+        <div class="acc-title">
+          <span class="acc-icon">▸</span>
+          <span class="acc-name">Campos destacados</span>
+          <span class="acc-badge" style="background:var(--green-lt);color:var(--green)">${top3pos.length} positivos</span>
+          <span class="acc-badge" style="background:var(--red-lt);color:var(--red)">${top3neg.length} negativos</span>
+        </div>
+      </div>
+      <div class="acc-body closed" id="acc-dest-body">
+        <div class="dest-grid" style="padding-top:14px">
+          ${top3pos.map((c,i)=>dCard(c,'win',`${medals[i]} #${i+1}`)).join('')}
+          ${top3neg.map((c,i)=>dCard(c,'los',`${warns[i]} #${i+1}`)).join('')}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  container.innerHTML = html;
+}
+
+
+// ===== UTILITY FUNCTIONS (kept from original) =====
+
+function devClass(pct){
+  if(pct >= 10)  return 'kv-dp';
+  if(pct >= 5)   return 'kv-mp';
+  if(pct >= 2)   return 'kv-lp';
+  if(pct >= -2)  return 'kv-zr';
+  if(pct >= -5)  return 'kv-ln';
+  if(pct >= -10) return 'kv-mn';
+  return 'kv-dn';
+}
+function devHeroClass(pct){ return pct>=2?'pos':pct<=-2?'neg':'gld'; }
+function hdrClass(av, dev){
+  if(av>=95) return dev>=2?'hdr-pos':dev<=-2?'hdr-neg':'hdr-neu';
+  if(av>=5)  return dev>=2?'hdr-pos':dev<=-2?'hdr-neg':'hdr-neu';
+  return 'hdr-gld';
+}
+
+function buildEntityStats(rows){
+  const S = (arr,k)=>arr.reduce((a,d)=>a+(+d[k]||0),0);
+  const sembr = S(rows,'sembradas');
+  const cos   = S(rows,'cosechadas');
+  const perd  = S(rows,'perdidas');
+  const pend  = Math.max(0, sembr - cos - perd);
+  const av    = sembr>0 ? (cos+perd)/sembr*100 : 0;
+  const wPpto = rows.reduce((a,d)=>a+d.ppto*d.sembradas,0) / (sembr||1);
+  const conCos = rows.filter(d=>d.cosechadas>0);
+  const cosHas = S(conCos,'cosechadas');
+  const wActual = cosHas>0 ? conCos.reduce((a,d)=>a+d.actual*d.cosechadas,0)/cosHas : 0;
+  const wEst = rows.reduce((a,d)=>a+(d.est||d.ppto)*d.sembradas,0) / (sembr||1);
+  const wFinal = rows.reduce((a,d)=>a+d.final*d.sembradas,0) / (sembr||1);
+  const devCos  = wPpto>0 && cosHas>0 ? (wActual/wPpto-1)*100 : null;
+  const devFinal= wPpto>0 ? (wFinal/wPpto-1)*100 : 0;
+  const devEst  = wPpto>0 ? (wEst/wPpto-1)*100 : 0;
+  const tnExtraCos  = cosHas>0 ? (wActual - wPpto) * cosHas / 1000 : 0;
+  const tnExtraPend = rows.reduce((a,d)=>{
+    const hp = Math.max(0, d.sembradas - d.cosechadas - d.perdidas);
+    return a + ((d.est||d.ppto) - d.ppto) * hp / 1000;
+  }, 0);
+  const tnEstPend = rows.reduce((a,d)=>{
+    const hp = Math.max(0, d.sembradas - d.cosechadas - d.perdidas);
+    return a + (d.est||d.ppto) * hp / 1000;
+  }, 0);
+  const byZona = {};
+  rows.forEach(d=>{
+    if(!byZona[d.zona]) byZona[d.zona]={sembr:0,wFin:0,wPpt:0};
+    byZona[d.zona].sembr += d.sembradas;
+    byZona[d.zona].wFin  += d.final * d.sembradas;
+    byZona[d.zona].wPpt  += d.ppto  * d.sembradas;
+  });
+  const zonaRanked = Object.entries(byZona)
+    .map(([z,v])=>({zona:z, sembr:v.sembr, dev: v.wPpt>0 ? (v.wFin/v.wPpt-1)*100 : 0 }))
+    .filter(z=>z.sembr>50).sort((a,b)=>b.dev-a.dev);
+  const mejorZona = zonaRanked[0];
+  const peorZona  = zonaRanked[zonaRanked.length-1];
+  const campoRanked = [...rows].filter(d=>d.sembradas>20)
+    .map(d=>({campo:d.campo, dev:d.ppto>0?(d.final/d.ppto-1)*100:0})).sort((a,b)=>b.dev-a.dev);
+  const mejorCampo = campoRanked[0];
+  const peorCampo  = campoRanked[campoRanked.length-1];
+  const nZonas  = [...new Set(rows.map(d=>d.zona))].length;
+  const nCampos = rows.length;
+  return { sembr, cos, cosHas, perd, pend, av, wPpto, wActual, wEst, wFinal,
+           devCos, devFinal, devEst, tnExtraCos, tnExtraPend, tnEstPend,
+           mejorZona, peorZona, mejorCampo, peorCampo, nZonas, nCampos };
+}
+
+function buildNarrativa(s, label, mode){
+  const fmt  = n => (!n&&n!==0)||isNaN(n)?'—':Math.round(n).toLocaleString('es-AR');
+  const fmtD = n => (n>=0?'+':'')+n.toFixed(1)+'%';
+  const fmtTnImp = n => {
+    const abs = Math.abs(n);
+    const str = abs>=1000 ? `${(abs/1000).toFixed(1)}k` : Math.round(abs).toLocaleString('es-AR');
+    return (n>=0?'<strong style="color:var(--green)">+':'<strong style="color:var(--red)">-')+str+' tn</strong>';
+  };
+  let txt = '';
+  if(s.av >= 95){
+    txt = `Finalizó sobre <strong>${fmt(s.sembr)} ha</strong>. Rinde final <strong>${fmt(s.wFinal)} kg/ha</strong> `
+        + `(${s.devFinal>=0?'<strong style="color:var(--green)">':'<strong style="color:var(--red)">'}${fmtD(s.devFinal)} vs ppto</strong>), `
+        + `implicando ${fmtTnImp(s.tnExtraCos)} respecto a lo presupuestado. `;
+    if(mode==='act' && s.mejorZona && s.peorZona && s.mejorZona.zona!==s.peorZona.zona)
+      txt += `Mejor desvío: <span class="pill pos" style="font-size:9px">${s.mejorZona.zona} ${fmtD(s.mejorZona.dev)}</span> · Peor: <span class="pill neg" style="font-size:9px">${s.peorZona.zona} ${fmtD(s.peorZona.dev)}</span>`;
+  } else if(s.av >= 5){
+    txt = `<strong>${fmt(s.cos)} ha</strong> cosechadas de <strong>${fmt(s.sembr)} ha</strong>. `;
+    if(s.devCos!=null && Math.abs(s.devCos)>0.5)
+      txt += `Rinde actual ${s.devCos>=0?'<strong style="color:var(--green)">':'<strong style="color:var(--red)">'}${fmtD(s.devCos)} vs ppto</strong> (${fmt(s.wActual)} kg/ha) → ${fmtTnImp(s.tnExtraCos)}. `;
+    if(s.pend>100)
+      txt += `Pendientes: <strong>${fmt(s.pend)} ha</strong>, estimado ${s.devEst>=0?'<strong style="color:var(--green)">':'<strong style="color:var(--red)">'}${fmtD(s.devEst)} vs ppto</strong>. `;
+    if(mode==='act' && s.mejorZona)
+      txt += `Mejor zona: <span class="pill pos" style="font-size:9px">${s.mejorZona.zona} ${fmtD(s.mejorZona.dev)}</span>`;
+  } else {
+    txt = `<strong>${fmt(s.sembr)} ha</strong> pendientes. Estimado ${s.devEst>=0?'<strong style="color:var(--green)">':'<strong style="color:var(--red)">'}${fmtD(s.devEst)} vs ppto</strong> (${fmt(s.wEst)} kg/ha). `;
+    if(mode==='act' && s.mejorZona)
+      txt += `Mayor superficie: <span class="pill pos" style="font-size:9px">${s.mejorZona.zona}</span>`;
+  }
+  return txt;
+}
+
+
+// ===== EXPORTAR A EXCEL =====
+function exportarExcel(){
+  if(!CURRENT_SOCIO) return;
+  const socioName = CURRENT_SOCIO.name;
+  const fecha = new Date().toLocaleDateString('es-AR');
+
+  // Hoja 1: Detalle por campo
+  const campoData = getScopedData();
+  const h1 = [['Campo','Actividad','Zona','Localidad','Has Sembradas','Has Cosechadas','Has Perdidas','% Avance','Rinde Ppto (kg/ha)','Rinde Actual (kg/ha)','Rinde Final (kg/ha)']];
+  campoData.forEach(d=>{
+    h1.push([d.campo, d.act, d.zona, d.loc, d.sembradas, d.cosechadas, d.perdidas,
+      +(d.avance/100).toFixed(4), d.ppto, d.actual, d.final]);
+  });
+
+  // Hoja 2: Retiros & Bolsa
+  const pwd = Object.keys(SOCIOS_DATA).find(k=>SOCIOS_DATA[k].name===socioName);
+  const retData = (pwd && RETIRO_DATA[pwd]) || [];
+  const h2 = [['Campo','Actividad','Zona','Localidad','% Participacion','TN Teoricas','TN Retiradas','TN en Deposito','TN Pendientes de Retiro']];
+  retData.forEach(d=>{
+    h2.push([d.campo, d.act, d.zona, d.loc,
+      +(d.pct*100).toFixed(2),
+      d.tn_teoricas, d.tn_retiradas, d.tn_bolsa,
+      +(d.tn_teoricas - d.tn_retiradas).toFixed(2)]);
+  });
+
+  // Hoja 3: Resumen por actividad
+  const actMap = {};
+  campoData.forEach(d=>{
+    if(!actMap[d.act]) actMap[d.act]={act:d.act,sembradas:0,cosechadas:0,perdidas:0};
+    actMap[d.act].sembradas  += d.sembradas;
+    actMap[d.act].cosechadas += d.cosechadas;
+    actMap[d.act].perdidas   += d.perdidas;
+  });
+  const h3 = [['Actividad','Has Sembradas','Has Cosechadas','Has Perdidas','% Avance']];
+  Object.values(actMap).sort((a,b)=>a.act.localeCompare(b.act)).forEach(a=>{
+    const av = a.sembradas>0 ? +((a.cosechadas+a.perdidas)/a.sembradas*100).toFixed(1) : 0;
+    h3.push([a.act, a.sembradas, a.cosechadas, a.perdidas, av]);
+  });
+
+  if(typeof XLSX !== 'undefined'){
+    const wb = XLSX.utils.book_new();
+    const ws1 = XLSX.utils.aoa_to_sheet(h1);
+    const ws2 = XLSX.utils.aoa_to_sheet(h2);
+    const ws3 = XLSX.utils.aoa_to_sheet(h3);
+    ws1['!cols'] = [{wch:22},{wch:20},{wch:14},{wch:18},{wch:13},{wch:13},{wch:11},{wch:10},{wch:16},{wch:16},{wch:14}];
+    ws2['!cols'] = [{wch:22},{wch:20},{wch:14},{wch:18},{wch:14},{wch:13},{wch:13},{wch:14},{wch:20}];
+    ws3['!cols'] = [{wch:22},{wch:14},{wch:14},{wch:12},{wch:10}];
+    XLSX.utils.book_append_sheet(wb, ws1, 'Detalle por Campo');
+    XLSX.utils.book_append_sheet(wb, ws2, 'Retiros y Bolsa');
+    XLSX.utils.book_append_sheet(wb, ws3, 'Resumen por Actividad');
+    const fname = socioName.replace(/[^a-zA-Z0-9]/g,'_')+'_Cosecha_'+fecha.replace(/\//g,'-')+'.xlsx';
+    XLSX.writeFile(wb, fname);
+  } else {
+    // Fallback CSV
+    const toCSV = rows => rows.map(r=>r.map(c=>String(c).includes(',')?'"'+c+'"':c).join(',')).join('\n');
+    const blob = new Blob([toCSV(h1)+'\n\n'+toCSV(h2)+'\n\n'+toCSV(h3)], {type:'text/csv;charset=utf-8;'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = socioName.replace(/[^a-zA-Z0-9]/g,'_')+'_Cosecha.csv'; a.click();
+  }
+}
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize multi-select dropdown filters for Detalle tab
+  const allActs  = [...new Set(DATA.map(d=>d.act))].sort();
+  const allZonas = [...new Set(DATA.map(d=>d.zona))].sort();
+  const allLocs  = [...new Set(DATA.map(d=>d.loc).filter(Boolean))].sort();
+  buildMsOptions('ms-act', allActs, []);
+  buildMsOptions('ms-zona', allZonas, []);
+  buildMsOptions('ms-loc', allLocs, []);
+
+  renderAnalisis();
+  filterTable();
+});
+
+
+</script>
+</body>
+</html>
