@@ -510,7 +510,7 @@ tbody tr.detail-row.open { display:table-row; }
 
 <div class="tabs">
   <div class="tab active" onclick="switchTab('campana')">Mi Campaña</div>
-  <div class="tab" onclick="switchTab('analisis')">Análisis por Cultivo</div>
+  <div class="tab" onclick="switchTab('analisis')">Análisis por Zona</div>
   <div class="tab" onclick="switchTab('detalle')">Detalle por Campo</div>
 </div>
 
@@ -543,8 +543,8 @@ tbody tr.detail-row.open { display:table-row; }
 <div class="pane active" id="pane-analisis">
 
   <!-- Accordion sections — one per crop + destacados -->
-  <div class="sec-title">Desglose por cultivo</div>
-  <div style="font-size:11px;color:var(--muted);margin-bottom:14px;font-family:'IBM Plex Sans',sans-serif;font-weight:300">Cada sección se expande con zonas, rindes y campos destacados.</div>
+  <div class="sec-title">Desglose por zona</div>
+  <div style="font-size:11px;color:var(--muted);margin-bottom:14px;font-family:'IBM Plex Sans',sans-serif;font-weight:300">Cada sección se expande con cultivos, rindes y desvíos de esa zona.</div>
   <div id="analisis-accordions"></div>
 
 </div>
@@ -1602,16 +1602,13 @@ function renderAnalisis(){
   const fmt  = n => (!n&&n!==0)||isNaN(n)?'—':Math.round(n).toLocaleString('es-AR');
   const fmtD = n => (n>=0?'+':'')+n.toFixed(1)+'%';
   const S    = (arr,k) => arr.reduce((a,d)=>a+(+d[k]||0), 0);
-  const acts = [...new Set(data.map(d=>d.act))].sort();
 
   const container = document.getElementById('analisis-accordions');
   if(!container) return;
 
-  let html = '';
-
-  // One accordion per crop
-  acts.forEach((act, idx) => {
-    const sub = data.filter(d=>d.act===act);
+  // Build zona-level stats and sort by desvío
+  const zonas = [...new Set(data.map(d=>d.zona))].map(zona => {
+    const sub = data.filter(d=>d.zona===zona);
     const sembr = S(sub,'sembradas');
     const cos   = S(sub,'cosechadas');
     const perd  = S(sub,'perdidas');
@@ -1621,71 +1618,82 @@ function renderAnalisis(){
     const wF    = hp>0?sub.reduce((a,d)=>a+d.final*(d.sembradas-d.perdidas),0)/hp:0;
     const totC  = S(sub.filter(d=>d.cosechadas>0),'cosechadas');
     const wA    = totC>0?sub.reduce((a,d)=>a+d.actual*d.cosechadas,0)/totC:0;
-    const devCos = wP>0&&totC>0?(wA-wP)/wP*100:null;
     const devFin = wP>0?(wF-wP)/wP*100:0;
-    const devShow = devCos!==null ? devCos : devFin;
-    const nZonas = [...new Set(sub.map(d=>d.zona))].length;
+    const nActs = [...new Set(sub.map(d=>d.act))].length;
+    const nCampos = sub.length;
+    const tnExtra = totC>0 ? (wA - wP) * totC / 1000 : 0;
+    return { zona, sub, sembr, cos, perd, av, wP, wF, wA, devFin, nActs, nCampos, tnExtra };
+  }).sort((a,b)=>b.devFin-a.devFin);
 
-    const pillCls = devShow>0?'pos':devShow<-5?'neg':'neu';
-    const isOpen = idx===0; // first one open by default
+  let html = '';
 
-    // Build zone table for this crop
-    const zonas = [...new Set(sub.map(d=>d.zona))].map(zona => {
-      const z = sub.filter(d=>d.zona===zona);
-      const zS = S(z,'sembradas');
-      const zC = S(z,'cosechadas');
-      const zP = S(z,'perdidas');
-      const zAv = zS>0?(zC+zP)/zS*100:0;
-      const zHP = z.reduce((a,d)=>a+(d.sembradas-d.perdidas),0);
-      const zWP = zS>0?z.reduce((a,d)=>a+d.ppto*d.sembradas,0)/zS:0;
-      const zWF = zHP>0?z.reduce((a,d)=>a+d.final*(d.sembradas-d.perdidas),0)/zHP:0;
-      const zTC = S(z.filter(d=>d.cosechadas>0),'cosechadas');
-      const zWA = zTC>0?z.reduce((a,d)=>a+d.actual*d.cosechadas,0)/zTC:0;
-      const zDev = zWP>0?(zWF-zWP)/zWP*100:0;
-      return {zona, sembradas:zS, avance:zAv, ppto:Math.round(zWP), actual:Math.round(zWA), final:Math.round(zWF), desvio:zDev};
+  zonas.forEach((z, idx) => {
+    const pillCls = z.devFin>0?'pos':z.devFin<-5?'neg':'neu';
+    const isOpen = idx===0;
+
+    // Build cultivo table for this zona
+    const cultivos = [...new Set(z.sub.map(d=>d.act))].map(act => {
+      const c = z.sub.filter(d=>d.act===act);
+      const cS = S(c,'sembradas');
+      const cC = S(c,'cosechadas');
+      const cP = S(c,'perdidas');
+      const cAv = cS>0?(cC+cP)/cS*100:0;
+      const cHP = c.reduce((a,d)=>a+(d.sembradas-d.perdidas),0);
+      const cWP = cS>0?c.reduce((a,d)=>a+d.ppto*d.sembradas,0)/cS:0;
+      const cWF = cHP>0?c.reduce((a,d)=>a+d.final*(d.sembradas-d.perdidas),0)/cHP:0;
+      const cTC = S(c.filter(d=>d.cosechadas>0),'cosechadas');
+      const cWA = cTC>0?c.reduce((a,d)=>a+d.actual*d.cosechadas,0)/cTC:0;
+      const cDev = cWP>0?(cWF-cWP)/cWP*100:0;
+      return {act, sembradas:cS, avance:cAv, ppto:Math.round(cWP), actual:Math.round(cWA), final:Math.round(cWF), desvio:cDev, nCampos:c.length};
     }).sort((a,b)=>b.desvio-a.desvio);
 
-    // Narrative
-    const s = buildEntityStats(sub);
-    const narrative = buildNarrativa(s, act, 'act');
+    // Narrative for the zona
+    const mejorCult = cultivos[0];
+    const peorCult = cultivos[cultivos.length-1];
+    let narrative = `<strong>${fmt(z.cos)} ha</strong> cosechadas de <strong>${fmt(z.sembr)} ha</strong> (${z.av.toFixed(1)}% avance). `;
+    if(z.wA>0) narrative += `Rinde actual promedio <strong>${fmt(Math.round(z.wA))} kg/ha</strong>, final estimado <strong>${fmt(Math.round(z.wF))} kg/ha</strong> (ppto ${fmt(Math.round(z.wP))} kg/ha). `;
+    if(cultivos.length>1 && mejorCult && peorCult && mejorCult.act!==peorCult.act){
+      narrative += `Mejor cultivo: <span class="pill pos" style="font-size:9px">${mejorCult.act} ${fmtD(mejorCult.desvio)}</span>`;
+      if(peorCult.desvio<-2) narrative += ` · Peor: <span class="pill neg" style="font-size:9px">${peorCult.act} ${fmtD(peorCult.desvio)}</span>`;
+    }
 
-    const accId = 'acc-'+act.replace(/\s+/g,'-').toLowerCase();
+    const accId = 'acc-'+z.zona.replace(/\s+/g,'-').toLowerCase();
 
     html += `<div class="acc" id="${accId}">
       <div class="acc-h" onclick="toggleAccordion('${accId}')">
         <div class="acc-title">
           <span class="acc-icon ${isOpen?'open':''}">▸</span>
-          <span class="acc-name">${act}</span>
-          <span class="pill ${pillCls}">${devShow>=0?'+':''}${devShow.toFixed(1)}%</span>
+          <span class="acc-name">${z.zona}</span>
+          <span class="pill ${pillCls}">${z.devFin>=0?'+':''}${z.devFin.toFixed(1)}%</span>
         </div>
-        <div class="acc-meta">${fmt(sembr)} ha · ${nZonas} zonas</div>
+        <div class="acc-meta">${fmt(z.sembr)} ha · ${z.nActs} cultivo${z.nActs>1?'s':''} · ${z.nCampos} campos</div>
       </div>
       <div class="acc-body ${isOpen?'':'closed'}" id="${accId}-body">
         <div class="acc-stats">
-          <div><div class="acc-stat-lbl">Rinde actual</div><div class="acc-stat-val">${wA>0?fmt(Math.round(wA)):'—'} <span style="font-size:10px;color:var(--muted)">kg/ha</span></div></div>
-          <div><div class="acc-stat-lbl">Rinde final</div><div class="acc-stat-val">${fmt(Math.round(wF))} <span style="font-size:10px;color:var(--muted)">kg/ha</span></div></div>
-          <div><div class="acc-stat-lbl">Presupuesto</div><div class="acc-stat-val">${fmt(Math.round(wP))} <span style="font-size:10px;color:var(--muted)">kg/ha</span></div></div>
-          <div><div class="acc-stat-lbl">Impacto</div><div class="acc-stat-val ${s.tnExtraCos>=0?'pos':'neg'}" style="color:${s.tnExtraCos>=0?'var(--green)':'var(--red)'}">${s.tnExtraCos>=0?'+':''}${Math.round(s.tnExtraCos).toLocaleString('es-AR')} <span style="font-size:10px;color:var(--muted)">tn</span></div></div>
+          <div><div class="acc-stat-lbl">Rinde actual</div><div class="acc-stat-val">${z.wA>0?fmt(Math.round(z.wA)):'—'} <span style="font-size:10px;color:var(--muted)">kg/ha</span></div></div>
+          <div><div class="acc-stat-lbl">Rinde final</div><div class="acc-stat-val">${fmt(Math.round(z.wF))} <span style="font-size:10px;color:var(--muted)">kg/ha</span></div></div>
+          <div><div class="acc-stat-lbl">Presupuesto</div><div class="acc-stat-val">${fmt(Math.round(z.wP))} <span style="font-size:10px;color:var(--muted)">kg/ha</span></div></div>
+          <div><div class="acc-stat-lbl">Impacto</div><div class="acc-stat-val" style="color:${z.tnExtra>=0?'var(--green)':'var(--red)'}">${z.tnExtra>=0?'+':''}${Math.round(z.tnExtra).toLocaleString('es-AR')} <span style="font-size:10px;color:var(--muted)">tn</span></div></div>
         </div>
         <div style="display:flex;align-items:center;gap:8px;margin:12px 0 8px">
           <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;min-width:50px">Avance</span>
-          <div style="flex:1;height:5px;background:var(--border);border-radius:2px;overflow:hidden"><div style="width:${Math.min(av,100).toFixed(1)}%;height:100%;background:${av>=70?'var(--brand)':'var(--gold)'};border-radius:2px"></div></div>
-          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--brand);font-weight:600">${av.toFixed(1)}%</span>
+          <div style="flex:1;height:5px;background:var(--border);border-radius:2px;overflow:hidden"><div style="width:${Math.min(z.av,100).toFixed(1)}%;height:100%;background:${z.av>=70?'var(--brand)':'var(--gold)'};border-radius:2px"></div></div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--brand);font-weight:600">${z.av.toFixed(1)}%</span>
         </div>
         <div style="font-size:12px;color:var(--text-2);line-height:1.65;padding:8px 10px;background:var(--card-alt);border-radius:3px;border-left:2px solid var(--border-dk);margin:10px 0">${narrative}</div>
         <div class="tbl-wrap" style="margin-top:12px">
           <table>
-            <thead><tr><th>Zona</th><th class="r">Has</th><th>Avance</th><th class="r">Ppto</th><th class="r">Actual</th><th class="r">Final</th><th class="r">Desvío</th></tr></thead>
-            <tbody>${zonas.map(z=>{
-              const dcls = z.desvio>0?'pos':z.desvio<-5?'neg':'neu';
+            <thead><tr><th>Cultivo</th><th class="r">Has</th><th>Avance</th><th class="r">Ppto</th><th class="r">Actual</th><th class="r">Final</th><th class="r">Desvío</th></tr></thead>
+            <tbody>${cultivos.map(c=>{
+              const dcls = c.desvio>0?'pos':c.desvio<-5?'neg':'neu';
               return `<tr>
-                <td class="name">${z.zona}</td>
-                <td class="r">${z.sembradas.toLocaleString('es-AR')}</td>
-                <td>${miniBar(z.avance)}</td>
-                <td class="r">${fmt(z.ppto)}</td>
-                <td class="r">${z.actual>0?fmt(z.actual):'<span style="color:var(--muted)">—</span>'}</td>
-                <td class="r">${fmt(z.final)}</td>
-                <td class="r"><span class="pill ${dcls}">${z.desvio>=0?'+':''}${z.desvio.toFixed(1)}%</span></td>
+                <td class="name">${c.act} <span style="font-size:9px;color:var(--muted)">(${c.nCampos})</span></td>
+                <td class="r">${c.sembradas.toLocaleString('es-AR')}</td>
+                <td>${miniBar(c.avance)}</td>
+                <td class="r">${fmt(c.ppto)}</td>
+                <td class="r">${c.actual>0?fmt(c.actual):'<span style="color:var(--muted)">—</span>'}</td>
+                <td class="r">${fmt(c.final)}</td>
+                <td class="r"><span class="pill ${dcls}">${c.desvio>=0?'+':''}${c.desvio.toFixed(1)}%</span></td>
               </tr>`;
             }).join('')}</tbody>
           </table>
